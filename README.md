@@ -26,3 +26,7 @@ bower install
 grunt server
 
 Enjoy!
+
+TEST CLIENT WITHOUT LOGIC COMPONENT YET:
+on chrome press f12, in the console type "visualizer.test()".
+This will simulate when 1 state is sent from the server to client

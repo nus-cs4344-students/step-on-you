@@ -13,18 +13,7 @@ function Visualizer () {
 }
 
 Visualizer.prototype.init = function() {
-	var backgroundObj = new Image();
-	var backLayer = this.backgroundLayer;
-	backgroundObj.onload = function() {
-		var background = new Kinetic.Image({
-			x: 0, y: 0,	image: backgroundObj, 
-			width: Configurations.canvasWidth, height: Configurations.canvasHeight
-		});
-		// add the shape to the layer
-		backLayer.add(background);
-		backLayer.draw();
-	  };
-	  backgroundObj.src = Assets.background;
+	this.insertImage(this.backgroundLayer, 'background', 0, 0);
 };
 
 Visualizer.prototype.update = function (data) {
@@ -46,15 +35,45 @@ Visualizer.prototype.update = function (data) {
 }
 
 Visualizer.prototype.createObject = function (object) {
-	var charVisual = new Kinetic.Circle({
-        x: object.x,
-        y: object.y,
-        radius: Configurations.characterHeight,
-        fill: object.character
-    });
-	this.objectLayer.add(charVisual);
-	var character = new Player(charVisual, object.id, object.x, object.y, object.id);
+	var visual = this.insertImage(this.objectLayer, object.character, object.x, object.y);
+	var character = new Player(visual, object.id, object.x, object.y, object.id);
 	this.objects[object.id] = character;
+}
+
+Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {
+	var src;
+	var W, H;
+	if (imgName == "background") {
+		src = Assets.background;
+		W = Configurations.canvasWidth;
+		H = Configurations.canvasHeight;
+	} else {
+		W = Configurations.characterWidth;
+		H = Configurations.characterHeight;
+		if (imgName == "devil") {
+			src = Assets.character_devil;
+		} else if (imgName == "angel") {
+			src = Assets.character_angel;
+		} else if (imgName == "chicken") {
+			src = Assets.character_chicken;
+		} else if (imgName == "green") {
+			src = Assets.character_green;
+		} else if (imgName == "white") {
+			src = Assets.character_white;
+		}
+	}
+		
+	var img = new Image();
+	img.onload = function() {
+		var kineticImg = new Kinetic.Image({
+			x: X, y: Y,	image: img, 
+			width: W, height: H
+		});
+		layer.add(kineticImg);
+		layer.draw();
+	};
+	img.src = src;
+	return img;
 }
 
 //test

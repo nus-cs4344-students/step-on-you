@@ -1,0 +1,12 @@
+{
+	"type": "update",
+    "objects": [
+		{
+			"type": "create",
+			"id": 1,
+			"x": 200,
+			"y": 200,
+			"character": "red"
+		}
+	]
+}

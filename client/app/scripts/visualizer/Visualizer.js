@@ -9,13 +9,10 @@ function Visualizer () {
 	this.objectLayer = new Kinetic.Layer();
 	this.stage.add(this.backgroundLayer);
 	this.stage.add(this.objectLayer);
+	this.objects = []; //index is ID of the object
 }
 
 Visualizer.prototype.init = function() {
-	this.loadBackground();
-};
-
-Visualizer.prototype.loadBackground = function() {
 	var backgroundObj = new Image();
 	var backLayer = this.backgroundLayer;
 	backgroundObj.onload = function() {
@@ -28,4 +25,57 @@ Visualizer.prototype.loadBackground = function() {
 		backLayer.draw();
 	  };
 	  backgroundObj.src = Assets.background;
+};
+
+Visualizer.prototype.update = function (data) {
+	if (data.type != Configurations.KEYWORD_UPDATE) {
+		return;
+	}
+	var objects = data.objects;
+	for	(i = 0; i < objects.length; i++) {
+		var object = objects[i];
+		if (object.type == Configurations.KEYWORD_UPDATE) {
+			
+		} if (object.type == Configurations.KEYWORD_CREATE) {
+			this.createObject(object);
+		} if (object.type == Configurations.KEYWORD_REMOVE) {
+			
+		}
+	}
+	this.objectLayer.draw();
 }
+
+Visualizer.prototype.createObject = function (object) {
+	var charVisual = new Kinetic.Circle({
+        x: object.x,
+        y: object.y,
+        radius: Configurations.characterHeight,
+        fill: object.character
+    });
+	this.objectLayer.add(charVisual);
+	var character = new Player(charVisual, object.id, object.x, object.y, object.id);
+	this.objects[object.id] = character;
+}
+
+//test
+Visualizer.prototype.test = function () {
+	var t = this;
+	$.getJSON("update.json", function(json) {
+		t.update(json);
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

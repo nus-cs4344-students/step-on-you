@@ -1,1 +1,2 @@
-console.log('\'Allo \'Allo!');
+var visualizer = new Visualizer();
+visualizer.init();

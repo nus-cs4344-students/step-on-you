@@ -26,6 +26,9 @@
       <div class="header">
         <h3 class="text-muted">Step On You</h3>
       </div>
+	  
+	  <div id="gameCanvas">
+	  </div>
         
       <div class="footer">
         <p><span class="glyphicon glyphicon-heart"></span> CS4344 StepOnYou Team</p>
@@ -37,6 +40,7 @@
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/kineticjs/kinetic.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -65,8 +69,12 @@
         <script src="bower_components/bootstrap/js/tab.js"></script>
         <!-- endbuild -->
 
-        <!-- build:js({app,.tmp}) scripts/main.js -->
-        <script src="scripts/main.js"></script>
+		<!-- Load Visualization -->
+		<script src="scripts/visualizer/Configurations.js"></script>
+		<script src="scripts/visualizer/Visualizer.js"></script>
+        
+		<!-- build:js({app,.tmp}) scripts/main.js -->
+		<script src="scripts/main.js"></script>
         <!-- endbuild -->
 </body>
 </html>

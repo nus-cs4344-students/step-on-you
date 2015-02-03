@@ -10,7 +10,7 @@
 		},
 		{
 			"type": "create",
-			"id": 2,
+			"id": 5,
 			"x": 200,
 			"y": 400,
 			"character": "chicken"
@@ -31,7 +31,7 @@
 		},
 		{
 			"type": "create",
-			"id": 5,
+			"id": 2,
 			"x": 500,
 			"y": 400,
 			"character": "white"

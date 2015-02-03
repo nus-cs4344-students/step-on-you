@@ -1,8 +1,10 @@
-function Obj (visual, id, x, y) {
+function Obj (model, visual) {
 	this.presentation = visual; //this is the visual which store in the Kinetic Layer
-	this.id = id;
-	this.x = x;
-	this.y = y;
+	this.id = model.id;
+	this.x = model.x;
+	this.y = model.y;
+	this.width = model.width;
+	this.height = model.height;
 }
 
 Obj.prototype.updatePossition = function (x, y) {

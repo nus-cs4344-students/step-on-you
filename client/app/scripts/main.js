@@ -1,2 +1,5 @@
+var assets = new AssetManager();
 var visualizer = new Visualizer();
-visualizer.init();
+assets.load(function() {
+		visualizer.init();
+		});

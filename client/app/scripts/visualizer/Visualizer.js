@@ -9,8 +9,8 @@ function Visualizer () {
 	this.objectLayer = new Kinetic.Layer();
 	this.stage.add(this.backgroundLayer);
 	this.stage.add(this.objectLayer);
-	this.objects = []; //index is ID of the object
-}
+	this.objects = {}; //index is ID of the object
+};
 
 Visualizer.prototype.init = function() {
 	this.insertImage(this.backgroundLayer, 'background', 0, 0);
@@ -24,48 +24,55 @@ Visualizer.prototype.update = function (data) {
 	for	(i = 0; i < objects.length; i++) {
 		var object = objects[i];
 		if (object.type == Configurations.KEYWORD_UPDATE) {
-			
+			this.updateObject(object);
 		} if (object.type == Configurations.KEYWORD_CREATE) {
 			this.createObject(object);
 		} if (object.type == Configurations.KEYWORD_REMOVE) {
-			
+			this.removeObject(object.id);
 		}
 	}
 	this.objectLayer.draw();
-}
+};
+
+Visualizer.prototype.updateObject = function (data) {
+	var object = this.objects[data.id];
+	if (data.character != object.character) {
+		this.createObject(data);
+	} else {
+		object.updatePossition(data.x, data.y);
+	}
+};
 
 Visualizer.prototype.createObject = function (object) {
-	var visual = this.insertImage(this.objectLayer, object.character, object.x, object.y);
-	var character = new Player(visual, object.id, object.x, object.y, object.id);
-	this.objects[object.id] = character;
-}
+	this.removeObject(object.id);
+	var player = new Player(object);
+	this.objectLayer.add(player.presentation);	
+	this.objects[object.id] = player;
+};
+
+Visualizer.prototype.removeObject = function(id) {
+	if (this.objects[id] == null) {
+		return;
+	}
+	//remove visual
+	var oldVisual = this.objects[id].presentation;
+	oldVisual.remove();
+	//remove model
+	delete this.objects[id];
+};
 
 Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {
 	var src;
 	var W, H;
 	if (imgName == "background") {
-		src = Assets.background;
+		src = ASSET_PREFIX + ASSET_LIST.background;
 		W = Configurations.canvasWidth;
 		H = Configurations.canvasHeight;
-	} else {
-		W = Configurations.characterWidth;
-		H = Configurations.characterHeight;
-		if (imgName == "devil") {
-			src = Assets.character_devil;
-		} else if (imgName == "angel") {
-			src = Assets.character_angel;
-		} else if (imgName == "chicken") {
-			src = Assets.character_chicken;
-		} else if (imgName == "green") {
-			src = Assets.character_green;
-		} else if (imgName == "white") {
-			src = Assets.character_white;
-		}
 	}
-		
+	
 	var img = new Image();
 	img.onload = function() {
-		var kineticImg = new Kinetic.Image({
+		kineticImg = new Kinetic.Image({
 			x: X, y: Y,	image: img, 
 			width: W, height: H
 		});
@@ -73,8 +80,7 @@ Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {
 		layer.draw();
 	};
 	img.src = src;
-	return img;
-}
+};
 
 //test
 Visualizer.prototype.test = function () {
@@ -82,7 +88,14 @@ Visualizer.prototype.test = function () {
 	$.getJSON("update.json", function(json) {
 		t.update(json);
 	});
-}
+};
+
+Visualizer.prototype.test2 = function () {
+	var t = this;
+	$.getJSON("update2.json", function(json) {
+		t.update(json);
+	});
+};
 
 
 

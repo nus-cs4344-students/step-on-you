@@ -70,3 +70,8 @@ Create, Update, Remove:
 	]
 }
 ```
+
+Character Names (for now this is for showing different visual only, but in the future, each character may have its special ability): 
+
+
+"devil", "angle", "chicken", "green", "white"

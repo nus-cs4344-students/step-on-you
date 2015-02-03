@@ -1,3 +1,5 @@
+![alt tag](https://cloud.githubusercontent.com/assets/5309295/6015535/9d6f18b6-abb0-11e4-9559-3e9635fb947a.jpg)
+
 # StepOnYou
 CS4344 Project
 

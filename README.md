@@ -32,3 +32,35 @@ Enjoy!
 TEST CLIENT WITHOUT LOGIC COMPONENT YET:
 on chrome press f12, in the console type "visualizer.test()".
 This will simulate when 1 state is sent from the server to client
+
+###JSON FORMAT
+
+The whole game state changing will be send to client as a single JSON file, format as below.
+
+Create, Update, Remove:
+```json
+{
+	"type": "update",
+    "objects": [
+		{
+			"type": "create",
+			"id": 1,
+			"x": 100,
+			"y": 400,
+			"character": "green"
+		},
+		{
+			"type": "update",
+			"id": 3,
+			"x": 200,
+			"y": 300,
+			"character": "devil"
+		},
+
+		{
+			"type": "remove",
+			"id": 2
+		},
+	]
+}
+```

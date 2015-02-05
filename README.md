@@ -1,5 +1,11 @@
 ![alt tag](https://cloud.githubusercontent.com/assets/5309295/6015535/9d6f18b6-abb0-11e4-9559-3e9635fb947a.jpg)
+Sreenshot on the game
+
+
 ![alt tag](https://cloud.githubusercontent.com/assets/5309295/6015763/e98cf828-abb3-11e4-9654-80fd2486ef30.jpg)
+All character of the game
+
+
 # StepOnYou
 CS4344 Project
 
@@ -25,7 +31,7 @@ bower install
   
 4. Running live server and live code update
 
-grunt server
+grunt serve
 
 Enjoy!
 
@@ -64,3 +70,8 @@ Create, Update, Remove:
 	]
 }
 ```
+
+Character Names (for now this is for showing different visual only, but in the future, each character may have its special ability): 
+
+
+"devil", "angle", "chicken", "green", "white"

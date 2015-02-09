@@ -20,7 +20,7 @@ npm install bower - g
 
 npm install grunt-cli
 
-2. Go to "client" folder
+2. Go to "steponyou" folder
 
 3. Get node packets and bower packets by:
 
@@ -31,7 +31,7 @@ bower install
   
 4. Running live server and live code update
 
-grunt serve
+grunt
 
 Enjoy!
 

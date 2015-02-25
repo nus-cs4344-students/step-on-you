@@ -5,85 +5,6 @@ var BOTTOM = 1;
 var LEFT = 2;
 var RIGHT = 3;
 
-function Body(w,h) {
-	
-	//misc information
-	var objectID = phyBdCount++;
-
-
-	//information for body position
-	//rendering position (short circuiting)
-	var renderX = 0;
-	var renderY = 0;
-	//actual position (from server)
-	var x = 0;
-	var y = 0;
-	//target position : for convergence (possibly)
-	var targetX = 0;
-	var targetY = 0;
-	
-	//velocity
-	var vecX = 0;
-	var vecY = 0;
-
-	//sprite facing : left or right
-	var orientation = "left";
-	//sprite dimensions
-	var height = h;
-	var width = w;
-	//whether or not to apply gravity
-	var applyGravity = true;
-	var isStatic = false;
-	var isGround = false;
-
-	//flag whether the player is moving
-	var moving = false;
-	var moved = false;
-
-	//flags for collision to restrict movement
-	var blockedUp = false;
-	var blockedDown = false;
-	var blockedLeft = false;
-	var blockedRight = false;
-	var touchingGround = false;
-
-	//collision data
-	/*
-	collided : whether there is a collision
-	cardinality : up, down, left, right
-	overlap : amount of overlap in the cardinality
-	cardinality and overlap are arrays as 1 object may have multiple collisions
-	*/
-
-	var collisions = [];
-	var groundCollisions = [];
-	var collisionIDs = [];
-	var numGroundCollisions;// = body.collisions.length;
-	var bodyCollisionIndex;// = numGroundCollisions - 1;
-	var corrected = false;
-
-	var resetCollision = function() {
-		collisions = [];
-		groundCollisions = [];
-		collisionIDs = [];
-		corrected = false;
-		/*
-		collision.collided = false;
-		collision.cardinality = [false,false,false,false];
-		collision.overlapX = [0,0,0,0];
-		collision.overlapY = [0,0,0,0];
-		*/
-	}
-
-	var resetVecX = function(){
-		vecX = 0;
-	}
-
-
-}
-
-
-
 function Physics() {
 
 	var physicObjects = [];
@@ -92,6 +13,8 @@ function Physics() {
 
 	this.addPhysicalBody = function(body){
 		physicObjects.push(body);
+		//console.log("mobile body added");
+		//console.log(body);
 	}
 
 	this.addStaticBody = function(body){
@@ -100,6 +23,10 @@ function Physics() {
 
 	this.getStaticObjects = function(){
 		return staticObjects;
+	}
+
+	this.getPhysicObjects = function(){
+		return physicObjects;
 	}
 
 
@@ -143,36 +70,45 @@ function Physics() {
 
 				//check type of collision : top, bottom, left, right
 
-				//if right - body1.renderX < body2.renderX
-				//contact right - body1.renderX + body1.width = body2.renderX
-				//otherwise left
+				//check not "contain"
+				//i.e check b2 not in b1
+				if( !(body1.renderX < body2.renderX && body1.renderX + body1.width > body2.x + body2.width) &&
+					//check b1 not in b2
+					!(body2.renderX < body1.renderX && body2.renderX + body2.width > body1.x + body1.width)
+					){
 
-				//handle right scenario first
-				if(body1.renderX < body2.renderX){
-					overlap = body1.renderX + body1.width - body2.renderX;
-					//set body 1
-					collision1.cardinality[RIGHT] = true;
-					collision1.overlapX[RIGHT] = overlap;
+					//if right - body1.renderX < body2.renderX
+					//contact right - body1.renderX + body1.width = body2.renderX
+					//otherwise left
 
-					//set body 2
-					collision2.cardinality[LEFT] = true;
-					collision2.overlapX[LEFT] = overlap;
-					
-				}
-				//handle left scenario
-				else if(body1.renderX > body2.renderX){
-					overlap = body2.renderX + body2.width - body1.renderX;
-					//set body 1
-					collision1.cardinality[LEFT] = true;
-					collision1.overlapX[LEFT] = overlap;
+					//handle right scenario first
+					if(body1.renderX < body2.renderX){
+						overlap = body1.renderX + body1.width - body2.renderX;
+						//set body 1
+						collision1.cardinality[RIGHT] = true;
+						collision1.overlapX[RIGHT] = overlap;
 
-					//set body 2
-					collision2.cardinality[RIGHT] = true;
-					collision2.overlapX[RIGHT] = overlap;
-				}
-				//handle when body1.renderX == body2.renderX - this is when it's a top/bottom collision
-				else{
-					//this will be handled by the next section : top/bottom collision
+						//set body 2
+						collision2.cardinality[LEFT] = true;
+						collision2.overlapX[LEFT] = overlap;
+						
+					}
+					//handle left scenario
+					else if(body1.renderX > body2.renderX){
+						overlap = body2.renderX + body2.width - body1.renderX;
+						//set body 1
+						collision1.cardinality[LEFT] = true;
+						collision1.overlapX[LEFT] = overlap;
+
+						//set body 2
+						collision2.cardinality[RIGHT] = true;
+						collision2.overlapX[RIGHT] = overlap;
+					}
+					//handle when body1.renderX == body2.renderX - this is when it's a top/bottom collision
+					else{
+						//this will be handled by the next section : top/bottom collision
+					}
+
 				}
 
 				//if top - body1.renderY < body2.renderY
@@ -180,7 +116,7 @@ function Physics() {
 				//otherwise bottom
 
 				//handle top scenario first
-				if(body1.renderY < body2.renderY){
+				if(body1.renderY > body2.renderY){
 					overlap = body1.renderY - (body2.renderY - body2.height);
 					//set body 1
 					collision1.cardinality[TOP] = true;
@@ -191,7 +127,7 @@ function Physics() {
 					collision2.overlapY[BOTTOM] = overlap;
 				}
 				//handle if bottom
-				else if(body1.renderY > body2.renderY){
+				else if(body1.renderY < body2.renderY){
 					overlap = body2.renderY - (body1.renderY - body1.height);
 					//set body 1
 					collision1.cardinality[BOTTOM] = true;
@@ -206,11 +142,13 @@ function Physics() {
 					//this is a left / right collision, handled above
 				}
 
-				body1.collisionIDs.push(body2.objectID);
-				body2.collisionIDs.push(body1.objectID);
+				//console.log("collided");
 
-				body1.collisions[body2.objectID] = collision1;
-				body2.collisions[body1.objectID] = collision2;
+				body1.addCollisionID(body2.objectID);
+				body2.addCollisionID(body1.objectID);
+
+				body1.addCollision(body2.objectID, collision1);
+				body2.addCollision(body1.objectID, collision2);
 
 			}
 
@@ -221,6 +159,7 @@ function Physics() {
 
 	//check contact with ground
 	var checkContactWithGround = function(body){
+		//console.log("checkContactWithGround");
 		for(var j = 0; j < staticObjects.length; j++){
 			checkCollision(body, staticObjects[j]);
 		}
@@ -288,33 +227,39 @@ function Physics() {
 			//check contact with ground
 			checkContactWithGround(body);
 
+			body.collisions = body.getCollisions();
+			body.collisionIDs = body.getCollisionIDs();
+			//console.log(body.collisions);
+			//console.log(body.collisionIDs.length);
+
 			//if > 1 collision : means with ground
-			if(body.collisions.length > 0){
-				for(var j = 0; j < body.collisions.length; j++){
-					var c = body.collisions[j];
+			if(body.collisionIDs.length > 0){
+				for(var j = 0; j < body.collisionIDs.length; j++){
+					var c = body.collisions[ body.collisionIDs[j] ];
+					//console.log(c);
 
 					if(c.cardinality[TOP]){
-						body.blockedUp = true;
-						if(body.vecY > 0){
-							body.vecY = 0;
+						body.setBlockedUp();
+						if(body.getVecY() > 0){
+							body.setVecY(0);
 						}
 					}
 					if(c.cardinality[BOTTOM]){
-						body.blockedDown = true;
-						if(body.vecY < 0){
-							body.vecY = 0;
+						body.setBlockedDown();
+						if(body.getVecY() < 0){
+							body.setVecY(0);
 						}
 					}
 					if(c.cardinality[LEFT]){
-						body.blockedLeft = true;
-						if(body.vecX < 0){
-							body.vecX = 0;
+						body.setBlockedLeft();
+						if(body.getVecX() < 0){
+							body.setVecX(0);
 						}
 					}
 					if(c.cardinality[RIGHT]){
-						body.blockedRight = true;
-						if(body.vecX > 0){
-							body.vecX = 0;
+						body.setBlockedRight();
+						if(body.getVecX() > 0){
+							body.setVecX(0);
 						}
 					}
 
@@ -323,16 +268,25 @@ function Physics() {
 
 			//move the object
 
-			body.renderX += body.vecX;
-			body.renderY += body.vecY;
-			moved = body.vecX != 0 || body.vecY != 0;
+			//console.log(body.getVecX() + ", " + body.getVecY());
+
+			body.renderX += body.getVecX();
+			body.renderY += body.getVecY();
+			moved = body.getVecX() != 0 || body.getVecY() != 0;
+
+			body.setVecX(0);
 
 			//apply gravity
-			body.vecY -= Gravity;
+			if(body.getVecY() < 0){
+				body.setVecY( body.getVecY() + Gravity);
+			}
+			else{
+				body.setVecY(Gravity);
+			}
 
 			
-			body.numGroundCollisions = body.collisions.length;
-			body.bodyCollisionIndex = numGroundCollisions - 1;
+			body.setNumGroundCollisions(body.collisions.length);
+			body.setBodyCollisionIndex(body.collisions.length - 1);
 
 		}
 
@@ -357,67 +311,71 @@ function Physics() {
 				var c = body.collisions[j];
 				var b2 = c.otherBody;
 
-				//handle right
-				if(c.cardinality[RIGHT]){
-					var o = c.overlapX[RIGHT];
-					
-					//check for corrected position (don't move corrected?)
-					//check for restricted movement before correcting position
-					//right collision means b1 move < , b2 move >
-					if(o > 0){
-						//< and > ok
-						if(!body.blockedLeft && !b2.blockedRight){
-							body.renderX = body.renderX - 0.5 * o;
-							b2.renderX = body2.renderX + 0.5 * o;
-						}
-						//< ok 
-						else if(!body.blockedLeft  && b2.blockedRight){
-							body.renderX = body.renderX - o;
-						}
-						//> ok
-						else if(body.blockedLeft  && !b2.blockedRight){
-							b2.renderX = body2.renderX + o;
-						}
-							
-					}
-
-					body.corrected = true;
-					b2.corrected = true;
-				}
-
-				//handle left
-				if(c.cardinality[LEFT]){
-					var o = c.overlapX[LEFT];
-
-					if(o > 0){
-						//< and > ok
-						if(!body.blockedRight && !b2.blockedLeft){
-							body.renderX = body.renderX + 0.5 * o;
-							b2.renderX = body2.renderX - 0.5 * o;
-						}
-						//< ok 
-						else if(body.blockedRight  && !b2.blockedLeft){
-							b2.renderX = body2.renderX - o;
-						}
-						//> ok
-						else if( !body.blockedRight  && b2.blockedLeft){
-							body.renderX = body.renderX + o;
-						}
-							
-					}
-
-
-					body.corrected = true;
-					b2.corrected = true;
-				}
-
 				//means this killed other body
 				//server decides kill
 				//client waits for server decision
 				if(c.cardinality[BOTTOM]){
-					GameEngine.evaluate(body, b2);
+					//GameEngine.evaluate(body, b2);
 				}
+				else if(c.cardinality[TOP]){
 
+				}
+				//perfor, correction only if alive
+				else{
+					//handle right
+					if(c.cardinality[RIGHT]){
+						var o = c.overlapX[RIGHT];
+						
+						//check for corrected position (don't move corrected?)
+						//check for restricted movement before correcting position
+						//right collision means b1 move < , b2 move >
+						if(o > 0){
+							//< and > ok
+							if(!body.getBlockedLeft() && !b2.getBlockedRight()){
+								body.setRenderX( body.getRenderX() - 0.5 * o);
+								b2.setRenderX ( body2.getRenderX() + 0.5 * o);
+							}
+							//< ok 
+							else if(!body.getBlockedLeft()  && b2.getBlockedRight()){
+								body.setRenderX( body.getRenderX() - o);
+							}
+							//> ok
+							else if(body.getBlockedLeft()  && !b2.getBlockedRight()){
+								b2.setRenderX( body2.getRenderX() + o);
+							}
+								
+						}
+
+						body.setCorrected(true);
+						b2.setCorrected(true);
+					}
+
+					//handle left
+					if(c.cardinality[LEFT]){
+						var o = c.overlapX[LEFT];
+
+						if(o > 0){
+							//< and > ok
+							if(!body.getBlockedRight() && !b2.getBlockedLeft()){
+								body.renderX = body.renderX + 0.5 * o;
+								b2.renderX = body2.renderX - 0.5 * o;
+							}
+							//< ok 
+							else if(body.getBlockedRight()  && !b2.getBlockedLeft()){
+								b2.renderX = body2.renderX - o;
+							}
+							//> ok
+							else if( !body.getBlockedRight()  && b2.getBlockedLeft()){
+								body.renderX = body.renderX + o;
+							}
+								
+						}
+
+
+						body.setCorrected(true);
+						b2.setCorrected(true);
+					}
+			}
 				
 				/*
 				top and bottom are PKS! no need sprite correction

@@ -20,6 +20,7 @@ limitations under the License.
     <title>GameEngine and Physic Engine test</title>
    <!-- <link rel="author" href="http://profiles.google.com/sethladd"> -->
   <!--  <script src="../Box2d.min.js"></script> -->
+    <script src="Body.js"></script>
     <script src="Physics.js"></script>
     <script src="Player.js"></script>
     <script src="GameEngine.js"></script>
@@ -45,28 +46,36 @@ limitations under the License.
     var canvas = document.getElementById("c");
     var ctx = canvas.getContext("2d");
   
+
+
     var gameEngine = new GameEngine("client",canvas);
-    
+
     gameEngine.init(null);
+
+    var id = 10;
+    var player = gameEngine.addPlayer(id);
+    player.setPosition(50,50);
+
     gameEngine.start();
 
     document.addEventListener('keydown', function(event) {
     if(event.keyCode == 37) {
         //left
         //console.log(player1.m_body);
-        console.log("left");
+        //console.log("left");
        
 
     }
     else if(event.keyCode == 39) {
         //right
-         console.log("right");
+         //console.log("right");
+         gameEngine.step();
        
        
     }
     else if(event.keyCode == 32 || event.keyCode == 38) {
 
-         console.log("jump");
+         //console.log("jump");
        
     }
     

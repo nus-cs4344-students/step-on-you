@@ -9,6 +9,7 @@ function GameEngine(serverOrClient, canvasObj){
 	var canvas = canvasObj;
 	var ctx = canvas.getContext("2d");
 	var players = [];
+	var playerObjs = [];
 
 	//i shouldn't need this
 	var playerSprites = [];
@@ -39,8 +40,13 @@ function GameEngine(serverOrClient, canvasObj){
 	//generate spawnPosition
 
 	//for server to use
-	var addPlayer = function(newPlayerID){
+	this.addPlayer = function(newPlayerID){
 		players.push( {id : newPlayerID, spawnPosition : 0 });
+		var p = new Player(newPlayerID);
+		playerObjs[newPlayerID] = p;
+		physics.addPhysicalBody(p.getBody());
+		//console.log(p);
+		return p;
 	}
 
 	this.init = function(dataFromServer){
@@ -58,13 +64,22 @@ function GameEngine(serverOrClient, canvasObj){
 	var gameLoop = function(){
 
 		physics.step();
-		render();
+		debugRender();
 
 		setTimeout( function(){gameLoop()}, timePerFrame );
 
 	}
 
-	var render = function(){
+	this.step = function(){
+		physics.step();
+	}
+
+	var debugRender = function(){
+
+		//clear canvas
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
 		var obj;
 		var staticObjects = physics.getStaticObjects();
 		//render map
@@ -73,6 +88,16 @@ function GameEngine(serverOrClient, canvasObj){
 
 			ctx.fillStyle = "#FF0000";
 			ctx.fillRect(obj.renderX, obj.renderY, obj.width, obj.height);
+		}
+
+		//render players
+		var physicObjects = physics.getPhysicObjects();
+		for(var i = 0; i < physicObjects.length; i++){
+			obj = physicObjects[i];
+
+			ctx.fillStyle = "#FF0000";
+			ctx.fillRect(obj.renderX, obj.renderY, obj.width, obj.height);
+			//console.log("x : " + obj.renderX + ", y : " + obj.renderY + ", w: " + obj.width + ", h: " + obj.height);
 		}
 	}
 

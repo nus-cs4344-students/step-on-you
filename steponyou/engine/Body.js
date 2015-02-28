@@ -42,6 +42,8 @@ function Body(w,h) {
 	var blockedLeft = false;
 	var blockedRight = false;
 	var touchingGround = false;
+	var jump = 0;
+	var jumped = false;
 
 	//collision data
 	/*
@@ -76,8 +78,35 @@ function Body(w,h) {
 		*/
 	}
 
+	this.setJump = function(j){
+		jump = j;
+		jumped = true;
+		console.log("setJumped");
+	}
+
+	this.getJumped = function(){
+		return jumped;
+	}
+
+	this.getJumpHeight = function(){
+		return jump;
+	}
+
+	this.resetJump = function(){
+		jump = 0;
+		jumped = false;
+	}
+
 	this.resetVecX = function(){
 		vecX = 0;
+	}
+
+	this.getWidth = function(){
+		return width;
+	}
+
+	this.getHeight = function(){
+		return height;
 	}
 
 	this.getCollisions = function(){
@@ -93,6 +122,10 @@ function Body(w,h) {
 	}
 	this.setBodyCollisionIndex = function(bc){
 		bodyCollisionIndex = bc;
+	}
+
+	this.getBodyCollisionIndex = function(bc){
+		return bodyCollisionIndex;
 	}
 
 	this.getVecX = function(){
@@ -153,6 +186,26 @@ function Body(w,h) {
 
 	this.getBlockedDown = function(){
 		return blockedDown;
+	}
+
+	this.isStatic = function(){
+		return isStatic;
+	}
+
+	this.getRenderX = function(){
+		return renderX;
+	}
+
+	this.getRenderY = function(){
+		return renderY;
+	}
+
+	this.setRenderX = function(x){
+		renderX = x;
+	}
+
+	this.setRenderY = function(y){
+		renderY = y;
 	}
 
 

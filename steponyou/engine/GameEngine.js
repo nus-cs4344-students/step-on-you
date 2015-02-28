@@ -27,6 +27,7 @@ function GameEngine(serverOrClient, canvasObj){
 		body.renderX = 0;
 		body.y = canvas.height - body.height;
 		body.renderY = canvas.height - body.height;
+		body.isStatic = true;
 		return body;
 	}
 	//load / create map
@@ -86,7 +87,7 @@ function GameEngine(serverOrClient, canvasObj){
 		for(var i = 0; i < staticObjects.length; i++){
 			obj = staticObjects[i];
 
-			ctx.fillStyle = "#FF0000";
+			ctx.fillStyle = "#0000FF";
 			ctx.fillRect(obj.renderX, obj.renderY, obj.width, obj.height);
 		}
 

@@ -10,14 +10,17 @@ function Physics() {
 	var physicObjects = [];
 	var staticObjects = [];
 	var Gravity = 10;
+	var Scaling = 1;
 
 	this.addPhysicalBody = function(body){
+		body.isStatic = false;
 		physicObjects.push(body);
 		//console.log("mobile body added");
 		//console.log(body);
 	}
 
 	this.addStaticBody = function(body){
+		body.isStatic = true;
 		staticObjects.push(body);
 	}
 
@@ -82,8 +85,10 @@ function Physics() {
 					//otherwise left
 
 					//handle right scenario first
+					//body1 on the left of body2
 					if(body1.renderX < body2.renderX){
 						overlap = body1.renderX + body1.width - body2.renderX;
+						overlap = Math.abs(overlap);
 						//set body 1
 						collision1.cardinality[RIGHT] = true;
 						collision1.overlapX[RIGHT] = overlap;
@@ -96,6 +101,7 @@ function Physics() {
 					//handle left scenario
 					else if(body1.renderX > body2.renderX){
 						overlap = body2.renderX + body2.width - body1.renderX;
+						overlap = Math.abs(overlap);
 						//set body 1
 						collision1.cardinality[LEFT] = true;
 						collision1.overlapX[LEFT] = overlap;
@@ -117,7 +123,8 @@ function Physics() {
 
 				//handle top scenario first
 				if(body1.renderY > body2.renderY){
-					overlap = body1.renderY - (body2.renderY - body2.height);
+					overlap = body1.renderY - (body2.renderY + body2.height);
+					overlap = Math.abs(overlap);
 					//set body 1
 					collision1.cardinality[TOP] = true;
 					collision1.overlapY[TOP] = overlap;
@@ -128,7 +135,8 @@ function Physics() {
 				}
 				//handle if bottom
 				else if(body1.renderY < body2.renderY){
-					overlap = body2.renderY - (body1.renderY - body1.height);
+					overlap = body2.renderY - (body1.renderY + body1.height);
+					overlap = Math.abs(overlap);
 					//set body 1
 					collision1.cardinality[BOTTOM] = true;
 					collision1.overlapY[BOTTOM] = overlap;
@@ -221,16 +229,45 @@ function Physics() {
 		var body;
 		for(var i = 0; i < physicObjects.length; i++){
 			body = physicObjects[i];
-			body.resetCollision();
+
+
 			body.moved = false;
+			
+
+			body.renderX += body.getVecX();
+
+			if(body.getJumped()){
+				console.log("handling jump");
+				//console.log("ori y: " + body.renderY())
+				console.log(body.getJumpHeight());
+				body.renderY -= body.getJumpHeight();
+				body.resetJump();
+			}
+			else{
+				body.renderY += body.getVecY();
+			}
+
+			body.moved = body.getVecX() != 0 || body.getVecY() != 0;
+			body.setVecX(0);
+
+			body.resetCollision();
+
+			//apply gravity
+			if(body.getVecY() < 0){
+				body.setVecY( body.getVecY() + Gravity);
+			}
+			else{
+				body.setVecY(Gravity);
+			}
+
 
 			//check contact with ground
 			checkContactWithGround(body);
 
 			body.collisions = body.getCollisions();
 			body.collisionIDs = body.getCollisionIDs();
-			//console.log(body.collisions);
-			//console.log(body.collisionIDs.length);
+
+			//console.log("numCollisions: "+body.collisionIDs.length);
 
 			//if > 1 collision : means with ground
 			if(body.collisionIDs.length > 0){
@@ -240,13 +277,13 @@ function Physics() {
 
 					if(c.cardinality[TOP]){
 						body.setBlockedUp();
-						if(body.getVecY() > 0){
+						if(body.getVecY() < 0){
 							body.setVecY(0);
 						}
 					}
 					if(c.cardinality[BOTTOM]){
 						body.setBlockedDown();
-						if(body.getVecY() < 0){
+						if(body.getVecY() > 0){
 							body.setVecY(0);
 						}
 					}
@@ -269,24 +306,9 @@ function Physics() {
 			//move the object
 
 			//console.log(body.getVecX() + ", " + body.getVecY());
-
-			body.renderX += body.getVecX();
-			body.renderY += body.getVecY();
-			moved = body.getVecX() != 0 || body.getVecY() != 0;
-
-			body.setVecX(0);
-
-			//apply gravity
-			if(body.getVecY() < 0){
-				body.setVecY( body.getVecY() + Gravity);
-			}
-			else{
-				body.setVecY(Gravity);
-			}
-
 			
-			body.setNumGroundCollisions(body.collisions.length);
-			body.setBodyCollisionIndex(body.collisions.length - 1);
+			body.setNumGroundCollisions(body.collisionIDs.length);
+			body.setBodyCollisionIndex(body.collisionIDs.length);
 
 		}
 
@@ -302,13 +324,53 @@ function Physics() {
 	}
 
 	var collisionResolution = function(){
+
 		var body;
+
 		for(var i = 0; i < physicObjects.length; i++){
 			body = physicObjects[i];
 
 			//handle all collisions (prevent overlapping of sprites)
-			for(var j = body.bodyCollisionIndex; j < body.collisions.length ; j++){
-				var c = body.collisions[j];
+			//console.log(body);
+			//handles collision with static bodies
+			body.bodyCollisionIndex = body.getBodyCollisionIndex();
+			body.collisionIDs = body.getCollisionIDs();
+			body.collisions = body.getCollisions();
+
+			//console.log(body.collisionIDs);
+			//console.log(body.bodyCollisionIndex);
+
+			for(var j = 0; j < body.bodyCollisionIndex ; j++){
+				var c = body.collisions[ body.collisionIDs[j] ];
+				var b2 = c.otherBody;
+
+				//handle bottom
+				if(c.cardinality[BOTTOM]){
+					var o = c.overlapY[BOTTOM];
+					//console.log("bottom : " + o);
+					body.renderY = body.renderY - o;
+				}
+				//handle top
+				else if(c.cardinality[TOP]){
+
+				}
+				
+				//handle right
+				else if(c.cardinality[RIGHT]){
+					var o = c.overlapX[RIGHT];
+					
+				}
+
+				//handle left
+				else if(c.cardinality[LEFT]){
+					var o = c.overlapX[LEFT];
+				}
+			}
+			
+
+			//handles collisionw ith other mobile bodies
+			for(var j = body.bodyCollisionIndex; j < body.collisionIDs.length ; j++){
+				var c = body.collisions[ body.collisionIDs[j] ];
 				var b2 = c.otherBody;
 
 				//means this killed other body

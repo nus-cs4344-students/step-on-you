@@ -54,7 +54,7 @@ limitations under the License.
 
     var id = 10;
     var player = gameEngine.addPlayer(id);
-    player.setPosition(50,50);
+    player.setPosition(canvas.width/2 - 15,canvas.height-200);
 
     gameEngine.start();
 
@@ -62,21 +62,22 @@ limitations under the License.
     if(event.keyCode == 37) {
         //left
         //console.log(player1.m_body);
-        //console.log("left");
-       
+        console.log("left");
+       player.moveLeft();
 
     }
-    else if(event.keyCode == 39) {
+    if(event.keyCode == 39) {
         //right
-         //console.log("right");
-         gameEngine.step();
+         console.log("right");
+         //gameEngine.step();
+         player.moveRight();
        
        
     }
-    else if(event.keyCode == 32 || event.keyCode == 38) {
+    if(event.keyCode == 32 || event.keyCode == 38) {
 
-         //console.log("jump");
-       
+         console.log("jump");
+         player.jump();     
     }
     
     //console.log(event.keyCode);

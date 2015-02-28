@@ -4,7 +4,9 @@ function Player(pid) {
 	var playerID = pid;
 	var body = new Body();
 	//movement speed
-	var speed = 20;
+	var speed = 5;
+	var jump = 50;
+	var Scale = 1;
 
 	body.width = 30;
 	body.height = 30;
@@ -14,6 +16,8 @@ function Player(pid) {
 		body.renderY = y;
 		body.x = x;
 		body.y = y;
+		body.vecX = 0;
+		body.vecY = 0;
 		//console.log(pid);
 		//console.log( body.renderX + "," + body.renderY);
 		//console.log(body.width + ", " + body.height);
@@ -29,6 +33,23 @@ function Player(pid) {
 
 	this.getBody = function(){
 		return body;
+	}
+
+	this.moveLeft = function(){
+		this.faceLeft();
+		body.setVecX(body.getVecX() - speed);
+		
+	}
+
+	this.moveRight = function(){
+		this.faceRight();
+		body.setVecX (body.getVecX() + speed);
+		
+	}
+
+	this.jump = function(){
+		//if the player is "supported" by sth below
+		body.setJump(jump);
 	}
 
 }

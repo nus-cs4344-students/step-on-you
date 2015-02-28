@@ -81,7 +81,7 @@ function Body(w,h) {
 	this.setJump = function(j){
 		jump = j;
 		jumped = true;
-		console.log("setJumped");
+		//console.log("setJumped");
 	}
 
 	this.getJumped = function(){
@@ -169,7 +169,7 @@ function Body(w,h) {
 	}
 
 	this.setBlockedDown = function(){
-		return blockedDown;
+		blockedDown = true;
 	}
 
 	this.getBlockedLeft = function(){

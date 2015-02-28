@@ -13,7 +13,7 @@ function GameEngine(serverOrClient, canvasObj){
 
 	//i shouldn't need this
 	var playerSprites = [];
-	var FPS = 30;
+	var FPS = 60;
 	var timePerFrame = 1000/FPS;
 
 

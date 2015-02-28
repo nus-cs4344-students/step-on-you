@@ -9,7 +9,7 @@ function Physics() {
 
 	var physicObjects = [];
 	var staticObjects = [];
-	var Gravity = 10;
+	var Gravity = 5;
 	var Scaling = 1;
 
 	this.addPhysicalBody = function(body){
@@ -92,10 +92,12 @@ function Physics() {
 						//set body 1
 						collision1.cardinality[RIGHT] = true;
 						collision1.overlapX[RIGHT] = overlap;
+						body1.setBlockedRight();
 
 						//set body 2
 						collision2.cardinality[LEFT] = true;
 						collision2.overlapX[LEFT] = overlap;
+						body2.setBlockedLeft();
 						
 					}
 					//handle left scenario
@@ -105,10 +107,12 @@ function Physics() {
 						//set body 1
 						collision1.cardinality[LEFT] = true;
 						collision1.overlapX[LEFT] = overlap;
+						body1.setBlockedLeft();
 
 						//set body 2
 						collision2.cardinality[RIGHT] = true;
 						collision2.overlapX[RIGHT] = overlap;
+						body2.setBlockedRight();
 					}
 					//handle when body1.renderX == body2.renderX - this is when it's a top/bottom collision
 					else{
@@ -128,22 +132,28 @@ function Physics() {
 					//set body 1
 					collision1.cardinality[TOP] = true;
 					collision1.overlapY[TOP] = overlap;
+					body1.setBlockedUp();
 
 					//set body 2
 					collision2.cardinality[BOTTOM] = true;
 					collision2.overlapY[BOTTOM] = overlap;
+					body2.setBlockedDown();
 				}
 				//handle if bottom
 				else if(body1.renderY < body2.renderY){
+					//console.log("bottom");
 					overlap = body2.renderY - (body1.renderY + body1.height);
 					overlap = Math.abs(overlap);
 					//set body 1
 					collision1.cardinality[BOTTOM] = true;
 					collision1.overlapY[BOTTOM] = overlap;
+					body1.setBlockedDown();
+					//console.log("body1.setblockeddown");
 
 					//set body 2
 					collision2.cardinality[TOP] = true;
 					collision2.overlapY[TOP] = overlap;
+					body2.setBlockedUp();
 				}
 				//handle if body1.renderY == body2.renderY
 				else{
@@ -157,6 +167,8 @@ function Physics() {
 
 				body1.addCollision(body2.objectID, collision1);
 				body2.addCollision(body1.objectID, collision2);
+
+				//console.log("checkGroundCOntact : " + collision1.cardinality[BOTTOM]);
 
 			}
 
@@ -235,11 +247,11 @@ function Physics() {
 			
 
 			body.renderX += body.getVecX();
-
-			if(body.getJumped()){
-				console.log("handling jump");
+			//console.log(body.getBlockedDown());
+			if(body.getJumped() && body.getBlockedDown() == true){
+				//console.log("handling jump");
 				//console.log("ori y: " + body.renderY())
-				console.log(body.getJumpHeight());
+				//console.log(body.getJumpHeight());
 				body.renderY -= body.getJumpHeight();
 				body.resetJump();
 			}

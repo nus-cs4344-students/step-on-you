@@ -4,8 +4,8 @@ function Player(pid) {
 	var playerID = pid;
 	var body = new Body();
 	//movement speed
-	var speed = 5;
-	var jump = 50;
+	var speed = 20;
+	var jump = 300;
 	var Scale = 1;
 
 	body.width = 30;

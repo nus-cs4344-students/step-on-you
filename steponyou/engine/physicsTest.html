@@ -58,7 +58,59 @@ limitations under the License.
 
     gameEngine.start();
 
+    keyMap = [];
+
+    var handleKey = function(e){
+    e = e || event; // to deal with IE
+    keyMap[e.keyCode] = e.type == 'keydown';
+    /*insert conditional here*/
+    //40 - down arrow
+
+    if(keyMap[37] == true && (keyMap[32] == true || keyMap[38] == true)){
+        //console.log("left + jump");
+        player.moveLeft();
+        player.jump();
+    }
+
+    else if(keyMap[39] == true && (keyMap[32] == true || keyMap[38] == true)){
+        //console.log("right + jump");
+        player.moveRight();
+        player.jump();
+    }
+
+
+    else if(keyMap[37] == true) {
+        //left
+        //console.log(player1.m_body);
+        //console.log("left");
+       player.moveLeft();
+
+    }
+
+   else if(keyMap[39] == true) {
+        //right
+         //console.log("right");
+         //gameEngine.step();
+         player.moveRight();
+       
+    }
+    
+    else if(keyMap[32] == true || keyMap[38] == true) {
+
+         //console.log("jump");
+         player.jump();     
+    }
+
+
+    }
+
     document.addEventListener('keydown', function(event) {
+
+      //console.log(event.keyCode);
+      //console.log(event.type);
+      handleKey(event);
+
+      /*
     if(event.keyCode == 37) {
         //left
         //console.log(player1.m_body);
@@ -79,10 +131,19 @@ limitations under the License.
          console.log("jump");
          player.jump();     
     }
-    
-    //console.log(event.keyCode);
+    */
+   
 
     });
+
+    document.addEventListener('keyup', function(event) {
+
+      handleKey(event);
+   
+
+    });
+
+
 
     
     </script>

@@ -2,7 +2,7 @@
 function Body(w,h) {
 	
 	//misc information
-	var objectID = phyBdCount++;
+	var objectID = 0;
 
 	//all positions are based on top-left coordinates, with 0,0 being at top left as well.
 
@@ -79,8 +79,10 @@ function Body(w,h) {
 	}
 
 	this.setJump = function(j){
-		jump = j;
-		jumped = true;
+		if(blockedDown){
+			jump = j;
+			jumped = true;
+		}
 		//console.log("setJumped");
 	}
 

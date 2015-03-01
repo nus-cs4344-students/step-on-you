@@ -11,9 +11,12 @@ function Physics() {
 	var staticObjects = [];
 	var Gravity = 5;
 	var Scaling = 1;
+	var runningID = 0;
 
 	this.addPhysicalBody = function(body){
 		body.isStatic = false;
+		body.objectID = runningID;
+		runningID++;
 		physicObjects.push(body);
 		//console.log("mobile body added");
 		//console.log(body);
@@ -21,6 +24,8 @@ function Physics() {
 
 	this.addStaticBody = function(body){
 		body.isStatic = true;
+		body.objectID = runningID;
+		runningID++;
 		staticObjects.push(body);
 	}
 
@@ -39,7 +44,7 @@ function Physics() {
 		var collision1 = {	
 					collided : false,
 					otherBody : null,
-					cardinality : ["none","none","none","none"],
+					cardinality : [ false,false,false,false],
 					overlapX : [0,0,0,0],
 					overlapY : [0,0,0,0]
 				}
@@ -47,7 +52,7 @@ function Physics() {
 		var collision2 = {	
 					collided : false,
 					otherBody : null,
-					cardinality : ["none","none","none","none"],
+					cardinality : [ false,false,false,false],
 					overlapX : [0,0,0,0],
 					overlapY : [0,0,0,0]
 				}
@@ -75,9 +80,9 @@ function Physics() {
 
 				//check not "contain"
 				//i.e check b2 not in b1
-				if( !(body1.renderX < body2.renderX && body1.renderX + body1.width > body2.x + body2.width) &&
+				if( !(body1.renderX < body2.renderX && body1.renderX + body1.width > body2.renderX + body2.width) &&
 					//check b1 not in b2
-					!(body2.renderX < body1.renderX && body2.renderX + body2.width > body1.x + body1.width)
+					!(body2.renderX < body1.renderX && body2.renderX + body2.width > body1.renderX + body1.width)
 					){
 
 					//if right - body1.renderX < body2.renderX
@@ -87,8 +92,10 @@ function Physics() {
 					//handle right scenario first
 					//body1 on the left of body2
 					if(body1.renderX < body2.renderX){
+						//console.log("right");
 						overlap = body1.renderX + body1.width - body2.renderX;
 						overlap = Math.abs(overlap);
+						//console.log("overlap: " + overlap);
 						//set body 1
 						collision1.cardinality[RIGHT] = true;
 						collision1.overlapX[RIGHT] = overlap;
@@ -102,8 +109,10 @@ function Physics() {
 					}
 					//handle left scenario
 					else if(body1.renderX > body2.renderX){
+						//console.log("left");
 						overlap = body2.renderX + body2.width - body1.renderX;
 						overlap = Math.abs(overlap);
+						//console.log("overlap: " + overlap);
 						//set body 1
 						collision1.cardinality[LEFT] = true;
 						collision1.overlapX[LEFT] = overlap;
@@ -120,13 +129,28 @@ function Physics() {
 					}
 
 				}
+				else{
+					collision1.cardinality[LEFT] = false;
+					collision1.cardinality[RIGHT] = false;
+					collision2.cardinality[LEFT] = false;
+					collision2.cardinality[RIGHT] = false;
+				}
 
+
+				//ensure that 1 object does not contain the other 
+				//check that b2 not in b1
+				if( !(body1.renderY < body2.renderY && body1.renderY + body1.height > body2.renderY + body2.height) &&
+					//check b1 not in b2
+					!(body2.renderY < body1.renderY && body2.renderY + body2.height > body1.renderY + body1.height)
+					){
+				
 				//if top - body1.renderY < body2.renderY
 				//contact top - body1.renderY = (body2.renderY - body2.height)
 				//otherwise bottom
-
+				//console.log("not in");
 				//handle top scenario first
 				if(body1.renderY > body2.renderY){
+					//console.log("top");
 					overlap = body1.renderY - (body2.renderY + body2.height);
 					overlap = Math.abs(overlap);
 					//set body 1
@@ -158,7 +182,16 @@ function Physics() {
 				//handle if body1.renderY == body2.renderY
 				else{
 					//this is a left / right collision, handled above
+
 				}
+
+			}
+			else{
+				collision1.cardinality[BOTTOM] = false;
+				collision1.cardinality[TOP] = false;
+				collision2.cardinality[BOTTOM] = false;
+				collision2.cardinality[TOP] = false;
+			}
 
 				//console.log("collided");
 
@@ -245,14 +278,22 @@ function Physics() {
 
 			body.moved = false;
 			
+			if(body.getVecX() > 0 && !body.getBlockedRight()){
+				body.renderX += body.getVecX();
+			}
+			else if(body.getVecX() < 0 && !body.getBlockedLeft()){
+				body.renderX += body.getVecX();
+			}
 
-			body.renderX += body.getVecX();
+
 			//console.log(body.getBlockedDown());
 			if(body.getJumped() && body.getBlockedDown() == true){
 				//console.log("handling jump");
 				//console.log("ori y: " + body.renderY())
 				//console.log(body.getJumpHeight());
-				body.renderY -= body.getJumpHeight();
+				//ensure no obstacle overhead
+				if(body.getBlockedUp() == false)
+					body.renderY -= body.getJumpHeight();
 				body.resetJump();
 			}
 			else{
@@ -354,6 +395,7 @@ function Physics() {
 
 			for(var j = 0; j < body.bodyCollisionIndex ; j++){
 				var c = body.collisions[ body.collisionIDs[j] ];
+				//console.log(c);
 				var b2 = c.otherBody;
 
 				//handle bottom
@@ -364,18 +406,22 @@ function Physics() {
 				}
 				//handle top
 				else if(c.cardinality[TOP]){
-
+					var o = c.overlapY[TOP];
+					body.renderY = body.renderY + o;
 				}
 				
 				//handle right
 				else if(c.cardinality[RIGHT]){
+					//console.log("right collision");
 					var o = c.overlapX[RIGHT];
-					
+					body.renderX = body.renderX - o;
 				}
 
 				//handle left
 				else if(c.cardinality[LEFT]){
+					//console.log("left collision");
 					var o = c.overlapX[LEFT];
+					body.renderX = body.renderX + o;
 				}
 			}
 			

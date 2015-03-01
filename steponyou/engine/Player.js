@@ -5,7 +5,7 @@ function Player(pid) {
 	var body = new Body();
 	//movement speed
 	var speed = 20;
-	var jump = 300;
+	var jump = 200;
 	var Scale = 1;
 
 	body.width = 30;

@@ -30,12 +30,44 @@ function GameEngine(serverOrClient, canvasObj){
 		body.isStatic = true;
 		return body;
 	}
+
+	//create sides
+	var createLeft = function(){
+		var left = new Body();
+		left.height = canvas.height;
+		left.width = 20;
+		left.x = 0;
+		left.renderX = 0;
+		left.y = 0;
+		left.renderY = 0;
+		left.isStatic = true;
+
+		return left;
+	}
+
+	var createRight = function(){
+		var right = new Body();
+		right.height = canvas.height;
+		right.width = 20;
+		right.x = canvas.width - 20;
+		right.renderX = canvas.width-20;
+		right.y = 0;
+		right.renderY = 0;
+		right.isStatic = true;
+
+		return right;
+	}
+
 	//load / create map
 	//dummy function for now
 	var loadMap = function(){
 		
 		var ground = new createPlane();
+		var l = createLeft();
+		var r = createRight();
 		physics.addStaticBody(ground);
+		physics.addStaticBody(l);
+		physics.addStaticBody(r);
 	}
 
 	//generate spawnPosition

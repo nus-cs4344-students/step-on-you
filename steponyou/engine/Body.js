@@ -45,6 +45,8 @@ function Body(w,h) {
 	var jump = 0;
 	var jumped = false;
 
+	var isPlayer = false;
+
 	//collision data
 	/*
 	collided : whether there is a collision
@@ -210,6 +212,13 @@ function Body(w,h) {
 		renderY = y;
 	}
 
+	this.setIsPlayer = function(){
+		isPlayer = true;
+	}
+
+	this.isPlayer = function(){
+		return isPlayer;
+	}
 
 }
 

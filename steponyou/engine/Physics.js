@@ -151,6 +151,10 @@ function Physics() {
 				//handle top scenario first
 				if(body1.renderY > body2.renderY){
 					//console.log("top");
+					if(body1.isPlayer() && body2.isPlayer()){
+						console.log("player 2 killed player 1");
+					}
+
 					overlap = body1.renderY - (body2.renderY + body2.height);
 					overlap = Math.abs(overlap);
 					//set body 1
@@ -166,6 +170,11 @@ function Physics() {
 				//handle if bottom
 				else if(body1.renderY < body2.renderY){
 					//console.log("bottom");
+
+					if(body1.isPlayer() && body2.isPlayer()){
+						console.log("player 1 killed player 2");
+					}
+
 					overlap = body2.renderY - (body1.renderY + body1.height);
 					overlap = Math.abs(overlap);
 					//set body 1
@@ -453,7 +462,7 @@ function Physics() {
 							//< and > ok
 							if(!body.getBlockedLeft() && !b2.getBlockedRight()){
 								body.setRenderX( body.getRenderX() - 0.5 * o);
-								b2.setRenderX ( body2.getRenderX() + 0.5 * o);
+								b2.setRenderX ( b2.getRenderX() + 0.5 * o);
 							}
 							//< ok 
 							else if(!body.getBlockedLeft()  && b2.getBlockedRight()){
@@ -461,7 +470,7 @@ function Physics() {
 							}
 							//> ok
 							else if(body.getBlockedLeft()  && !b2.getBlockedRight()){
-								b2.setRenderX( body2.getRenderX() + o);
+								b2.setRenderX( b2.getRenderX() + o);
 							}
 								
 						}
@@ -478,11 +487,11 @@ function Physics() {
 							//< and > ok
 							if(!body.getBlockedRight() && !b2.getBlockedLeft()){
 								body.renderX = body.renderX + 0.5 * o;
-								b2.renderX = body2.renderX - 0.5 * o;
+								b2.renderX = b2.renderX - 0.5 * o;
 							}
 							//< ok 
 							else if(body.getBlockedRight()  && !b2.getBlockedLeft()){
-								b2.renderX = body2.renderX - o;
+								b2.renderX = b2.renderX - o;
 							}
 							//> ok
 							else if( !body.getBlockedRight()  && b2.getBlockedLeft()){

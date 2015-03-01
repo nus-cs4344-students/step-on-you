@@ -3,6 +3,7 @@ function Player(pid) {
 
 	var playerID = pid;
 	var body = new Body();
+	body.setIsPlayer();
 	//movement speed
 	var speed = 20;
 	var jump = 200;

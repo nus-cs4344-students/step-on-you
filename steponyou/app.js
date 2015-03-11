@@ -1,30 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
- * PongServer.js
- * A skeleton server for two-player Pong game.
- * Assignment 2 for CS4344, AY2013/14.
- * Modified from Davin Choo's AY2012/13 version.
- *
- * Changes from AY2012/13:
- *  - migrate from socket.io to sockjs
- *
- * Usage: 
- *   node PongServer.js
- */
-
 // enforce strict/clean programming
 "use strict"; 
 
@@ -34,16 +7,16 @@ var LIB_PATH = "./";
 // require(LIB_PATH + "Paddle.js");
 // require(LIB_PATH + "Player.js");
 
-function PongServer() {
+function SuperMarioServer() {
 	// Private Variables
 	var port;         // Game port 
 	var count;        // Keeps track how many people are connected to server 
 	var nextPID;      // PID to assign to next connected player (i.e. which player slot is open) 
 	var gameInterval; // Interval variable used for gameLoop 
-	var ball;         // the game ball 
+
 	var sockets;      // Associative array for sockets, indexed via player ID
 	var players;      // Associative array for players, indexed via socket ID
-	var p1, p2;       // Player 1 and 2.
+
 
 	/*
 	 * private method: broadcast(msg)
@@ -95,27 +68,24 @@ function PongServer() {
 	 * Create and init the new player.
 	 */
 	var newPlayer = function (conn) {
-		// count ++;
-		// // 1st player is always top, 2nd player is always bottom
-		// var watchPaddle = (nextPID === 1) ? "top" : "bottom";
-		// var startPos = (nextPID === 1) ? Paddle.HEIGHT : Pong.HEIGHT;
+		count ++;
+		// 1st player is always top, 2nd player is always bottom
+		// Send message to new player (the current client)
+		unicast(conn, {type: "message", content:"You are Player " + count});
 
-		// // Send message to new player (the current client)
-		// unicast(conn, {type: "message", content:"You are Player " + nextPID + ". Your paddle is at the " + watchPaddle});
+		// Create player object and insert into players with key = conn.id
+		players[conn.id] = new Player(conn.id, nextPID, startPos);
+		sockets[nextPID] = conn;
 
-		// // Create player object and insert into players with key = conn.id
-		// players[conn.id] = new Player(conn.id, nextPID, startPos);
-		// sockets[nextPID] = conn;
+		// Mark as player 1 or 2
+		if (nextPID == 1) {
+			p1 = players[conn.id];
+		} else if (nextPID == 2) {
+			p2 = players[conn.id];
+		}
 
-		// // Mark as player 1 or 2
-		// if (nextPID == 1) {
-		// 	p1 = players[conn.id];
-		// } else if (nextPID == 2) {
-		// 	p2 = players[conn.id];
-		// }
-
-		// // Updates the nextPID to issue (flip-flop between 1 and 2)
-		// nextPID = ((nextPID + 1) % 2 === 0) ? 2 : 1;
+		// Updates the nextPID to issue (flip-flop between 1 and 2)
+		nextPID = ((nextPID + 1) % 2 === 0) ? 2 : 1;
 	}
 
 	/*
@@ -217,20 +187,12 @@ function PongServer() {
 				// Sends to client
 				broadcast({type:"message", content:"There is now " + count + " players"});
 
-				if (count == 2) {
-					// Send back message that game is full
-					unicast(conn, {type:"message", content:"The game is full.  Come back later"});
-					// TODO: force a disconnect
-				} else {
-					// create a new player
-					newPlayer(conn);
-				}
+				// create a new player
+				newPlayer(conn);
+
 
 				// When the client closes the connection to the server/closes the window
 				conn.on('close', function () {
-					// Stop game if it's playing
-					reset();
-
 					// Decrease player counter
 					count--;
 
@@ -238,8 +200,6 @@ function PongServer() {
 					nextPID = players[conn.id].pid;
 
 					// Remove player who wants to quit/closed the window
-					if (players[conn.id] === p1) p1 = undefined;
-					if (players[conn.id] === p2) p2 = undefined;
 					delete players[conn.id];
 
 					// Sends to everyone connected to server except the client
@@ -251,15 +211,10 @@ function PongServer() {
 					var message = JSON.parse(data)
 
 					switch (message.type) {
-						// one of the player starts the game.
-						case "start": 
-							startGame();
-							break;
-
 						// one of the player moves the mouse.
 						case "move":
 							setTimeout(function() {
-								players[conn.id].paddle.move(message.x);
+								
 							},
 							players[conn.id].getDelay());
 							break;
@@ -267,7 +222,7 @@ function PongServer() {
 						// one of the player moves the mouse.
 						case "accelerate":
 							setTimeout(function() {
-								players[conn.id].paddle.accelerate(message.vx);
+								
 							},
 							players[conn.id].getDelay());
 							break;
@@ -276,6 +231,7 @@ function PongServer() {
 						case "delay":
 							players[conn.id].delay = message.delay;
 							break;
+
 						default:
 							console.log("Unhandled " + message.type);
 					}
@@ -359,7 +315,5 @@ function PongServer() {
 }
 
 // This will auto run after this script is loaded
-var gameServer = new PongServer();
+var gameServer = new SuperMarioServer();
 gameServer.start();
-
-// vim:ts=4:sw=4:expandtab

@@ -5,7 +5,7 @@ var LIB_PATH = "./";
 // require(LIB_PATH + "Pong.js");
 // require(LIB_PATH + "Ball.js");
 // require(LIB_PATH + "Paddle.js");
-// require(LIB_PATH + "Player.js");
+var Player = require('./models/Player.js');
 
 function SuperMarioServer() {
 	// Private Variables
@@ -14,8 +14,8 @@ function SuperMarioServer() {
 	var nextPID;      // PID to assign to next connected player (i.e. which player slot is open) 
 	var gameInterval; // Interval variable used for gameLoop 
 
-	var sockets;      // Associative array for sockets, indexed via player ID
-	var players;      // Associative array for players, indexed via socket ID
+	var sockets = [];      // Associative array for sockets, indexed via player ID
+	var players = [];      // Associative array for players, indexed via socket ID
 
 
 	/*
@@ -60,7 +60,6 @@ function SuperMarioServer() {
 		// }
 	}
 
-
 	/*
 	 * private method: newPlayer()
 	 *
@@ -74,18 +73,9 @@ function SuperMarioServer() {
 		unicast(conn, {type: "message", content:"You are Player " + count});
 
 		// Create player object and insert into players with key = conn.id
-		players[conn.id] = new Player(conn.id, nextPID, startPos);
-		sockets[nextPID] = conn;
-
-		// Mark as player 1 or 2
-		if (nextPID == 1) {
-			p1 = players[conn.id];
-		} else if (nextPID == 2) {
-			p2 = players[conn.id];
-		}
-
-		// Updates the nextPID to issue (flip-flop between 1 and 2)
-		nextPID = ((nextPID + 1) % 2 === 0) ? 2 : 1;
+		players[conn.id] = new Player("test", 0, 0, conn.id);
+		sockets[conn.id] = conn;
+		
 	}
 
 	/*
@@ -96,41 +86,19 @@ function SuperMarioServer() {
 	 * of the game
 	 */
 	var gameLoop = function () {
-		// Check if ball is moving
-		// if (ball.isMoving()) {
-
-		// 	// Move paddle (in case accelerometer is used and vx is non-zero).
-		// 	p1.paddle.moveOneStep();
-		// 	p2.paddle.moveOneStep();
-
-		// 	// Move ball
-		// 	ball.moveOneStep(p1.paddle, p2.paddle);
-
-		// 	// Update on player side
-		// 	var bx = ball.x;
-		// 	var by = ball.y;
-		// 	var states = { 
-		// 		type: "update",
-		// 		ballX: bx,
-		// 		ballY: by,
-		// 		myPaddleX: p1.paddle.x,
-		// 		myPaddleY: p1.paddle.y,
-		// 		opponentPaddleX: p2.paddle.x,
-		// 		opponentPaddleY: p2.paddle.y};
-		// 	setTimeout(unicast, p1.getDelay(), sockets[1], states);
-		// 	states = { 
-		// 		type: "update",
-		// 		ballX: bx,
-		// 		ballY: by,
-		// 		myPaddleX: p2.paddle.x,
-		// 		myPaddleY: p2.paddle.y,
-		// 		opponentPaddleX: p1.paddle.x,
-		// 		opponentPaddleY: p1.paddle.y};
-		// 	setTimeout(unicast, p2.getDelay(), sockets[2], states);
-		// } else {
-		// 	// Reset
-		// 	reset();
-		// }
+		// Update on player side
+		var bx = ball.x;
+		var by = ball.y;
+		var states = { 
+			type: "update",
+			ballX: bx,
+			ballY: by,
+			myPaddleX: p1.paddle.x,
+			myPaddleY: p1.paddle.y,
+			opponentPaddleX: p2.paddle.x,
+			opponentPaddleY: p2.paddle.y};
+		broadcast({"type":"update", "content":players});
+	
 	}
 
 	/*
@@ -142,21 +110,14 @@ function SuperMarioServer() {
 	 * the game loop.
 	 */
 	var startGame = function () {
-		// if (gameInterval !== undefined) {
-		// 	// There is already a timer running so the game has 
-		// 	// already started.
-		// 	console.log("Already playing!");
-
-		// } else if (Object.keys(players).length < 2) {
-		// 	// We need two players to play.
-		// 	console.log("Not enough players!");
-		// 	broadcast({type:"message", content:"Not enough player"});
-
-		// } else {
-		// 	// Everything is a OK
-		// 	ball.startMoving();
-		// 	gameInterval = setInterval(function() {gameLoop();}, 1000/Pong.FRAME_RATE);
-		// }
+		if (gameInterval !== undefined) {
+			// There is already a timer running so the game has 
+			// already started.
+			console.log("Already playing!");
+		} else {
+			// Everything is a OK
+			gameInterval = setInterval(function() {gameLoop();}, 1000/Pong.FRAME_RATE);
+		}
 	}
 
 	/*
@@ -174,7 +135,7 @@ function SuperMarioServer() {
 			var sock = sockjs.createServer();
 
 			// reinitialize 
-			// count = 0;
+			count = 0;
 			// nextPID = 1;
 			// gameInterval = undefined;
 			// ball = new Ball();
@@ -213,18 +174,13 @@ function SuperMarioServer() {
 					switch (message.type) {
 						// one of the player moves the mouse.
 						case "move":
-							setTimeout(function() {
-								
-							},
-							players[conn.id].getDelay());
+							var player = players[conn.id];
+							console.log(player);
 							break;
 							
 						// one of the player moves the mouse.
 						case "accelerate":
-							setTimeout(function() {
-								
-							},
-							players[conn.id].getDelay());
+
 							break;
 
 						// one of the player change the delay
@@ -255,7 +211,7 @@ function SuperMarioServer() {
 			// view engine setup
 			app.set('views', path.join(__dirname, 'views'));
 			// app.set('view engine', 'jade');
-
+			
 			// uncomment after placing your favicon in /public
 			//app.use(favicon(__dirname + '/public/favicon.ico'));
 			app.use(logger('dev'));
@@ -303,7 +259,7 @@ function SuperMarioServer() {
 			module.exports = app;
 
 			var httpServer = http.createServer(app);
-			sock.installHandlers(httpServer, {prefix:'/pong'});
+			sock.installHandlers(httpServer, {prefix:'/mario'});
 			httpServer.listen(3000, '0.0.0.0');
 			app.use(express.static(__dirname));
 

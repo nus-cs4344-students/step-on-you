@@ -1,10 +1,7 @@
-var Player = function(model, initialX, initialY, connID) {
+module.exports = function Player(model, initialX, initialY, connID){
 	this.model = model;
-	this.x = model.x; 
-	this.y = model.y;
+	this.x = initialX; 
+	this.y = initialY;
 	this.connectionID = connID;
-};
-Player.prototype = Object.create(Obj.prototype);
-Player.prototype.constructor = Player;
-Player.prototype.parent = Obj.prototype;
-
+	this.status = 0;//Alive
+}

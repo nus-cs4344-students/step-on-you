@@ -25,7 +25,7 @@ function ServiceHelper(lobbyManager){
 					roomList = message.rooms;
 					//lobby.updateRoomList(roomList);
 					chooseRoom = true;
-					console.log("test");
+					console.log(roomList);
 					break;
 				case "joinRoom":
 					switch(message.status){

@@ -15,13 +15,13 @@ function SuperMarioServer() {
 
 	var playerRoomNoMap = {};      // Mapping from player id -> his room number
 	var playerConnectionIDmap = {} // Mapping from connection id -> player id
-	var rooms = {};
+	this.rooms = {};
 	var NO_OF_ROOMS = 20;
 	for(var i=0; i<NO_OF_ROOMS; i++){
-		rooms[i] = new Room("X", i);//X should be new Game engine
+		this.rooms[i] = new Room("X", i);//X should be new Game engine
 	};
 	var players = {}; //Mapping from player id-> player
-
+	var that = this;
 	/*
 	 * private method: reset()
 	 *
@@ -49,9 +49,9 @@ function SuperMarioServer() {
 	}
 	//Return a playerID by using the supplied connection socket id
 	function findPlayerByConnectionID(connID){
-		for(var connectionID in this.playerConnectionIDmap){
+		for(var connectionID in that.playerConnectionIDmap){
 			if(connID == connectionID){
-				return this.playerConnectionIDmap[connID];
+				return that.playerConnectionIDmap[connID];
 			}
 		}
 		return null;
@@ -75,8 +75,8 @@ function SuperMarioServer() {
 			gameInterval = setInterval(function() {gameLoop();}, 1000/Pong.FRAME_RATE);
 		}
 	}
-	var getAvailability = function(){
-		result = {};
+	this.getAvailability = function(){
+		var result = {};
 		for(var i=0; i<NO_OF_ROOMS; i++){
 			result[i] = this.rooms[i].getCurrentNoOfPlayers();			
 		}
@@ -105,24 +105,24 @@ function SuperMarioServer() {
 
 				// When the client closes the connection to the server/closes the window
 				conn.on('close', function () {
-					var playerID = this.playerConnectionIDmap[conn.id];
-					var roomID = this.playerRoomNoMap[playerID];
-					if(this.rooms[roomID].getPlayer(playerID) != null){
-						this.rooms[roomID].getPlayer(playerID).status = 2;
+					var playerID = that.playerConnectionIDmap[conn.id];
+					var roomID = that.playerRoomNoMap[playerID];
+					if(that.rooms[roomID].getPlayer(playerID) != null){
+						that.rooms[roomID].getPlayer(playerID).status = 2;
 					}
 					// Wait for 15s then Remove player who wants to quit/closed the window
 					setTimeout(function(){
-						if(this.players[playerID].status == 2){
+						if(that.players[playerID].status == 2){
 							//This player has not been able to connect back after 15s => remove him
 							count--;
-							this.rooms[roomID].removePlayer(playerID);
-							delete this.playerConnectionIDmap[conn.ID];
-							delete this.playerRoomNoMap[playerID];
-							delete this.players[playerID];
+							that.rooms[roomID].removePlayer(playerID);
+							delete that.playerConnectionIDmap[conn.ID];
+							delete that.playerRoomNoMap[playerID];
+							delete that.players[playerID];
 						}else{
 							//This player has changed connection id since he reconnected
 							//Remove the old connection id;
-							delete this.playerConnectionIDmap[conn.ID];
+							delete that.playerConnectionIDmap[conn.ID];
 						}
 
 					},15000);
@@ -134,23 +134,23 @@ function SuperMarioServer() {
 					var message = JSON.parse(data)
 					//If connection id is not in the map and he send his existing player id, it's possible this 
 					//player just recover from a failed connection
-					
-					if(!(conn.id in this.playerConnectionIDmap)){
+					console.log(that.playerConnectionIDmap);
+					if(!(conn.id in playerConnectionIDmap)){
 						var playerID = data["player_id"];
 							if(playerID != null){
-							this.playerConnectionIDmap[connID] = playerID;
-							var rmNo = this.playerRoomNoMap[playerID];
-							this.rooms[rmNo].getPlayer[playerID].status = 0;
+							that.playerConnectionIDmap[connID] = playerID;
+							var rmNo = that.playerRoomNoMap[playerID];
+							that.rooms[rmNo].getPlayer[playerID].status = 0;
 						}
 					}
 					switch (message.type) {
 						case "join":						
 							var rmID = message.roomID;				
 							var playerID = message.playerID;
-							var player = this.players[playerID];
+							var player = that.players[playerID];
 							player.status = 0;
-							if(this.rooms[rmID].addPlayer(player)){
-								this.playerRoomNoMap[playerID] = rmID;
+							if(that.rooms[rmID].addPlayer(player)){
+								that.playerRoomNoMap[playerID] = rmID;
 								conn.write(JSON.stringify({type:"joinRoom", status:"pass"}))
 							}else{
 								conn.write(JSON.stringify({type:"joinRoom", status:"fail", message:"Room is full, cannot join room"+rmID}));
@@ -158,13 +158,15 @@ function SuperMarioServer() {
 							break;
 
 						case "number_of_players":
-							conn.write(JSON.stringify({type:"roomList", rooms:this.getAvailability()}));
+							
+							conn.write(JSON.stringify({type:"roomList", rooms:that.getAvailability()}));
+							console.log(message);
 							break;
 						case "new_player":
 							count++;
 							var player = new Player(count, conn.id, "angle", 0, 0);
-							this.playerConnectionIDmap[conn.id] = count;
-							this.players[count] = player; 
+							that.playerConnectionIDmap[conn.id] = count;
+							that.players[count] = player; 
 							conn.write(JSON.stringify({type:"new_player", status:"pass"}))
 							break;
 						case "move":

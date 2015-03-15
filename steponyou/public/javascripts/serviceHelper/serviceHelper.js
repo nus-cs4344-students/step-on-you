@@ -1,21 +1,23 @@
 var SERVER_NAME = "localhost";
 var SERVER_PORT = 3000;
 
-function ServiceHelper(){
+function ServiceHelper(lobbyManager){
 
 	var socket;
-	var roomList;
+	this.roomList;
 	var roomChosen = false;
 	var chooseRoom = false;
+	var lobby = lobbyManager;
 	
-	var initNetwork = function() {
+	this.initNetwork = function() {
         try {
-            socket = new SockJS("http://" + SERVER_NAME + ":" + PORT + "/pong");
+            socket = new SockJS("http://" + SERVER_NAME + ":" + SERVER_PORT + "/mario");
             socket.onmessage = function (e) {
                 var message = JSON.parse(e.data);
                 switch (message.type) {
                 case "roomList":
 					roomList = message.rooms;
+					lobby.updateRoomList(roomList);
 					chooseRoom = true;
 					break;
 				case "joinRoom":
@@ -23,10 +25,12 @@ function ServiceHelper(){
 					case "pass":
 						roomChosen = true;
 						chooseRoom = false;
+						lobby.setRoom(roomId);
 						break;
 					case "fail":
 						roomChosen = false;
 						chooseRoom = true;
+						lobby.setRoom(-1);
 						break;
 					default:
 						break;
@@ -37,7 +41,7 @@ function ServiceHelper(){
                 }
             }
         } catch (e) {
-            console.log("Failed to connect to " + "http://" + SERVER_NAME + ":" + PORT);
+            console.log("Failed to connect to " + "http://" + SERVER_NAME + ":" + SERVER_PORT);
         }
     }
 	
@@ -48,11 +52,11 @@ function ServiceHelper(){
 		socket.send(JSON.stringify(msg));
     }
 	
-	var requestRoomList = function(){
+	this.requestRoomList = function(){
 		sendToServer({type:"number_of_players"});
 	}
 	
-	var joinRoom = function(roomid){
+	this.joinRoom = function(roomid){
 		sendToServer({type:"join", roomID:roomid});
 	}
 	

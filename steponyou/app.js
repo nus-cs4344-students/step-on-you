@@ -44,7 +44,6 @@ function SuperMarioServer() {
 	 */
 	var gameLoop = function () {
 		// Update on player side
-		broadcast({"type":"update", "content":players});
 	}
 
 	/*
@@ -92,7 +91,6 @@ function SuperMarioServer() {
 			// Upon connection established from a client socket
 			sock.on('connection', function (conn) {
 				// Sends to client
-				broadcast({type:"message", content:"There is now " + count + " players"});
 
 				// When the client closes the connection to the server/closes the window
 				conn.on('close', function () {
@@ -104,7 +102,6 @@ function SuperMarioServer() {
 					delete this.players[conn.id];
 
 					// Sends to everyone connected to server except the client
-					broadcast({type:"message", content: " There is now " + count + " players."});
 				});
 
 				// When the client send something to the server.

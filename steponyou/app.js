@@ -158,16 +158,14 @@ function SuperMarioServer() {
 							break;
 
 						case "number_of_players":
-							
 							conn.write(JSON.stringify({type:"roomList", rooms:that.getAvailability()}));
-							console.log(message);
 							break;
 						case "new_player":
 							count++;
 							var player = new Player(count, conn.id, "angle", 0, 0);
 							that.playerConnectionIDmap[conn.id] = count;
 							that.players[count] = player; 
-							conn.write(JSON.stringify({type:"new_player", status:"pass"}))
+							conn.write(JSON.stringify({type:"new_player", status:"pass", id:count}));
 							break;
 						case "move":
 							

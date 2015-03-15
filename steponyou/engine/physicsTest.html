@@ -151,6 +151,36 @@ limitations under the License.
 
     });
 
+    var t = {
+        "packageType": "update",
+        "objects": [
+            {
+                "updateType": "update",
+                "id": 3,
+                "x": 200,
+                "y": 300,
+                "character": "devil",
+                "status": "moving",
+                "direction": "left"
+            },
+
+            {
+                "updateType": "remove",
+                "id": 2
+            },
+        ]
+
+    }
+
+    console.log(t.packageType);
+    console.log(t.objects);
+
+    var g = [];
+    g["packageType"] = "update";
+    g["objects"] = [t,t];
+
+    console.log(g.packageType);
+    console.log(g.objects);
 
 
     

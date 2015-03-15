@@ -1,5 +1,8 @@
 var assets = new AssetManager();
 var visualizer = new Visualizer();
+var lobbyManager = new LobbyManager();
+lobbyManager.getRooms();
+
 var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;

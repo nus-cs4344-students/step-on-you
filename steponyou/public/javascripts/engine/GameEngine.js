@@ -17,7 +17,7 @@ function GameEngine(serverOrClient){
 	var playerScores = [];
 
 	var FPS = 60;
-	var timePerFrame = 1000/FPS;
+	this.timePerFrame = 1000/FPS;
 
 		//to do : better input handling
 	//respawn point generation
@@ -36,13 +36,13 @@ function GameEngine(serverOrClient){
 	this.processInput = function(){
 
 		if(keyMap[37] == true && (keyMap[32] == true || keyMap[38] == true)){
-	        console.log("left + jump");
+	        //console.log("left + jump");
 	        player.moveLeft();
 	        player.jump();
 	    }
 
 	    else if(keyMap[39] == true && (keyMap[32] == true || keyMap[38] == true)){
-	        console.log("right + jump");
+	        //console.log("right + jump");
 	        player.moveRight();
 	        player.jump();
 	    }
@@ -51,14 +51,14 @@ function GameEngine(serverOrClient){
 	    else if(keyMap[37] == true) {
 	        //left
 	        //console.log(player1.m_body);
-	        console.log("left");
+	       // console.log("left");
 	       	player.moveLeft();
 
 	    }
 
 	   else if(keyMap[39] == true) {
 	        //right
-	         console.log("right");
+	         //console.log("right");
 	         //gameEngine.step();
 	         player.moveRight();
 	       
@@ -66,7 +66,7 @@ function GameEngine(serverOrClient){
 	    
 	    else if(keyMap[32] == true || keyMap[38] == true) {
 
-	         console.log("jump");
+	         //console.log("jump");
 	         player.jump();     
 	    }
 
@@ -77,7 +77,6 @@ function GameEngine(serverOrClient){
 		var body = new Body();
 		//body.width = canvas.width;
 		body.width = 800;
-
 		body.height = 20;
 		body.x = 0;
 		body.renderX = 0;

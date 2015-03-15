@@ -2,19 +2,20 @@ var MAX_NO_PLAYERS = 4;
 module.exports = function Room(gameEngine, rmID){
 	this.roomID = rmID;
 	this.engine = gameEngine;
-	this.players = {};
-	this.sockets = {};
+	this.players = {};//index via playerid
+	this.sockets = {};//index via playerid
 	
 	this.addPlayer = function(player,conn){
-		if(this.players == MAX_NO_PLAYERS){
+		if(this.getCurrentNoOfPlayers() == MAX_NO_PLAYERS){
 			return false;
 		}
-		this.players[conn.id] = player;
-		sockets[conn.id] = conn;
+		this.players[player.id] = player;
+		sockets[player.id] = conn;
 		return true;		
 	};
 	this.removePlayer = function(playerID){
 		delete this.players[playerID];
+		delete this.sockets[playerID];
 	};
 	this.getCurrentNoOfPlayers = function(){
 		return Object.keys(this.players).length;
@@ -25,6 +26,7 @@ module.exports = function Room(gameEngine, rmID){
 	this.getSockets = function(){
 		return this.sockets;
 	};
+	
 	this.getRoomID = function(){
 		return this.roomID;;
 	};

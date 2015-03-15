@@ -125,7 +125,7 @@ function SuperMarioServer() {
 							break;
 
 						case "number_of_players":
-							conn.write(JSON.stringify(type:"roomList", rooms:this.getAvailability()));
+							conn.write(JSON.stringify({type:"roomList", rooms:this.getAvailability()}));
 							break;
 						case "move":
 							var player = players[conn.id];

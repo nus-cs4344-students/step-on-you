@@ -118,16 +118,15 @@ function SuperMarioServer() {
 							var player = new Player("test", 0, 0, conn.id);
 							if(this.rooms[rmID].addPlayer(player)){
 								count++;
-								conn.write(JSON.stringify({"status":"OK"}))
+								conn.write(JSON.stringify({type:"joinRoom", status:"pass"}))
 							}else{
-								conn.write(JSON.stringify({"status":"fail", "message":"Room is full, cannot join room"+rmID}));
+								conn.write(JSON.stringify({type:"joinRoom", status:"fail", message:"Room is full, cannot join room"+rmID}));
 							}
 							break;
 
 						case "number_of_players":
-							conn.write(JSON.stringify(this.getAvailability()));
+							conn.write(JSON.stringify(type:"roomList", rooms:this.getAvailability()));
 							break;
-
 						case "move":
 							var player = players[conn.id];
 							console.log(player);

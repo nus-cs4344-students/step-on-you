@@ -46,7 +46,6 @@ function SuperMarioServer() {
 	 */
 	var gameLoop = function () {
 		// Update on player side
-		broadcast({"type":"update", "content":players});
 	}
 	//Return a playerID by using the supplied connection socket id
 	function findPlayerByConnectionID(connID){
@@ -103,11 +102,9 @@ function SuperMarioServer() {
 			// Upon connection established from a client socket
 			sock.on('connection', function (conn) {
 				// Sends to client
-				broadcast({type:"message", content:"There is now " + count + " players"});
 
 				// When the client closes the connection to the server/closes the window
 				conn.on('close', function () {
-					// Decrease player counter
 					var playerID = this.playerConnectionIDmap[conn.id];
 					var roomID = this.playerRoomNoMap[playerID];
 					if(this.rooms[roomID].getPlayer(playerID) != null){
@@ -130,7 +127,6 @@ function SuperMarioServer() {
 
 					},15000);
 					
-
 				});
 
 				// When the client send something to the server.

@@ -21,6 +21,10 @@ function Body(w,h) {
 	var vecX = 0;
 	var vecY = 0;
 
+	//acceleration
+	var accX = 0;
+	var accY = 0;
+
 	//sprite facing : left or right
 	var orientation = "left";
 	//sprite dimensions
@@ -62,6 +66,8 @@ function Body(w,h) {
 	var bodyCollisionIndex;// = numGroundCollisions - 1;
 	var corrected = false;
 
+	var dampDirection = "";
+
 	this.resetCollision = function() {
 		collisions = [];
 		groundCollisions = [];
@@ -80,12 +86,88 @@ function Body(w,h) {
 		*/
 	}
 
+	this.setAccX = function(v){
+		accX = v;
+	}
+
+	this.setAccY = function(v){
+		accY = v;
+	}
+
+	this.getAccX = function(){
+		return accX;
+	}
+
+	this.getAccY = function(){
+		return accY;
+	}
+
+	this.dampAccX = function(Damping){
+		accX = dampX(accX, Damping);
+	}
+
+
+	this.setDampDirection = function(dd){
+		dampDirection = dd;
+	}
+
+	var dampX = function(vec, Damping){
+
+		/*
+		var t = 0.8*vec; 
+		if( Math.abs(t) < 0.3){
+			t = 0;
+			vecX = 0;
+		}
+
+		return t;
+		*/
+
+
+		if(vecX == 0 ){
+			//console.log("vecX zero");
+			return 0;
+		}
+		if( vecX > 0 && vec > 0){
+			//console.log("b4: " + vec);
+			vec = vec - Damping;
+			//console.log("damp right");
+			//console.log(vecX);
+			/*
+			if(vec < 0){
+				vec = 0;
+			}
+			*/
+		}
+
+		else if(vecX < 0 && vec < 0){
+			vec = vec + Damping;
+			//console.log("Damp left");
+			/*
+			if(vec > 0){
+				vec = 0;
+			}
+			*/
+		}
+		//console.log("Damped: " + vec);
+		return vec;
+	}
+
 	this.setJump = function(j){
 		if(blockedDown){
 			jump = j;
+			accY = -j;
 			jumped = true;
 		}
 		//console.log("setJumped");
+	}
+
+	this.jumpAcc = function(j){
+		if(blockedDown){
+			jump = j;
+			accY = -j;
+			jumped = true;
+		}
 	}
 
 	this.getJumped = function(){

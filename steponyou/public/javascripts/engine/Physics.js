@@ -10,7 +10,12 @@ function Physics(gameEngine) {
 	var physicObjects = [];
 	var staticObjects = [];
 	var Gravity = 5;
+	var Damping = 2;
 	var Scaling = 1;
+	var MaxVecX = 20;
+	var MaxVecY = 20;
+
+
 	var runningID = 0;
 
 	this.addPhysicalBody = function(body){
@@ -275,6 +280,7 @@ function Physics(gameEngine) {
 
 	}
 
+
 	this.step = function(){
 		/*
 		for all moving objects, 
@@ -291,8 +297,56 @@ function Physics(gameEngine) {
 		for(var i = 0; i < physicObjects.length; i++){
 			body = physicObjects[i];
 
+			//rounding errors
+			if(Math.abs(body.getVecX()) < 0.2){
+				body.setVecX(0);
+			}
+
+			if(Math.abs(body.getVecY()) < 0.2){
+				body.setVecY(0);
+			}
+
 
 			body.moved = false;
+
+			//apply changes to velocity due to acceleration and gravity
+			//console.log("first: " + body.getAccX());
+			var newVecX = body.getVecX() + ( body.getAccX() ) * gameEngine.timePerFrame/1000;
+			var newVecY = body.getVecY() + (body.getAccY() ) * gameEngine.timePerFrame/1000;
+			
+			//limit max velocity
+			if(Math.abs(newVecX) > MaxVecX){
+				newVecX *= MaxVecX / Math.abs(newVecX);
+			}
+
+			if(Math.abs(newVecY) > MaxVecY){
+				newVecY *= MaxVecY / Math.abs(newVecY);
+			}
+
+			//console.log("newVecX: " + newVecX + ", newVecY: " + newVecY);
+			//console.log(body.getAccX());
+
+			body.setVecX( newVecX );
+			body.setVecY( newVecY );
+
+			//damp acceleration
+			body.dampAccX(Damping);
+			//body.dampAccY(Gravity);
+			//console.log("second: " + body.getAccX());
+			//apply gravity if not supported
+			//console.log(body.getBlockedDown());
+			if(!body.getBlockedDown()){
+				body.setAccY( body.getAccY() + Gravity );
+			}
+			else{
+				if(body.getAccY() > 0){
+					body.setAccY(0);
+					body.setVecY(0);
+				}
+			}
+
+
+
 			
 			if(body.getVecX() > 0 && !body.getBlockedRight()){
 				body.renderX += body.getVecX();
@@ -300,27 +354,44 @@ function Physics(gameEngine) {
 			else if(body.getVecX() < 0 && !body.getBlockedLeft()){
 				body.renderX += body.getVecX();
 			}
+			
+			//console.log(body.renderY);
 
+			body.renderY += body.getVecY();
 
+			//console.log(body.renderY);
+
+			//old jump (teleport)
 			//console.log(body.getBlockedDown());
+			//console.log(body.getAccY());
+			/*
 			if(body.getJumped() && body.getBlockedDown() == true){
 				//console.log("handling jump");
 				//console.log("ori y: " + body.renderY())
 				//console.log(body.getJumpHeight());
 				//ensure no obstacle overhead
+
+				
 				if(body.getBlockedUp() == false)
 					body.renderY -= body.getJumpHeight();
 				body.resetJump();
+				
+
+
 			}
 			else{
 				body.renderY += body.getVecY();
 			}
+			*/
 
 			body.moved = body.getVecX() != 0 || body.getVecY() != 0;
-			body.setVecX(0);
+			
+			//body.setVecX(0);
 
 			body.resetCollision();
 
+			
+			/*
 			//apply gravity
 			if(body.getVecY() < 0){
 				body.setVecY( body.getVecY() + Gravity);
@@ -328,6 +399,7 @@ function Physics(gameEngine) {
 			else{
 				body.setVecY(Gravity);
 			}
+			*/
 
 
 			//check contact with ground

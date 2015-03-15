@@ -19,33 +19,6 @@ function SuperMarioServer() {
 	for(var i=0; i<NO_OF_ROOMS; i++){
 		rooms[i] = new Room("X", i);//X should be new Game engine
 	};
-	/*
-	 * private method: broadcast(msg)
-	 *
-	 * broadcast takes in a JSON structure and send it to
-	 * all players in a room with roomID.
-	 *
-	 * e.g., broadcast({type: "abc", x: 30},1);
-	 */
-	var broadcast = function (msg, roomID) {
-		var id;
-		var sockets = this.rooms[roomID].getSockets();
-		for (socket in sockets) {
-			socket.write(JSON.stringify(msg));
-		}
-	}
-
-	/*
-	 * private method: unicast(socket, msg)
-	 *
-	 * unicast takes in a socket and a JSON structure 
-	 * and send the message through the given socket.
-	 *
-	 * e.g., unicast(socket, {type: "abc", x: 30});
-	 */
-	var unicast = function (socket, msg) {
-		socket.write(JSON.stringify(msg));
-	}
 
 	/*
 	 * private method: reset()
@@ -92,7 +65,13 @@ function SuperMarioServer() {
 			gameInterval = setInterval(function() {gameLoop();}, 1000/Pong.FRAME_RATE);
 		}
 	}
-
+	var getAvailability = function(){
+		result = {};
+		for(var i=0; i<NO_OF_ROOMS; i++){
+			result[i] = this.rooms[i].getCurrentNoOfPlayers();			
+		}
+		return result;
+	}
 	/*
 	 * priviledge method: start()
 	 *
@@ -143,6 +122,12 @@ function SuperMarioServer() {
 							}else{
 								conn.write(JSON.stringify({"status":"fail", "message":"Room is full, cannot join room"+rmID}));
 							}
+							break;
+
+						case "number_of_players":
+							conn.write(JSON.stringify(this.getAvailability()));
+							break;
+
 						case "move":
 							var player = players[conn.id];
 							console.log(player);
@@ -175,7 +160,6 @@ function SuperMarioServer() {
 
 			var routes = require('./routes/index');
 			var users = require('./routes/users');
-
 			var app = express();
 
 			// view engine setup

@@ -27,5 +27,14 @@ module.exports = function Room(gameEngine, rmID){
 	};
 	this.getRoomID = function(){
 		return this.roomID;;
+	};
+	this.broadcast = function(message){
+		for (socket in this.sockets) {
+			socket.write(JSON.stringify(msg));
+		}
+	};
+	this.unicast = function(message, playerID){
+		var socket = this.sockets[playerID];
+		socket.write(JSON.stringify(message));
 	}
 }

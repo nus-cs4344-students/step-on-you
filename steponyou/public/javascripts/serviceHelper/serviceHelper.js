@@ -12,13 +12,20 @@ function ServiceHelper(lobbyManager){
 	this.initNetwork = function() {
         try {
             socket = new SockJS("http://" + SERVER_NAME + ":" + SERVER_PORT + "/mario");
+			socket.onopen = function() {
+				console.log("connected");
+				var initialMsg = JSON.stringify({"type": "hello", "content": "hello world"});
+				socket.send(initialMsg);
+				console.log("initial msg sent");
+			};
             socket.onmessage = function (e) {
                 var message = JSON.parse(e.data);
                 switch (message.type) {
                 case "roomList":
 					roomList = message.rooms;
-					lobby.updateRoomList(roomList);
+					//lobby.updateRoomList(roomList);
 					chooseRoom = true;
+					console.log("test");
 					break;
 				case "joinRoom":
 					switch(message.status){

@@ -6,7 +6,7 @@ var LIB_PATH = "./";
 // require(LIB_PATH + "Ball.js");
 // require(LIB_PATH + "Paddle.js");
 var Player = require('./models/Player.js');
-
+var Room = require('./models/Room.js');
 function SuperMarioServer() {
 	// Private Variables
 	var port;         // Game port 
@@ -16,8 +16,11 @@ function SuperMarioServer() {
 
 	var sockets = [];      // Associative array for sockets, indexed via player ID
 	var players = [];      // Associative array for players, indexed via socket ID
-
-
+	var rooms = {};
+	var NO_OF_ROOMS = 20;
+	for(int i=0; i<NO_OF_ROOMS; i++){
+		rooms[i] = new Room("X", i);//X should be new Game engine
+	};
 	/*
 	 * private method: broadcast(msg)
 	 *
@@ -77,6 +80,10 @@ function SuperMarioServer() {
 		sockets[conn.id] = conn;
 		
 	}
+	var newPlayer =  function (conn, rmID) {
+		var player = new Player("test", 0, 0, conn.id);
+		this.rooms[rmID].addPlayer(player);
+	}
 
 	/*
 	 * private method: gameLoop()
@@ -87,18 +94,7 @@ function SuperMarioServer() {
 	 */
 	var gameLoop = function () {
 		// Update on player side
-		var bx = ball.x;
-		var by = ball.y;
-		var states = { 
-			type: "update",
-			ballX: bx,
-			ballY: by,
-			myPaddleX: p1.paddle.x,
-			myPaddleY: p1.paddle.y,
-			opponentPaddleX: p2.paddle.x,
-			opponentPaddleY: p2.paddle.y};
 		broadcast({"type":"update", "content":players});
-	
 	}
 
 	/*
@@ -136,11 +132,6 @@ function SuperMarioServer() {
 
 			// reinitialize 
 			count = 0;
-			// nextPID = 1;
-			// gameInterval = undefined;
-			// ball = new Ball();
-			// players = new Object;
-			// sockets = new Object;
 			
 			// Upon connection established from a client socket
 			sock.on('connection', function (conn) {

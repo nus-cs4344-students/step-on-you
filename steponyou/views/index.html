@@ -21,7 +21,7 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
 
-
+      <!-- MAIN VIEW -->
       <div class="container">
         <div class="header">
           <h3 class="text-muted">Step On You</h3>
@@ -30,34 +30,58 @@
 
         <!-- ROOM VIEW -->
         <div class="row" id='roomView'>
-          <div class='col-md-6'> 
+          <div class='col-sm-6'> 
             <div class='row'>
-              <div class='col-md-2'>
+              <div class='col-sm-4'>
                 <h4 id='roomStatus1'>0/4</h4>
               </div>
 
-              <div class='col-md-10'>
+              <div class='col-sm-8'>
                 <button type="button" class="btn btn-success" onclick='joinRoom(0)'>JOIN ROOM</button>  
               </div>
             </div>
           </div>
 
-          <div class='col-md-6'> 
+          <div class='col-sm-6'> 
             <div class='row'>
-              <div class='col-md-2'>
+              <div class='col-sm-4'>
                 <h4 id='roomStatus1'>0/4</h4>
               </div>
 
-              <div class='col-md-10'>
+              <div class='col-sm-8'>
                 <button type="button" class="btn btn-success" onclick='joinRoom(1)'>JOIN ROOM</button>  
               </div>
             </div>
           </div>
         </div>
 
+        <!-- CHAR VIEW -->
+        <div>
+          <div class='row'>
+            <div class='col-sm-3'>
+              <img class='displayed' src="gameImages/Character_Angel.png">
+              <h4>Angel</h4>
+            </div>
+
+            <div class='col-sm-3'>
+              <img class='displayed' src="gameImages/Character_Devil.png">
+              <h4>Devil</h4>
+            </div>
+
+            <div class='col-sm-3'>
+              <img class='displayed' src="gameImages/Character_Green.png">
+              <h4>Green Thing</h4>
+            </div>
+
+            <div class='col-sm-3'>
+              <img class='displayed' src="gameImages/Character_White.png">
+              <h4>White Thing</h4>
+            </div>
+          </div>
+        </div>
+
         <!-- GAME CANVAS -->
         <div id="gameCanvas">
-
         </div>
         
         <div class="footer">

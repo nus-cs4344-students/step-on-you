@@ -1,15 +1,34 @@
 function Visualizer () {
 	this.stage = new Kinetic.Stage({
-        container: 'gameCanvas',
-        width: Configurations.canvasWidth,
-        height: Configurations.canvasHeight
-      });
+		container: 'gameCanvas',
+		width: Configurations.canvasWidth,
+		height: Configurations.canvasHeight
+	});
 	
 	this.backgroundLayer = new Kinetic.Layer();
 	this.objectLayer = new Kinetic.Layer();
 	this.stage.add(this.backgroundLayer);
 	this.stage.add(this.objectLayer);
 	this.objects = {}; //index is ID of the object
+
+
+
+	// var canvas1 = this.backgroundLayer.getCanvas();
+	// context1 = canvas1.getContext('2d');
+	// var canvas2 = this.objectLayer.getCanvas();
+	// context1 = canvas2.getContext('2d');
+
+ //    // resize the canvas to fill browser window dynamically
+ //    window.addEventListener('resize', resizeCanvas, false);
+
+ //    function resizeCanvas() {
+ //    	canvas1.width = window.innerWidth;
+ //    	canvas1.height = window.innerHeight;
+ //    	canvas2.width = window.innerWidth;
+ //    	canvas2.height = window.innerHeight;
+ //    	that.init();
+ //    }
+ //    resizeCanvas();
 };
 
 Visualizer.prototype.init = function() {
@@ -52,11 +71,11 @@ Visualizer.prototype.removeObject = function(id) {
 	if (this.objects[id] == null) {
 		return;
 	}
-	//remove visual
-	var oldVisual = this.objects[id].presentation;
-	oldVisual.remove();
-	//remove model
-	delete this.objects[id];
+//remove visual
+var oldVisual = this.objects[id].presentation;
+oldVisual.remove();
+//remove model
+delete this.objects[id];
 };
 
 Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {

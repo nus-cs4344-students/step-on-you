@@ -9,8 +9,8 @@ function Player(pid) {
 	var jump = 200;
 	var Scale = 1;
 
-	body.width = 30;
-	body.height = 30;
+	body.width = 100;
+	body.height = 100;
 
 	this.setPosition = function(x,y){
 		body.renderX = x;

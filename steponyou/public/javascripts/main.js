@@ -6,11 +6,12 @@ lobbyManager.getRooms();
 var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
+var keyMap = [];
 
 assets.load(function() {
 		visualizer.init();
 
-		
+		setupControls();
 		
 		//game engine initialization
 		
@@ -23,13 +24,15 @@ assets.load(function() {
     	//add this player to room
     	thisPlayer.setPosition(800/2 - 15,600-200);
     	thisPlayer.faceLeft();
+
+        gameEngine.registerCurrentPlayer(playerID);
+
     	gameEngine.start();
 
     	updateVisualizer();
-    	
 
 
-		});
+	});
 
 var updateVisualizer = function(){
 
@@ -37,6 +40,31 @@ var updateVisualizer = function(){
 	visualizer.update(updatePack);
 
 	//prepare update
-	//setTimeout( function(){updateVisualizer()}, timePerFrame );
+	setTimeout( function(){updateVisualizer()}, timePerFrame );
 }
 
+var setupControls = function(){
+
+    document.addEventListener('keydown', function(event) {
+
+      handleKey(event);
+   
+    });
+
+    document.addEventListener('keyup', function(event) {
+
+      handleKey(event);
+
+    });
+}
+
+var handleKey = function(e){
+    e = e || event; // to deal with IE
+    keyMap[e.keyCode] = e.type == 'keydown';
+    /*insert conditional here*/
+    //40 - down arrow
+
+    gameEngine.registerKeys(keyMap);
+    gameEngine.processInput();
+
+}

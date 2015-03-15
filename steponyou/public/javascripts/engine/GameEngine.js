@@ -19,6 +19,59 @@ function GameEngine(serverOrClient){
 	var FPS = 60;
 	var timePerFrame = 1000/FPS;
 
+		//to do : better input handling
+	//respawn point generation
+
+	var keyMap = [];
+
+	this.registerKeys = function(keys){
+		keyMap = keys;
+	}
+
+	this.registerCurrentPlayer = function(playerID){
+		player = playerObjs[playerID];
+		console.log("playerID: " + playerID);
+	}
+
+	this.processInput = function(){
+
+		if(keyMap[37] == true && (keyMap[32] == true || keyMap[38] == true)){
+	        console.log("left + jump");
+	        player.moveLeft();
+	        player.jump();
+	    }
+
+	    else if(keyMap[39] == true && (keyMap[32] == true || keyMap[38] == true)){
+	        console.log("right + jump");
+	        player.moveRight();
+	        player.jump();
+	    }
+
+
+	    else if(keyMap[37] == true) {
+	        //left
+	        //console.log(player1.m_body);
+	        console.log("left");
+	       	player.moveLeft();
+
+	    }
+
+	   else if(keyMap[39] == true) {
+	        //right
+	         console.log("right");
+	         //gameEngine.step();
+	         player.moveRight();
+	       
+	    }
+	    
+	    else if(keyMap[32] == true || keyMap[38] == true) {
+
+	         console.log("jump");
+	         player.jump();     
+	    }
+
+	}
+
 	//create a flat ground to use as map
 	var createPlane = function(){
 		var body = new Body();
@@ -34,7 +87,6 @@ function GameEngine(serverOrClient){
 
 		body.renderY = 600 - 20;
 		body.y = body.renderY;
-
 
 		body.isStatic = true;
 		return body;
@@ -194,7 +246,7 @@ function GameEngine(serverOrClient){
 
 		}
 
-		console.log(update);
+		//console.log(update);
 
 		return update;
 

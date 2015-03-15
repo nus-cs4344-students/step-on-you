@@ -1,4 +1,4 @@
-function Player (model) {
+function visualPlayer (model) {
 	var image = this.getImage(model.character);
 	var scale = Configurations.characterHeight / image.height;
 	var visual = new Kinetic.Rect({
@@ -13,11 +13,11 @@ function Player (model) {
 	this.parent.constructor.call(this, model, visual);
 	this.character = model.character;
 }
-Player.prototype = Object.create(Obj.prototype);
-Player.prototype.constructor = Player;
-Player.prototype.parent = Obj.prototype;
+visualPlayer.prototype = Object.create(Obj.prototype);
+visualPlayer.prototype.constructor = visualPlayer;
+visualPlayer.prototype.parent = Obj.prototype;
 
-Player.prototype.getImage = function (imgName) {
+visualPlayer.prototype.getImage = function (imgName) {
 	if (imgName == "devil") {
 		return assets.character_devil;
 	} else if (imgName == "angel") {

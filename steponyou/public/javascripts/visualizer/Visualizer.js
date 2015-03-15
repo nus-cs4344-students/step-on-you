@@ -17,17 +17,15 @@ Visualizer.prototype.init = function() {
 };
 
 Visualizer.prototype.update = function (data) {
-	if (data.type != Configurations.KEYWORD_UPDATE) {
+	if (data.packageType != Configurations.KEYWORD_UPDATE) {
 		return;
 	}
 	var objects = data.objects;
 	for	(i = 0; i < objects.length; i++) {
 		var object = objects[i];
-		if (object.type == Configurations.KEYWORD_UPDATE) {
+		if (object.updateType == Configurations.KEYWORD_UPDATE) {
 			this.updateObject(object);
-		} if (object.type == Configurations.KEYWORD_CREATE) {
-			this.createObject(object);
-		} if (object.type == Configurations.KEYWORD_REMOVE) {
+		} if (object.updateType == Configurations.KEYWORD_REMOVE) {
 			this.removeObject(object.id);
 		}
 	}
@@ -36,7 +34,7 @@ Visualizer.prototype.update = function (data) {
 
 Visualizer.prototype.updateObject = function (data) {
 	var object = this.objects[data.id];
-	if (data.character != object.character) {
+	if (object == null || data.character != object.character) {
 		this.createObject(data);
 	} else {
 		object.updatePossition(data.x, data.y);
@@ -45,7 +43,7 @@ Visualizer.prototype.updateObject = function (data) {
 
 Visualizer.prototype.createObject = function (object) {
 	this.removeObject(object.id);
-	var player = new Player(object);
+	var player = new visualPlayer(object);
 	this.objectLayer.add(player.presentation);	
 	this.objects[object.id] = player;
 };

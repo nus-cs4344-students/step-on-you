@@ -1,36 +1,36 @@
 {
-	"type": "update",
+	"packageType": "update",
     "objects": [
 		{
-			"type": "create",
+			"updateType": "update",
 			"id": 1,
 			"x": 100,
 			"y": 400,
 			"character": "green"
 		},
 		{
-			"type": "create",
+			"updateType": "update",
 			"id": 5,
 			"x": 200,
 			"y": 400,
 			"character": "chicken"
 		},
 		{
-			"type": "create",
+			"updateType": "update",
 			"id": 3,
 			"x": 300,
 			"y": 400,
 			"character": "devil"
 		},
 		{
-			"type": "create",
+			"updateType": "update",
 			"id": 4,
 			"x": 400,
 			"y": 400,
 			"character": "angel"
 		},
 		{
-			"type": "create",
+			"updateType": "update",
 			"id": 2,
 			"x": 500,
 			"y": 400,

@@ -1,12 +1,12 @@
 {
-	"type": "update",
+	"packageType": "update",
     "objects": [
 		{
-			"type": "remove",
+			"updateType": "remove",
 			"id": 2
 		},
 		{
-			"type": "update",
+			"updateType": "update",
 			"id": 3,
 			"x": 200,
 			"y": 300,

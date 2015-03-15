@@ -19,10 +19,6 @@ function GameEngine(serverOrClient){
 	var FPS = 60;
 	var timePerFrame = 1000/FPS;
 
-	var test = function(){
-		console.log("test");
-	}
-
 	//create a flat ground to use as map
 	var createPlane = function(){
 		var body = new Body();
@@ -47,7 +43,8 @@ function GameEngine(serverOrClient){
 	//create sides
 	var createLeft = function(){
 		var left = new Body();
-		left.height = canvas.height;
+		//left.height = canvas.height;
+		left.height = 600;
 		left.width = 20;
 		left.x = 0;
 		left.renderX = 0;
@@ -60,10 +57,14 @@ function GameEngine(serverOrClient){
 
 	var createRight = function(){
 		var right = new Body();
-		right.height = canvas.height;
+		//right.height = canvas.height;
+		right.height = 600;
 		right.width = 20;
-		right.x = canvas.width - 20;
-		right.renderX = canvas.width-20;
+		//right.x = canvas.width - 20;
+		//right.renderX = canvas.width-20;
+		right.x = 800 - 20;
+		right.renderX = 800 - 20;
+		
 		right.y = 0;
 		right.renderY = 0;
 		right.isStatic = true;
@@ -157,42 +158,12 @@ function GameEngine(serverOrClient){
 
 	}
 
-		/*
-		for reference
+	
 
-		var update = {
-		    "packageType": "update",
-		    "objects": [
-		        {
-		            "updateType": "update",
-		            "id": 3,
-		            "x": 200,
-		            "y": 300,
-		            "character": "devil",
-		            "status": "moving",
-		            "direction": "left"
-		        },
-				//used for sprites removed from screen
-		        {
-		            "updateType": "remove",
-		            "id": 2
-		        },
-		    ]
-
-		}
-		*/
 
 	var generatePlayerUpdatePacket = function(obj){
 		var pPack = [];
-		/*
-		"updateType": "update",
-		            "id": 3,
-		            "x": 200,
-		            "y": 300,
-		            "character": "devil",
-		            "status": "moving",
-		            "direction": "left"
-		*/
+
 		pPack["updateType"] = "update";
 		pPack["id"] = bodyToPlayerID[obj.objectID];
 		pPack["x"] = obj.renderX;
@@ -203,18 +174,16 @@ function GameEngine(serverOrClient){
 
 		return pPack;
 
-
-
 	}
 
 
-	var generateUpdate = function(){
+	this.generateUpdate = function(){
 
 		var update = {
 		    "packageType": "update",
 		    "objects": []
 
-		}
+		};
 
 		var physicObjects = physics.getPhysicObjects();
 		for(var i = 0; i < physicObjects.length; i++){
@@ -224,6 +193,8 @@ function GameEngine(serverOrClient){
 			//console.log("x : " + obj.renderX + ", y : " + obj.renderY + ", w: " + obj.width + ", h: " + obj.height);
 
 		}
+
+		console.log(update);
 
 		return update;
 

@@ -3,6 +3,7 @@ var visualizer = new Visualizer();
 var lobbyManager = new LobbyManager();
 
 setTimeout(function() {lobbyManager.getRooms();console.log("get rooms");}, 1000);
+setTimeout(function() {lobbyManager.joinRoom(1);console.log("join room");}, 2000);
 
 var gameEngine = new GameEngine("client");
 var FPS = 60;

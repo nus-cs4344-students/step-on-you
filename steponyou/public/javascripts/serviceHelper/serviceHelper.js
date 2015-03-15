@@ -8,19 +8,24 @@ function ServiceHelper(lobbyManager){
 	var roomChosen = false;
 	var chooseRoom = false;
 	var lobby = lobbyManager;
+	var PID;
 	
 	this.initNetwork = function() {
         try {
             socket = new SockJS("http://" + SERVER_NAME + ":" + SERVER_PORT + "/mario");
 			socket.onopen = function() {
 				console.log("connected");
-				var initialMsg = JSON.stringify({"type": "hello", "content": "hello world"});
+				var initialMsg = JSON.stringify({"type": "new_player"});
 				socket.send(initialMsg);
-				console.log("initial msg sent");
+				console.log("new_player msg sent");
 			};
             socket.onmessage = function (e) {
                 var message = JSON.parse(e.data);
                 switch (message.type) {
+				case "new_player":
+					PID = message.ID;
+					console.log("receive pid: " + PID);
+					break;
                 case "roomList":
 					roomList = message.rooms;
 					//lobby.updateRoomList(roomList);
@@ -30,14 +35,16 @@ function ServiceHelper(lobbyManager){
 				case "joinRoom":
 					switch(message.status){
 					case "pass":
+						console.log(message);
 						roomChosen = true;
 						chooseRoom = false;
-						lobby.setRoom(roomId);
+						//lobby.setRoom(roomId);
 						break;
 					case "fail":
+						console.log(message);
 						roomChosen = false;
 						chooseRoom = true;
-						lobby.setRoom(-1);
+						//lobby.setRoom(-1);
 						break;
 					default:
 						break;
@@ -64,7 +71,7 @@ function ServiceHelper(lobbyManager){
 	}
 	
 	this.joinRoom = function(roomid){
-		sendToServer({type:"join", roomID:roomid});
+		sendToServer({type:"join", roomID:roomid, playerID:PID});
 	}
 	
 }

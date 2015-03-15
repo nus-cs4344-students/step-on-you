@@ -11,28 +11,27 @@ function SuperMarioServer() {
 	// Private Variables
 	var port;         // Game port 
 	var count;        // Keeps track how many people are connected to server 
-	var nextPID;      // PID to assign to next connected player (i.e. which player slot is open) 
 	var gameInterval; // Interval variable used for gameLoop 
 
-	var sockets = [];      // Associative array for sockets, indexed via player ID
-	var players = [];      // Associative array for players, indexed via socket ID
+	var players = {};      // Mapping from player id -> his room number
 	var rooms = {};
 	var NO_OF_ROOMS = 20;
-	for(int i=0; i<NO_OF_ROOMS; i++){
+	for(var i=0; i<NO_OF_ROOMS; i++){
 		rooms[i] = new Room("X", i);//X should be new Game engine
 	};
 	/*
 	 * private method: broadcast(msg)
 	 *
 	 * broadcast takes in a JSON structure and send it to
-	 * all players.
+	 * all players in a room with roomID.
 	 *
-	 * e.g., broadcast({type: "abc", x: 30});
+	 * e.g., broadcast({type: "abc", x: 30},1);
 	 */
-	var broadcast = function (msg) {
+	var broadcast = function (msg, roomID) {
 		var id;
-		for (id in sockets) {
-			sockets[id].write(JSON.stringify(msg));
+		var sockets = this.rooms[roomID].getSockets();
+		for (socket in sockets) {
+			socket.write(JSON.stringify(msg));
 		}
 	}
 
@@ -61,28 +60,6 @@ function SuperMarioServer() {
 		// 	clearInterval(gameInterval);
 		// 	gameInterval = undefined;
 		// }
-	}
-
-	/*
-	 * private method: newPlayer()
-	 *
-	 * Called when a new connection is detected.  
-	 * Create and init the new player.
-	 */
-	var newPlayer = function (conn) {
-		count ++;
-		// 1st player is always top, 2nd player is always bottom
-		// Send message to new player (the current client)
-		unicast(conn, {type: "message", content:"You are Player " + count});
-
-		// Create player object and insert into players with key = conn.id
-		players[conn.id] = new Player("test", 0, 0, conn.id);
-		sockets[conn.id] = conn;
-		
-	}
-	var newPlayer =  function (conn, rmID) {
-		var player = new Player("test", 0, 0, conn.id);
-		this.rooms[rmID].addPlayer(player);
 	}
 
 	/*
@@ -135,24 +112,17 @@ function SuperMarioServer() {
 			
 			// Upon connection established from a client socket
 			sock.on('connection', function (conn) {
-				console.log("connected");
 				// Sends to client
 				broadcast({type:"message", content:"There is now " + count + " players"});
-
-				// create a new player
-				newPlayer(conn);
-
 
 				// When the client closes the connection to the server/closes the window
 				conn.on('close', function () {
 					// Decrease player counter
 					count--;
-
-					// Set nextPID to quitting player's PID
-					nextPID = players[conn.id].pid;
-
+					var roomID = this.players[conn.id];
 					// Remove player who wants to quit/closed the window
-					delete players[conn.id];
+					this.rooms[roomID].removePlayer(conn.id);
+					delete this.players[conn.id];
 
 					// Sends to everyone connected to server except the client
 					broadcast({type:"message", content: " There is now " + count + " players."});
@@ -164,6 +134,15 @@ function SuperMarioServer() {
 
 					switch (message.type) {
 						// one of the player moves the mouse.
+						case "join":
+							var rmID = message.roomID;				
+							var player = new Player("test", 0, 0, conn.id);
+							if(this.rooms[rmID].addPlayer(player)){
+								count++;
+								conn.write(JSON.stringify({"status":"OK"}))
+							}else{
+								conn.write(JSON.stringify({"status":"fail", "message":"Room is full, cannot join room"+rmID}));
+							}
 						case "move":
 							var player = players[conn.id];
 							console.log(player);

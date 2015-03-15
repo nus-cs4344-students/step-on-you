@@ -78,7 +78,7 @@ function GameEngine(serverOrClient){
 		//body.width = canvas.width;
 		body.width = 800;
 
-		body.height = 50;
+		body.height = 20;
 		body.x = 0;
 		body.renderX = 0;
 		

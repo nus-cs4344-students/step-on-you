@@ -14,7 +14,7 @@ function visualPlayer (model) {
 	this.character = model.character;
 }
 visualPlayer.prototype = Object.create(Obj.prototype);
-visualPlayer.prototype.constructor = visualPlayer;
+visualPlayer.prototype.constructor = visualPlayer;s
 visualPlayer.prototype.parent = Obj.prototype;
 
 visualPlayer.prototype.getImage = function (imgName) {

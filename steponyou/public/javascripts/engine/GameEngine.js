@@ -19,6 +19,17 @@ function GameEngine(serverOrClient){
 	var FPS = 60;
 	this.timePerFrame = 1000/FPS;
 
+	var currentFrameNumber = 0;
+	//stores the physics engine, index is frame number
+	var stateRecords = [];
+	//how far back to keep states of, in seconds
+	var recordTime = 8;
+	var garbageCollectionInterval = 5000; // 5 seconds
+	//keep about 5 seconds?
+	//1 record per frame
+	var maxNumStateRecords =  recordTime * FPS;
+	var lastDeletionPoint = 0;
+
 		//to do : better input handling
 	//respawn point generation
 
@@ -28,8 +39,30 @@ function GameEngine(serverOrClient){
 		keyMap = keys;
 	}
 
+	var saveState = function(){
+		stateRecords[currentFrameNumber] = physics;
+	}
+
+	var rewindAndEmulate = function(){
+		
+	}
+
+	//function to clean-up states that are too old
+	var garbageCollection = function(){
+		var deletonStart = lastDeletionPoint;
+		var deletionEnd = currentFrameNumber - maxNumStateRecords;
+
+		for(var i = deletonStart; i < deletionEnd; i++){
+			delete stateRecords[i];
+		}
+
+		lastDeletionPoint = deletionEnd;
+		setTimeout( function(){(garbageCollection);}, garbageCollectionInterval);
+	}
+
+
 		//need function to simulate keys for other players
-	this.simulatePlayer = function(playerID, keysPressed){
+	this.simulatePlayer = function(playerID, keysPressed, frameNumber){
 
 		var thatPlayer = playerObjs[playerID];
 
@@ -215,10 +248,9 @@ function GameEngine(serverOrClient){
 	}
 
 	var gameLoop = function(){
-
+		currentFrameNumber++;
 		physics.step();
 		//debugRender();
-
 		setTimeout( function(){gameLoop()}, timePerFrame );
 
 	}

@@ -10,7 +10,7 @@ module.exports = function Room(gameEngine, rmID){
 			return false;
 		}
 		this.players[player.id] = player;
-		sockets[player.id] = conn;
+		this.sockets[player.id] = conn;
 		return true;		
 	};
 	this.removePlayer = function(playerID){

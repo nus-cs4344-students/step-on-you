@@ -28,6 +28,57 @@ function GameEngine(serverOrClient){
 		keyMap = keys;
 	}
 
+		//need function to simulate keys for other players
+	this.simulatePlayer = function(playerID, keysPressed){
+
+		var thatPlayer = playerObjs[playerID];
+
+
+		if(keysPressed[37] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        //console.log("left + jump");
+	        thatPlayer.moveLeft();
+	        thatPlayer.jump();
+	    }
+
+	    else if(keysPressed[39] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        //console.log("right + jump");
+	        thatPlayer.moveRight();
+	        thatPlayer.jump();
+	    }
+
+
+	    else if(keysPressed[37] == true) {
+	        //left
+	        //console.log(thatPlayer1.m_body);
+	        //console.log("left");
+	       	thatPlayer.moveLeft();
+
+	    }
+
+	   else if(keysPressed[39] == true) {
+	        //right
+	         //console.log("right");
+	         //gameEngine.step();
+	         thatPlayer.moveRight();
+	       
+	    }
+	    
+	    else if(keysPressed[32] == true || keysPressed[38] == true) {
+
+	         //console.log("jump");
+	         thatPlayer.jump();     
+	    }
+
+	    
+	   else if(keysPressed[39] == false && keysPressed[37] == false){
+	    	console.log("uhh");
+	    	console.log("left: " + keysPressed[37] + " right: " + keysPressed[39]);
+	    	thatPlayer.removeAccelerationX();
+	    }
+	    
+
+	}
+
 	this.registerCurrentPlayer = function(playerID){
 		player = playerObjs[playerID];
 		console.log("playerID: " + playerID);

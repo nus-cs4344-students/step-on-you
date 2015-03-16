@@ -9,6 +9,7 @@ var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
+var playerID = 0;
 
 assets.load(function() {
 		visualizer.init();
@@ -19,7 +20,7 @@ assets.load(function() {
 		
     	gameEngine.init(null);
     	//creation of player id
-    	var playerID = Math.floor(Math.random()*10);
+    	playerID = Math.floor(Math.random()*10);
     	
     	//add to engine
     	var thisPlayer = gameEngine.addPlayer(playerID);
@@ -67,6 +68,6 @@ var handleKey = function(e){
     //40 - down arrow
 
     gameEngine.registerKeys(keyMap);
-    gameEngine.processInput();
+    gameEngine.simulatePlayer(playerID,keyMap);
 
 }

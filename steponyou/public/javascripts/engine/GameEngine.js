@@ -71,8 +71,8 @@ function GameEngine(serverOrClient){
 
 	    
 	   else if(keysPressed[39] == false && keysPressed[37] == false){
-	    	console.log("uhh");
-	    	console.log("left: " + keysPressed[37] + " right: " + keysPressed[39]);
+	    	//console.log("uhh");
+	    	//console.log("left: " + keysPressed[37] + " right: " + keysPressed[39]);
 	    	thatPlayer.removeAccelerationX();
 	    }
 	    

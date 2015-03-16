@@ -48,6 +48,9 @@ var updateVisualizer = function(){
 
 var setupControls = function(){
 
+    keyMap[37] = false;
+    keyMap[39] = false;
+
     document.addEventListener('keydown', function(event) {
 
       handleKey(event);

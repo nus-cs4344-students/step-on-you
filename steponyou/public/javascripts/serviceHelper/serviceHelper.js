@@ -61,4 +61,8 @@ function ServiceHelper(lobbyManager){
 	this.joinRoom = function(roomId, playerId){
 		sendToServer({type:"join", roomID:roomId, playerID:playerId});
 	}
+
+	this.leaveRoom = function(playerId){
+		sendToServer({type:"leave", playerID:playerId});
+	}
 }

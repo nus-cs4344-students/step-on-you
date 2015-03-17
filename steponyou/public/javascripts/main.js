@@ -59,6 +59,6 @@ var handleKey = function(e){
     //40 - down arrow
 
     gameEngine.registerKeys(keyMap);
-    gameEngine.simulatePlayer(lobbyManager.getPID(),keyMap);
+    gameEngine.simulatePlayer(lobbyManager.playerId,keyMap);
 
 }

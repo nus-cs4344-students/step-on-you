@@ -15,11 +15,20 @@ function LobbyManager () {
 	}
 
 	this.joinRoom = function (roomId) {
-		if (isRoomReady && this.playerId > -1) {
+		if (isRoomReady && this.playerId > -1 && this.roomId == -1) {
 			pendingRoomId = roomId;
 			serviceHelper.joinRoom(roomId, this.playerId);
 		} else {
-			console.log("Rooms are not ready")
+			console.log("LOBBY: cannot join room")
+		}
+	}
+
+	this.leaveRoom = function () {
+		if (isRoomReady && this.playerId > -1 && this.roomId > -1) {
+			serviceHelper.leaveRoom(this.playerId);
+			pendingRoomId = -1;
+		} else {
+			console.log("LOBBY: cannot join room")
 		}
 	}
 
@@ -57,6 +66,13 @@ function LobbyManager () {
 			this.roomId = pendingRoomId;
 			pendingRoomId = -1;
 			callbackGameEngine(this.playerId);
+			var roomName = "buttonRoom" + this.roomId;
+			document.getElementById(roomName).textContent = "LEAVE ROOM";
+		} if (pendingRoomId = -1 && status == 'pass') {
+			console.log("LOBBY: Leave Room successfully");
+			this.roomId = pendingRoomId;
+			var roomName = "buttonRoom" + this.roomId;
+			document.getElementById(roomName).textContent = "JOIN ROOM";
 		}
 	}
 

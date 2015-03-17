@@ -2,7 +2,9 @@ function LobbyManager () {
 	that = this;
 	this.roomId = -1;
 	this.playerId = -1;
-
+LobbyManager.prototype.getPID = function () {
+	return this.serviceHelper.getPID();
+}
 	var rooms = {};
 	var isRoomReady = false;
 	var serviceHelper = new ServiceHelper();

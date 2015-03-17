@@ -5,22 +5,23 @@ var LIB_PATH = "./";
 // require(LIB_PATH + "Pong.js");
 // require(LIB_PATH + "Ball.js");
 // require(LIB_PATH + "Paddle.js");
-var Player = require('./models/Player.js');
+var ServerPlayer = require('./models/ServerPlayer.js');
 var Room = require('./models/Room.js');
 function SuperMarioServer() {
 	// Private Variables
 	var port;         // Game port 
-	var count;        // Keeps track how many people are connected to server 
-	var gameInterval; // Interval variable used for gameLoop 
+	this.count = 0;        // Keeps track how many people are connected to server 
+	this.gameInterval; // Interval variable used for gameLoop 
 
-	var playerRoomNoMap = {};      // Mapping from player id -> his room number
-	var playerConnectionIDmap = {} // Mapping from connection id -> player id
+	this.playerRoomNoMap = {};      // Mapping from player id -> his room number
+	this.playerConnectionIDmap = {} // Mapping from connection id -> player id
 	this.rooms = {};
 	var NO_OF_ROOMS = 20;
 	for(var i=0; i<NO_OF_ROOMS; i++){
-		this.rooms[i] = new Room("X", i);//X should be new Game engine
+		this.rooms[i] = new Room(i);//X should be new Game engine
+		this.rooms[i].generateUpdateState();
 	};
-	var players = {}; //Mapping from player id-> player
+	this.players = {}; //Mapping from player id-> player
 	var that = this;
 	/*
 	 * private method: reset()
@@ -97,7 +98,7 @@ function SuperMarioServer() {
 			var sock = sockjs.createServer();
 
 			// reinitialize 
-			count = 0;
+			this.count = 0;
 			
 			// Upon connection established from a client socket
 			sock.on('connection', function (conn) {
@@ -114,7 +115,7 @@ function SuperMarioServer() {
 					setTimeout(function(){
 						if(that.players[playerID].status == 2){
 							//This player has not been able to connect back after 15s => remove him
-							count--;
+							that.count--;
 							that.rooms[roomID].removePlayer(playerID);
 							delete that.playerConnectionIDmap[conn.ID];
 							delete that.playerRoomNoMap[playerID];
@@ -130,17 +131,22 @@ function SuperMarioServer() {
 				});
 
 				// When the client send something to the server.
-				conn.on('data', function (data) {
-					var message = JSON.parse(data)
+				conn.on('data', function (data) {					
+					var message = JSON.parse(data);
 					//If connection id is not in the map and he send his existing player id, it's possible this 
 					//player just recover from a failed connection
 					console.log(that.playerConnectionIDmap);
-					if(!(conn.id in playerConnectionIDmap)){
+					if(!(conn.id in that.playerConnectionIDmap)){
 						var playerID = data["player_id"];
-							if(playerID != null){
-							that.playerConnectionIDmap[connID] = playerID;
-							var rmNo = that.playerRoomNoMap[playerID];
-							that.rooms[rmNo].getPlayer[playerID].status = 0;
+							if(playerID !== undefined){
+
+								console.log(playerID);
+								console.log("Recover player!!!");
+								if(playerID != null){
+								that.playerConnectionIDmap[connID] = playerID;
+								var rmNo = that.playerRoomNoMap[playerID];
+								that.rooms[rmNo].getPlayer[playerID].status = 0;
+							}
 						}
 					}
 					switch (message.type) {
@@ -149,11 +155,13 @@ function SuperMarioServer() {
 							var playerID = message.playerID;
 							var player = that.players[playerID];
 							player.status = 0;
-							if(that.rooms[rmID].addPlayer(player)){
+
+							if(that.rooms[rmID].addPlayer(player,conn)){
 								that.playerRoomNoMap[playerID] = rmID;
 								conn.write(JSON.stringify({type:"joinRoom", status:"pass"}))
+
 							}else{
-								conn.write(JSON.stringify({type:"joinRoom", status:"fail", message:"Room is full, cannot join room"+rmID}));
+								conn.write(JSON.stringify({type:"joinRoom", status:"fail", message:"Room is full, cannot join room "+rmID}));
 							}
 							break;
 
@@ -161,17 +169,23 @@ function SuperMarioServer() {
 							conn.write(JSON.stringify({type:"roomList", rooms:that.getAvailability()}));
 							break;
 						case "new_player":
-							count++;
-							var player = new Player(count, conn.id, "angle", 0, 0);
-							that.playerConnectionIDmap[conn.id] = count;
-							that.players[count] = player; 
-							conn.write(JSON.stringify({type:"new_player", status:"pass", id:count}));
+							that.count++;
+							var player = new ServerPlayer(that.count, conn.id, "angle", 0, 0);
+							that.playerConnectionIDmap[conn.id] = that.count;
+							that.players[that.count] = player;
+							conn.write(JSON.stringify({type:"new_player", status:"pass", id:that.count}));
 							break;
 						case "move":
-							
+							var player_id = message.playerID;
+							var keypress = message.keyPress;
+
+							var rmNo = that.playerRoomNoMap[player_id];
+							console.log(that.playerRoomNoMap);
+							that.rooms[rmNo].updatePlayer(player_id, keypress);
 							break;
 							
 						default:
+
 							console.log("Unhandled " + message.type);
 					}
 				}); // conn.on("data"

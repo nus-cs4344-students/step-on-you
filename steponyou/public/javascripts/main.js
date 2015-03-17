@@ -10,7 +10,8 @@ var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
-
+var playerID = 1;
+document.gameEngine = gameEngine;
 assets.load(function() {
     visualizer.init();
 
@@ -39,14 +40,8 @@ assets.load(function() {
 
 var updateVisualizer = function(){
 
-	var updatePack = gameEngine.generateUpdate();
-	visualizer.update(updatePack);
-
-	//prepare update
-	setTimeout( function(){updateVisualizer()}, timePerFrame );
-}
-
-var setupControls = function(){
+    keyMap[37] = false;
+    keyMap[39] = false;
 
     document.addEventListener('keydown', function(event) {
 
@@ -68,6 +63,6 @@ var handleKey = function(e){
     //40 - down arrow
 
     gameEngine.registerKeys(keyMap);
-    gameEngine.processInput();
+    gameEngine.simulatePlayer(lobbyManager.getPID(),keyMap);
 
 }

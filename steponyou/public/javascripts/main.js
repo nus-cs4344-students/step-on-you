@@ -1,27 +1,20 @@
-//init network
-var lobbyManager = new LobbyManager();
-
 //init visualizer
 var assets = new AssetManager();
 var visualizer = new Visualizer();
+
+assets.load(function() {
+    visualizer.init();
+});
 
 //init game engin
 var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
-var playerID = 1;
 document.gameEngine = gameEngine;
-assets.load(function() {
-    visualizer.init();
 
-    setupControls();
-
-	//game engine initialization
-
+var setupGameEngin = function (playerID) {
     gameEngine.init(null);
-    //creation of player id
-    var playerID = Math.floor(Math.random()*10);
 
     //add to engine
     var thisPlayer = gameEngine.addPlayer(playerID);
@@ -34,9 +27,7 @@ assets.load(function() {
     gameEngine.start();
 
     updateVisualizer();
-
-
-});
+}
 
 var updateVisualizer = function(){
 
@@ -55,6 +46,11 @@ var updateVisualizer = function(){
 
   });
 }
+
+//init network
+var lobbyManager = new LobbyManager();
+lobbyManager.startConnection(setupGameEngin);
+
 
 var handleKey = function(e){
     e = e || event; // to deal with IE

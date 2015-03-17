@@ -19,6 +19,17 @@ function GameEngine(serverOrClient){
 	var FPS = 60;
 	this.timePerFrame = 1000/FPS;
 
+	var currentFrameNumber = 0;
+	//stores the physics engine, index is frame number
+	var stateRecords = [];
+	//how far back to keep states of, in seconds
+	var recordTime = 8;
+	var garbageCollectionInterval = 5000; // 5 seconds
+	//keep about 5 seconds?
+	//1 record per frame
+	var maxNumStateRecords =  recordTime * FPS;
+	var lastDeletionPoint = 0;
+
 		//to do : better input handling
 	//respawn point generation
 
@@ -26,6 +37,79 @@ function GameEngine(serverOrClient){
 
 	this.registerKeys = function(keys){
 		keyMap = keys;
+	}
+
+	var saveState = function(){
+		stateRecords[currentFrameNumber] = physics;
+	}
+
+	var rewindAndEmulate = function(){
+		
+	}
+
+	//function to clean-up states that are too old
+	var garbageCollection = function(){
+		var deletonStart = lastDeletionPoint;
+		var deletionEnd = currentFrameNumber - maxNumStateRecords;
+
+		for(var i = deletonStart; i < deletionEnd; i++){
+			delete stateRecords[i];
+		}
+
+		lastDeletionPoint = deletionEnd;
+		setTimeout( function(){(garbageCollection);}, garbageCollectionInterval);
+	}
+
+
+		//need function to simulate keys for other players
+	this.simulatePlayer = function(playerID, keysPressed, frameNumber){
+
+		var thatPlayer = playerObjs[playerID];
+
+
+		if(keysPressed[37] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        //console.log("left + jump");
+	        thatPlayer.moveLeft();
+	        thatPlayer.jump();
+	    }
+
+	    else if(keysPressed[39] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        //console.log("right + jump");
+	        thatPlayer.moveRight();
+	        thatPlayer.jump();
+	    }
+
+
+	    else if(keysPressed[37] == true) {
+	        //left
+	        //console.log(thatPlayer1.m_body);
+	        //console.log("left");
+	       	thatPlayer.moveLeft();
+
+	    }
+
+	   else if(keysPressed[39] == true) {
+	        //right
+	         //console.log("right");
+	         //gameEngine.step();
+	         thatPlayer.moveRight();
+	       
+	    }
+	    
+	    else if(keysPressed[32] == true || keysPressed[38] == true) {
+
+	         //console.log("jump");
+	         thatPlayer.jump();     
+	    }
+
+	    
+	   else if(keysPressed[39] == false && keysPressed[37] == false){
+	    	//console.log("uhh");
+	    	//console.log("left: " + keysPressed[37] + " right: " + keysPressed[39]);
+	    	thatPlayer.removeAccelerationX();
+	    }
+	    
+
 	}
 
 	this.registerCurrentPlayer = function(playerID){
@@ -164,10 +248,9 @@ function GameEngine(serverOrClient){
 	}
 
 	var gameLoop = function(){
-
+		currentFrameNumber++;
 		physics.step();
 		//debugRender();
-
 		setTimeout( function(){gameLoop()}, timePerFrame );
 
 	}

@@ -14,7 +14,7 @@ module.exports = function Room(rmID){
 		}
 		this.players[player.id] = player;
 		this.sockets[player.id] = conn;
-		
+
 		//Add new player to game engine
 		this.gameEngine.addPlayer(player.id);
 		return true;		
@@ -55,7 +55,7 @@ module.exports = function Room(rmID){
 		var updatePack = this.gameEngine.generateUpdate();
 		this.broadcast(updatePack);
 		//prepare update
-		setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
+		//setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
 	}
 
 

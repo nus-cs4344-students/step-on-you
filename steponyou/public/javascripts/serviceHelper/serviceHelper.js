@@ -9,7 +9,8 @@ function ServiceHelper(lobbyManager){
 	var chooseRoom = false;
 	var lobby = lobbyManager;
 	var PID;
-	
+	var that = this;
+
 	this.initNetwork = function() {
         try {
             socket = new SockJS("http://" + SERVER_NAME + ":" + SERVER_PORT + "/mario");
@@ -23,8 +24,21 @@ function ServiceHelper(lobbyManager){
                 var message = JSON.parse(e.data);
                 switch (message.type) {
 				case "new_player":
-					PID = message.ID;
+					PID = message.id;
 					console.log("receive pid: " + PID);
+					that.joinRoom(1);
+				 	var playerID = PID;
+    	
+    				//add to engine
+			    	var thisPlayer = gameEngine.addPlayer(playerID);
+			    	// //add this player to room
+			    	thisPlayer.setPosition(800/2 - 15,600-200);
+			    	thisPlayer.faceLeft();
+
+			        gameEngine.registerCurrentPlayer(playerID);
+	            	gameEngine.start();
+
+					updateVisualizer();
 					break;
                 case "roomList":
 					roomList = message.rooms;
@@ -68,10 +82,25 @@ function ServiceHelper(lobbyManager){
 	
 	this.requestRoomList = function(){
 		sendToServer({type:"number_of_players"});
+	};
+	var FPS = 60;
+	var timePerFrame = 1000/FPS;
+
+	var updateVisualizer = function(){
+
+		var updatePack = gameEngine.generateUpdate();
+		visualizer.update(updatePack);
+
+		//prepare update
+		setTimeout( function(){updateVisualizer()}, timePerFrame );
 	}
-	
+
 	this.joinRoom = function(roomid){
+		console.log(PID);
 		sendToServer({type:"join", roomID:roomid, playerID:PID});
 	}
-	
+
+	this.getPID = function(){
+		return PID;
+	}
 }

@@ -3,14 +3,14 @@ var visualizer = new Visualizer();
 var lobbyManager = new LobbyManager();
 
 setTimeout(function() {lobbyManager.getRooms();console.log("get rooms");}, 1000);
-setTimeout(function() {lobbyManager.joinRoom(1);console.log("join room");}, 2000);
+// setTimeout(function() {lobbyManager.joinRoom(1);console.log("join room");}, 2000);
 
 var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
-var playerID = 0;
-
+var playerID = 1;
+document.gameEngine = gameEngine;
 assets.load(function() {
 		visualizer.init();
 
@@ -20,31 +20,21 @@ assets.load(function() {
 		
     	gameEngine.init(null);
     	//creation of player id
-    	playerID = Math.floor(Math.random()*10);
+    	// playerID = Math.floor(Math.random()*10);
     	
-    	//add to engine
-    	var thisPlayer = gameEngine.addPlayer(playerID);
-    	//add this player to room
-    	thisPlayer.setPosition(800/2 - 15,600-200);
-    	thisPlayer.faceLeft();
+    	// //add to engine
+    	// var thisPlayer = gameEngine.addPlayer(playerID);
+    	// //add this player to room
+    	// thisPlayer.setPosition(800/2 - 15,600-200);
+    	// thisPlayer.faceLeft();
 
-        gameEngine.registerCurrentPlayer(playerID);
+     //    gameEngine.registerCurrentPlayer(playerID);
 
-    	gameEngine.start();
 
-    	updateVisualizer();
+    	// updateVisualizer();
 
 
 	});
-
-var updateVisualizer = function(){
-
-	var updatePack = gameEngine.generateUpdate();
-	visualizer.update(updatePack);
-
-	//prepare update
-	setTimeout( function(){updateVisualizer()}, timePerFrame );
-}
 
 var setupControls = function(){
 
@@ -71,6 +61,6 @@ var handleKey = function(e){
     //40 - down arrow
 
     gameEngine.registerKeys(keyMap);
-    gameEngine.simulatePlayer(playerID,keyMap);
+    gameEngine.simulatePlayer(lobbyManager.getPID(),keyMap);
 
 }

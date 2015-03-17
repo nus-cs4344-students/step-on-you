@@ -4,15 +4,17 @@ function LobbyManager () {
 	this.numberOfRoom = -1;
 	this.rooms = {};
 	this.serviceHelper = new ServiceHelper();
-	//this.serviceHelper.initNetwork();
+	this.serviceHelper.initNetwork();
 }
-
+LobbyManager.prototype.getPID = function () {
+	return this.serviceHelper.getPID();
+}
 LobbyManager.prototype.getRooms = function () {
-	//this.rooms = this.serviceHelper.requestRoomList();
+	this.rooms = this.serviceHelper.requestRoomList();
 }
 
 LobbyManager.prototype.joinRoom = function (roomId) {
-	//this.serviceHelper.joinRoom(roomId);
+	this.serviceHelper.joinRoom(roomId);
 }
 
 LobbyManager.prototype.setRoom = function(roomId) {

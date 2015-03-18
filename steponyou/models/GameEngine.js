@@ -233,7 +233,7 @@ module.exports = function GameEngine(serverOrClient){
 	this.generateUpdate = function(){
 
 		var update = {
-		    "packageType": "update",
+		    "type": "update",
 		    "objects": []
 
 		};

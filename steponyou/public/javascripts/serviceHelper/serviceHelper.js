@@ -64,8 +64,11 @@ function ServiceHelper(lobbyManager){
 						break;
 					}
 					break;
+				case "update":
+					console.log(message);
+					break;	
                 default: 
-                    appendMessage("serverMsg", "unhandled message type " + message.type);
+                    console.log("serverMsg", "unhandled message type " + message.type);
                 }
             }
         } catch (e) {

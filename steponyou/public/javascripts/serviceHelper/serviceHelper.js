@@ -32,14 +32,18 @@ function ServiceHelper(lobbyManager){
 					callback("joinRoom", message);
 					break;
 
-					default: 
-					appendMessage("serverMsg", "unhandled message type " + message.type);
-				}
-			}
-		} catch (e) {
-			console.log("NETWORK: Failed to connect to " + "http://" + SERVER_NAME + ":" + SERVER_PORT);
-		}
-	}
+				case "update":
+					console.log(message);
+					break;	
+                default: 
+                    console.log("serverMsg", "unhandled message type " + message.type);
+                }
+            }
+        } catch (e) {
+            console.log("Failed to connect to " + "http://" + SERVER_NAME + ":" + SERVER_PORT);
+        }
+    }
+
 	
 	var sendToServer = function (msg) {
 		var date = new Date();

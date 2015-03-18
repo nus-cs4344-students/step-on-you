@@ -68,7 +68,7 @@ function LobbyManager () {
 			callbackGameEngine(this.playerId);
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "LEAVE ROOM";
-		} if (pendingRoomId = -1 && status == 'pass') {
+		} else if (pendingRoomId = -1 && status == 'pass') {
 			console.log("LOBBY: Leave Room successfully");
 			this.roomId = pendingRoomId;
 			var roomName = "buttonRoom" + this.roomId;

@@ -1,39 +1,93 @@
 function LobbyManager () {
+	that = this;
 	this.roomId = -1;
 	this.playerId = -1;
-	this.numberOfRoom = -1;
-	this.rooms = {};
-	this.serviceHelper = new ServiceHelper();
-	this.serviceHelper.initNetwork();
-}
-LobbyManager.prototype.getPID = function () {
-	return this.serviceHelper.getPID();
-}
-LobbyManager.prototype.getRooms = function () {
-	this.rooms = this.serviceHelper.requestRoomList();
-}
 
-LobbyManager.prototype.joinRoom = function (roomId) {
-	this.serviceHelper.joinRoom(roomId);
-}
-
-LobbyManager.prototype.setRoom = function(roomId) {
-	this.roomId = roomId;
-	//update UI
-	if (roomId > -1) {
-
+	var rooms = {};
+	var pendingRoomId = -1;
+	var isRoomReady = false;
+	var serviceHelper = new ServiceHelper();
+	var callbackGameEngine;
+	
+	//public methods
+	this.getRooms = function () {
+		serviceHelper.requestRoomList();
 	}
-}
 
-LobbyManager.prototype.updateRoomList = function(rooms) {
-	this.rooms = rooms;
-	//update UI
-	if (rooms != null) {
-		document.getElementById("roomStatus1").textContent=rooms[0] + "/4";
-		document.getElementById("roomStatus2").textContent=rooms[1] + "/4";
+	this.joinRoom = function (roomId) {
+		if (isRoomReady && this.playerId > -1 && this.roomId == -1) {
+			pendingRoomId = roomId;
+			serviceHelper.joinRoom(roomId, this.playerId);
+		} else {
+			console.log("LOBBY: cannot join room")
+		}
 	}
-}
 
-var joinRoom = function(roomId) {
-	lobbyManager.joinRoom(roomId);
+	this.leaveRoom = function () {
+		if (isRoomReady && this.playerId > -1 && this.roomId > -1) {
+			serviceHelper.leaveRoom(this.playerId);
+			pendingRoomId = -1;
+		} else {
+			console.log("LOBBY: cannot join room")
+		}
+	}
+
+	//private helper methods
+	this.onNetworkEvent = function(eventType, data) {
+		if (eventType == 'connection_ready') {
+			console.log("LOBBY: connection ready");
+			//querry room status every 0.1 sec
+			setInterval(function () {that.getRooms()}, 100);
+			this.getPlayerId();
+		} else if (eventType == 'roomList') {
+			console.log("LOBBY: on room list received");
+			this.updateRooms(data);
+			isRoomReady = true;
+		} else if (eventType == 'joinRoom') {
+			console.log("LOBBY: on join room result");
+			this.setRoom(data.status);
+		} else if (eventType == 'new_player') {
+			console.log("LOBBY: on player id assigned");
+			this.setPlayerId(data.id);
+		}
+	}
+
+	this.updateRooms = function(rooms) {
+		this.rooms = rooms;
+		if (rooms != null) {
+			document.getElementById("roomStatus1").textContent=rooms[0] + "/4";
+			document.getElementById("roomStatus2").textContent=rooms[1] + "/4";
+		}
+	}
+
+	this.setRoom = function(status) {
+		if (pendingRoomId > -1 && status == 'pass') {
+			console.log("LOBBY: Join room successfully " + pendingRoomId);
+			this.roomId = pendingRoomId;
+			pendingRoomId = -1;
+			callbackGameEngine(this.playerId);
+			var roomName = "buttonRoom" + this.roomId;
+			document.getElementById(roomName).textContent = "LEAVE ROOM";
+		} if (pendingRoomId = -1 && status == 'pass') {
+			console.log("LOBBY: Leave Room successfully");
+			this.roomId = pendingRoomId;
+			var roomName = "buttonRoom" + this.roomId;
+			document.getElementById(roomName).textContent = "JOIN ROOM";
+		}
+	}
+
+	this.getPlayerId = function() {
+		serviceHelper.requestId(this.playerId);
+	}
+
+	this.setPlayerId = function (id) {
+		this.playerId = id;
+	}
+
+	this.startConnection = function(callback) {
+		callbackGameEngine = callback;
+		serviceHelper.initNetwork(function(eventType, data) {
+			that.onNetworkEvent(eventType, data);
+		});
+	}
 }

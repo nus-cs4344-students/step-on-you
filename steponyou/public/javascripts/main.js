@@ -1,42 +1,35 @@
+//init visualizer
 var assets = new AssetManager();
 var visualizer = new Visualizer();
-var lobbyManager = new LobbyManager();
 
-setTimeout(function() {lobbyManager.getRooms();console.log("get rooms");}, 1000);
-// setTimeout(function() {lobbyManager.joinRoom(1);console.log("join room");}, 2000);
+assets.load(function() {
+    visualizer.init();
+});
 
+//init game engin
 var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
-var playerID = 1;
 document.gameEngine = gameEngine;
-assets.load(function() {
-		visualizer.init();
 
-		setupControls();
-		
-		//game engine initialization
-		
-    	gameEngine.init(null);
-    	//creation of player id
-    	// playerID = Math.floor(Math.random()*10);
-    	
-    	// //add to engine
-    	// var thisPlayer = gameEngine.addPlayer(playerID);
-    	// //add this player to room
-    	// thisPlayer.setPosition(800/2 - 15,600-200);
-    	// thisPlayer.faceLeft();
+var setupGameEngin = function (playerID) {
+    gameEngine.init(null);
 
-     //    gameEngine.registerCurrentPlayer(playerID);
+    //add to engine
+    var thisPlayer = gameEngine.addPlayer(playerID);
+    //add this player to room
+    thisPlayer.setPosition(800/2 - 15,600-200);
+    thisPlayer.faceLeft();
 
+    gameEngine.registerCurrentPlayer(playerID);
 
-    	// updateVisualizer();
+    gameEngine.start();
 
+    updateVisualizer();
+}
 
-	});
-
-var setupControls = function(){
+var updateVisualizer = function(){
 
     keyMap[37] = false;
     keyMap[39] = false;
@@ -44,15 +37,20 @@ var setupControls = function(){
     document.addEventListener('keydown', function(event) {
 
       handleKey(event);
-   
-    });
+
+  });
 
     document.addEventListener('keyup', function(event) {
 
       handleKey(event);
 
-    });
+  });
 }
+
+//init network
+var lobbyManager = new LobbyManager();
+lobbyManager.startConnection(setupGameEngin);
+
 
 var handleKey = function(e){
     e = e || event; // to deal with IE
@@ -61,6 +59,6 @@ var handleKey = function(e){
     //40 - down arrow
 
     gameEngine.registerKeys(keyMap);
-    gameEngine.simulatePlayer(lobbyManager.getPID(),keyMap);
+    gameEngine.simulatePlayer(lobbyManager.playerId,keyMap);
 
 }

@@ -70,9 +70,10 @@ function LobbyManager () {
 			document.getElementById(roomName).textContent = "LEAVE ROOM";
 		} else if (pendingRoomId = -1 && status == 'pass') {
 			console.log("LOBBY: Leave Room successfully");
-			this.roomId = pendingRoomId;
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "JOIN ROOM";
+			this.roomId = -1;
+			
 		}
 	}
 

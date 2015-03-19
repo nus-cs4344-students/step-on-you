@@ -12,6 +12,20 @@ var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
 document.gameEngine = gameEngine;
+keyMap[37] = false;
+keyMap[39] = false;
+
+document.addEventListener('keydown', function(event) {
+
+  handleKey(event);
+
+});
+
+document.addEventListener('keyup', function(event) {
+
+  handleKey(event);
+
+});
 
 var setupGameEngin = function (playerID) {
     gameEngine.init(null);
@@ -28,23 +42,14 @@ var setupGameEngin = function (playerID) {
 
     updateVisualizer();
 }
-
+   
 var updateVisualizer = function(){
 
-    keyMap[37] = false;
-    keyMap[39] = false;
+    var updatePack = gameEngine.generateUpdate();
+    visualizer.update(updatePack);
 
-    document.addEventListener('keydown', function(event) {
-
-      handleKey(event);
-
-  });
-
-    document.addEventListener('keyup', function(event) {
-
-      handleKey(event);
-
-  });
+    //prepare update
+    setTimeout( function(){updateVisualizer()}, timePerFrame );
 }
 
 //init network

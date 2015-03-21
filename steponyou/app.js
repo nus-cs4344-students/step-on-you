@@ -205,14 +205,12 @@ function SuperMarioServer() {
 
 							that.rooms[roomID].removePlayer(player_id);
 							delete that.playerConnectionIDmap[conn.id];
-							delete that.playerRoomNoMap[playerID];
-							delete that.players[playerID];
+							delete that.playerRoomNoMap[player_id];
+							delete that.players[player_id];
 							conn.write(JSON.stringify({type:"leave", status:"pass"}));
 							break;
 
 						default:
-
-
 							console.log("Unhandled " + message.type);
 					}
 				}); // conn.on("data"

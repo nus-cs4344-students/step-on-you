@@ -106,27 +106,39 @@ function SuperMarioServer() {
 
 				// When the client closes the connection to the server/closes the window
 				conn.on('close', function () {
-					var playerID = that.playerConnectionIDmap[conn.id];
+					var playerID = that.playerConnectionIDmap[conn.id];					
 					var roomID = that.playerRoomNoMap[playerID];
-					if(that.rooms[roomID].getPlayer(playerID) != null){
-						that.rooms[roomID].getPlayer(playerID).status = 2;
+					// if(that.rooms[roomID].getPlayer(playerID) != null){
+					// 	that.rooms[roomID].getPlayer(playerID).status = 2;
+					// }
+					if(roomID === undefined)
+						return;
+
+					if(that.rooms[roomID].getPlayer(playerID) == null){
+						return;
 					}
+					that.count--;
+					that.rooms[roomID].removePlayer(playerID);
+					delete that.playerConnectionIDmap[conn.id];
+					delete that.playerRoomNoMap[playerID];
+					delete that.players[playerID];
+
 					// Wait for 15s then Remove player who wants to quit/closed the window
-					setTimeout(function(){
-						if(that.players[playerID].status == 2){
+					// setTimeout(function(){
+						// if(that.players[playerID].status == 2){
 							//This player has not been able to connect back after 15s => remove him
-							that.count--;
-							that.rooms[roomID].removePlayer(playerID);
-							delete that.playerConnectionIDmap[conn.ID];
-							delete that.playerRoomNoMap[playerID];
-							delete that.players[playerID];
-						}else{
+							// that.count--;
+							// that.rooms[roomID].removePlayer(playerID);
+							// delete that.playerConnectionIDmap[conn.ID];
+							// delete that.playerRoomNoMap[playerID];
+							// delete that.players[playerID];
+						// }else{
 							//This player has changed connection id since he reconnected
 							//Remove the old connection id;
-							delete that.playerConnectionIDmap[conn.ID];
-						}
+							// delete that.playerConnectionIDmap[conn.ID];
+						// }
 
-					},15000);
+					// },15000);
 					
 				});
 
@@ -135,7 +147,7 @@ function SuperMarioServer() {
 					var message = JSON.parse(data);
 					//If connection id is not in the map and he send his existing player id, it's possible this 
 					//player just recover from a failed connection
-					console.log(that.playerConnectionIDmap);
+					
 					if(!(conn.id in that.playerConnectionIDmap)){
 						var playerID = data["player_id"];
 							if(playerID !== undefined){
@@ -183,8 +195,23 @@ function SuperMarioServer() {
 							console.log(that.playerRoomNoMap);
 							that.rooms[rmNo].updatePlayer(player_id, keypress);
 							break;
-							
+						
+						case "leave":
+							var player_id = message.playerID;
+							that.count--;
+							var roomID = that.playerRoomNoMap[player_id];
+							if(roomID === undefined)
+								return;
+
+							that.rooms[roomID].removePlayer(playerID);
+							delete that.playerConnectionIDmap[conn.id];
+							delete that.playerRoomNoMap[playerID];
+							delete that.players[playerID];
+							conn.write(JSON.stringify({type:"leave", status:"pass"}));
+							break;
+
 						default:
+
 
 							console.log("Unhandled " + message.type);
 					}

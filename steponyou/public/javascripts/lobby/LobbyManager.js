@@ -50,6 +50,10 @@ function LobbyManager () {
 			console.log("LOBBY: on player id assigned");
 			this.setPlayerId(data.id);
 		}
+		else if (eventType == "update"){
+			console.log("LOBBY: Recevied update on players");
+			
+		}
 	}
 
 	this.updateRooms = function(rooms) {

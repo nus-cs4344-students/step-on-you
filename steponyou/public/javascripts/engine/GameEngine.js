@@ -16,6 +16,8 @@ function GameEngine(serverOrClient){
 	var playerSprites = [];
 	var playerScores = [];
 
+	var thisPlayerID = 0;
+
 	var FPS = 60;
 	this.timePerFrame = 1000/FPS;
 
@@ -114,6 +116,7 @@ function GameEngine(serverOrClient){
 
 	this.registerCurrentPlayer = function(playerID){
 		player = playerObjs[playerID];
+		thisPlayerID = playerID;
 		console.log("playerID: " + playerID);
 	}
 
@@ -228,6 +231,9 @@ function GameEngine(serverOrClient){
 		physics.addPhysicalBody(p.getBody());
 		//console.log(p);
 
+		p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
+    	p.faceLeft();
+
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
 
 
@@ -314,6 +320,7 @@ function GameEngine(serverOrClient){
 	this.generateUpdate = function(){
 
 		var update = {
+			"type": "update",
 		    "packageType": "update",
 		    "objects": []
 
@@ -334,7 +341,23 @@ function GameEngine(serverOrClient){
 
 	}
 
+	this.processUpdate = function(update){
 
+		
+		console.log("GameEngine : process update");
+		console.log(update);
+		var playersData = update.objects;
 
-
+		//console.log(playersData[0]);
+		/*
+		for(var i = 0; i < playersData.length; i++){
+			//update all players that are not this player
+			var pMsg = playersData[i];
+			if(playersData[i].id != thisPlayerID){
+				playerObjs[playersData[i].id].setPosition( playersData[i].x, playersData[i].y );
+			}
+		}
+		*/
+	}
+	
 }

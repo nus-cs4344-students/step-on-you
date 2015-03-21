@@ -16,7 +16,7 @@ function SuperMarioServer() {
 	this.playerRoomNoMap = {};      // Mapping from player id -> his room number
 	this.playerConnectionIDmap = {} // Mapping from connection id -> player id
 	this.rooms = {};
-	var NO_OF_ROOMS = 20;
+	var NO_OF_ROOMS = 2;
 	for(var i=0; i<NO_OF_ROOMS; i++){
 		this.rooms[i] = new Room(i);//X should be new Game engine
 		this.rooms[i].generateUpdateState();
@@ -203,7 +203,7 @@ function SuperMarioServer() {
 							if(roomID === undefined)
 								return;
 
-							that.rooms[roomID].removePlayer(playerID);
+							that.rooms[roomID].removePlayer(player_id);
 							delete that.playerConnectionIDmap[conn.id];
 							delete that.playerRoomNoMap[playerID];
 							delete that.players[playerID];

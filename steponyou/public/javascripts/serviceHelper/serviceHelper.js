@@ -37,7 +37,9 @@ function ServiceHelper(lobbyManager){
 					callback("leave", message);
 
 				case "update":
-					console.log(message);
+					//console.log(message);
+					gameEngine.processUpdate(message);
+
 					break;	
                 default: 
                     console.log("serverMsg", "unhandled message type " + message.type);

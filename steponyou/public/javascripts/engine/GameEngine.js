@@ -302,8 +302,10 @@ function GameEngine(serverOrClient){
 
 
 	var generatePlayerUpdatePacket = function(obj){
-		var pPack = [];
 
+	
+		/*		
+		var pPack = [];
 		pPack["updateType"] = "update";
 		pPack["id"] = bodyToPlayerID[obj.objectID];
 		pPack["x"] = obj.renderX;
@@ -311,6 +313,21 @@ function GameEngine(serverOrClient){
 		pPack["character"] = "devil";
 		pPack["status"] = "moving"
 		pPack["direction"] = obj.orientation
+		*/
+
+		var pPack = {
+			updateType : "update",
+			id : bodyToPlayerID[obj.objectID],
+			x : obj.renderX,
+			y : obj.renderY,
+			character : "devil",
+			status: "moving",
+			direction : obj.orientation
+
+
+		}
+
+
 
 		return pPack;
 
@@ -320,9 +337,9 @@ function GameEngine(serverOrClient){
 	this.generateUpdate = function(){
 
 		var update = {
-			"type": "update",
-		    "packageType": "update",
-		    "objects": []
+			type: "update",
+		    packageType: "update",
+		    objects: []
 
 		};
 
@@ -341,14 +358,13 @@ function GameEngine(serverOrClient){
 
 	}
 
-	this.processUpdate = function(update){
+	this.processUpdate = function(msg){
 
-		
-		console.log("GameEngine : process update");
-		console.log(update);
-		var playersData = update.objects;
+		//console.log("GameEngine : process update");
+		//console.log(msg);
+		var playersData = msg.objects;
 
-		//console.log(playersData[0]);
+		//console.log(playersData);
 		/*
 		for(var i = 0; i < playersData.length; i++){
 			//update all players that are not this player
@@ -358,6 +374,7 @@ function GameEngine(serverOrClient){
 			}
 		}
 		*/
+		
 	}
 	
 }

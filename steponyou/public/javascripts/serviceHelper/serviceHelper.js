@@ -17,7 +17,7 @@ function ServiceHelper(lobbyManager){
 				var message = JSON.parse(e.data);
 				switch (message.type) {
 					case "new_player":
-					console.log("NETWORK: receive pid: " + message.id);
+					//console.log("NETWORK: receive pid: " + message.id);
 					callback("new_player", message);
 					break;
 
@@ -28,16 +28,16 @@ function ServiceHelper(lobbyManager){
 					break;
 					
 					case "joinRoom":
-					console.log("NETWORK: " + message);
+					//console.log("NETWORK: " + message);
 					callback("joinRoom", message);
 					break;
 
 					case "leave":
-					console.log("NETWORK: " + message);
+					//console.log("NETWORK: " + message);
 					callback("leave", message);
 
 				case "update":
-					//console.log(message);
+					//console.log("NETWORKUPDATE: " + message.type);
 					gameEngine.processUpdate(message);
 
 					break;	
@@ -74,5 +74,10 @@ function ServiceHelper(lobbyManager){
 
 	this.leaveRoom = function(playerId){
 		sendToServer({type:"leave", playerID:playerId});
+	}
+	
+	this.sendMove = function(PID, KP){
+		console.log("sending move: " + PID + " keypress: " + KP);
+		sendToServer({type:"move", playerID:PID, keypress:KP});
 	}
 }

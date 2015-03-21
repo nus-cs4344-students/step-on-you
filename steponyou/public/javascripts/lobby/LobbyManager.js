@@ -98,4 +98,8 @@ function LobbyManager () {
 			that.onNetworkEvent(eventType, data);
 		});
 	}
+	
+	this.sendEvent = function(pid, KP){
+		serviceHelper.sendMove(pid, KP);
+	}
 }

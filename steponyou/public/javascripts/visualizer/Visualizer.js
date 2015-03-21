@@ -10,29 +10,25 @@ function Visualizer () {
 	this.stage.add(this.backgroundLayer);
 	this.stage.add(this.objectLayer);
 	this.objects = {}; //index is ID of the object
-
-
-
-	// var canvas1 = this.backgroundLayer.getCanvas();
-	// context1 = canvas1.getContext('2d');
-	// var canvas2 = this.objectLayer.getCanvas();
-	// context1 = canvas2.getContext('2d');
-
- //    // resize the canvas to fill browser window dynamically
- //    window.addEventListener('resize', resizeCanvas, false);
-
- //    function resizeCanvas() {
- //    	canvas1.width = window.innerWidth;
- //    	canvas1.height = window.innerHeight;
- //    	canvas2.width = window.innerWidth;
- //    	canvas2.height = window.innerHeight;
- //    	that.init();
- //    }
- //    resizeCanvas();
 };
 
 Visualizer.prototype.init = function() {
 	this.insertImage(this.backgroundLayer, 'background', 0, 0);
+	//brick 1
+	var model = {x:200, y:400, width:100, height:50};
+	var brick = new Brick(model);
+	this.objectLayer.add(brick.presentation);
+
+	//brick 2
+	model = {x:500, y:350, width:200, height:30};
+	brick = new Brick(model);
+	this.objectLayer.add(brick.presentation);
+
+	//brick 3
+	model = {x:300, y:200, width:200, height:50};
+	brick = new Brick(model);
+	this.objectLayer.add(brick.presentation);
+	this.objectLayer.draw();
 };
 
 Visualizer.prototype.update = function (data) {

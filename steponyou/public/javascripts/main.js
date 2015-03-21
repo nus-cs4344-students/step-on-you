@@ -65,5 +65,6 @@ var handleKey = function(e){
 
     gameEngine.registerKeys(keyMap);
     gameEngine.simulatePlayer(lobbyManager.playerId,keyMap);
+	lobbyManager.sendEvent(lobbyManager.playerId, keyMap);
 
 }

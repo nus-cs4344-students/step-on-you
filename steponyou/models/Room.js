@@ -48,7 +48,7 @@ module.exports = function Room(rmID){
 	};
 
 	this.updatePlayer = function(playerID, message){
-		this.engine.simulatePlayer(playerID, message);
+		this.gameEngine.simulatePlayer(playerID, message);
 	};
 
 	this.generateUpdateState = function(){

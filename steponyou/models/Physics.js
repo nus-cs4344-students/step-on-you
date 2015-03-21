@@ -10,10 +10,10 @@ module.exports = function Physics(gameEngine) {
 	var physicObjects = [];
 	var staticObjects = [];
 	var Gravity = 5;
-	var Damping = 2;
+	var Damping = 0.5;
 	var Scaling = 1;
 	var MaxVecX = 20;
-	var MaxVecY = 20;
+	var MaxVecY = 50;
 
 
 	var runningID = 0;
@@ -70,7 +70,7 @@ module.exports = function Physics(gameEngine) {
 		//using >= versions because contact-type information is also useful
 		var overlap = 0;
 		//check for overlapping x range
-		if( body1.renderX <= body2.renderX + body2.width  && body1.renderX + body1.width >= body2.renderX  ){
+		if( body1.renderX < body2.renderX + body2.width  && body1.renderX + body1.width > body2.renderX  ){
 			//check for within y range
 			if ( body1.renderY <= body2.renderY + body2.height && body1.renderY + body1.height >= body2.renderY ){
 
@@ -181,7 +181,7 @@ module.exports = function Physics(gameEngine) {
 					//console.log("bottom");
 
 					if(body1.isPlayer() && body2.isPlayer()){
-						console.log("player 1 killed player 2");
+						//console.log("player 1 killed player 2");
 						if(gameEngine.role == "server"){
 							gameEngine.addPlayerScore(body1.objectID);
 						}
@@ -298,6 +298,7 @@ module.exports = function Physics(gameEngine) {
 			body = physicObjects[i];
 
 			//rounding errors
+			/*
 			if(Math.abs(body.getVecX()) < 0.2){
 				body.setVecX(0);
 			}
@@ -305,46 +306,86 @@ module.exports = function Physics(gameEngine) {
 			if(Math.abs(body.getVecY()) < 0.2){
 				body.setVecY(0);
 			}
+			*/
 
 
 			body.moved = false;
 
 			//apply changes to velocity due to acceleration and gravity
-			//console.log("first: " + body.getAccX());
-			var newVecX = body.getVecX() + ( body.getAccX() ) * gameEngine.timePerFrame/1000;
-			var newVecY = body.getVecY() + (body.getAccY() ) * gameEngine.timePerFrame/1000;
+			//console.log("accX: " + body.getAccX());
+			//console.log("accY: " + body.getAccY());
+			//console.log("game engine tpf: " + gameEngine.timePerFrame);
+			
+			
+
+			var newVecX = body.getVecX() + ( body.getAccX() ) * 1000/60/1000;
+			var newVecY = body.getVecY() + (body.getAccY() ) * 1000/60/1000;
+			//console.log("newVecX: " + newVecX + ", newVecY: " + newVecY);
 			
 			//limit max velocity
+
+			
 			if(Math.abs(newVecX) > MaxVecX){
 				newVecX *= MaxVecX / Math.abs(newVecX);
 			}
+			
 
 			if(Math.abs(newVecY) > MaxVecY){
 				newVecY *= MaxVecY / Math.abs(newVecY);
 			}
 
 			//console.log("newVecX: " + newVecX + ", newVecY: " + newVecY);
-			//console.log(body.getAccX());
+			//console.log("accY: "+body.getAccY());
 
 			body.setVecX( newVecX );
 			body.setVecY( newVecY );
 
 			//damp acceleration
-			body.dampAccX(Damping);
-			//body.dampAccY(Gravity);
-			//console.log("second: " + body.getAccX());
+			//body.dampAccX(Damping);
+
+			
+
+			body.dampVecX(Damping);
+
 			//apply gravity if not supported
 			//console.log(body.getBlockedDown());
-			if(!body.getBlockedDown()){
 				body.setAccY( body.getAccY() + Gravity );
-			}
-			else{
-				if(body.getAccY() > 0){
+				
+				if( body.getBlockedDown() && body.getAccY() > 0){
 					body.setAccY(0);
 					body.setVecY(0);
 				}
+				
+			
+
+			if(body.getBlockedUp()){
+
+				if(body.getAccY() < 0){
+					body.setAccY(0);
+				}
+				if(body.getVecY() < 0){
+					body.setVecY(0);
+				}
+
 			}
 
+			if(body.getBlockedLeft()){
+				if(body.getAccX() < 0){
+					body.setAccX(0);
+				}
+				if(body.getVecX() < 0){
+					body.setVecX(0);
+				}
+			}
+
+			if(body.getBlockedRight()){
+				if(body.getAccX() > 0){
+					body.setAccX(0);
+				}
+				if(body.getVecX() > 0){
+					body.setVecX(0);
+				}
+			}
 
 
 			
@@ -355,11 +396,11 @@ module.exports = function Physics(gameEngine) {
 				body.renderX += body.getVecX();
 			}
 			
-			//console.log(body.renderY);
+			//console.log("old renderY: " + body.renderY);
 
 			body.renderY += body.getVecY();
 
-			//console.log(body.renderY);
+			//console.log("newRenderY: " + body.renderY);
 
 			//old jump (teleport)
 			//console.log(body.getBlockedDown());

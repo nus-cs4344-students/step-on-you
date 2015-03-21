@@ -5,15 +5,16 @@ module.exports = function Player(pid) {
 	var body = new Body();
 	body.setIsPlayer();
 	//movement speed
-	var speed = 20;
-	var acceleration = 20;
+	var speed = 2;
+	var maxSpeed = 20;
+	var acceleration = 50;
 	var jump = 200;
 	var Scale = 1;
 
-	body.width = 100;
-	body.height = 100;
+	body.width = 50;
+	body.height = 50;
 
-	var maxAccX = 20;
+	var maxAccX = 2000;
 	var maxAccY = 20;
 
 	var jumpAcc = 65;
@@ -47,34 +48,69 @@ module.exports = function Player(pid) {
 	this.moveLeft = function(){
 		this.faceLeft();
 
+		/*
+		var newVecX = body.getVecX() - speed;
+
+		if(Math.abs(newVecX) > maxSpeed){
+			newVecX = maxSpeed / Math.abs(newVecX);
+		}
+
+		body.setVecX(newVecX);
+		*/
+
+		
 		//body.setVecX(body.getVecX() - speed);
-		var newAcc = body.getAccX() - acceleration;
+		//var newAcc = body.getAccX() - acceleration;
+		var newAcc = - acceleration;
 
 		//console.log(newAcc);
-
+	
+		
 		if( Math.abs(newAcc) > maxAccX ){
 			newAcc *=   maxAccX / Math.abs(newAcc);
 		}
+
+
 		//console.log(newAcc);
 		//console.log(maxAccX / Math.abs(newAcc));
 		//console.log(newAcc);
+
 		body.setAccX( newAcc );
 		body.setDampDirection("left");
+		
 		
 	}
 
 	this.moveRight = function(){
 		this.faceRight();
 
+		/*
+		var newVecX = body.getVecX() + speed;
+
+		if(Math.abs(newVecX) > maxSpeed){
+			newVecX = maxSpeed / Math.abs(newVecX);
+		}
+
+		body.setVecX(newVecX);
+		*/
+
+		
 		//body.setVecX (body.getVecX() + speed);
-		var newAcc = body.getAccX() + acceleration;
+		//var newAcc = body.getAccX() + acceleration;
+		var newAcc = acceleration;
 		if( Math.abs(newAcc) > maxAccX ){
 			newAcc *=  maxAccX / Math.abs( newAcc);
 		}
 		//console.log(maxAccX / Math.abs(newAcc));
 		//console.log(newAcc);
+
 		body.setAccX( newAcc );
 		body.setDampDirection("right");
+		
+	}
+
+	this.removeAccelerationX = function(){
+		body.setAccX(0);
 	}
 
 	this.jump = function(){

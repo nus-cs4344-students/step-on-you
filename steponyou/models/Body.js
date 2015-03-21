@@ -111,6 +111,26 @@ module.exports = function Body(w,h) {
 		dampDirection = dd;
 	}
 
+	this.dampVecX = function(d){
+		var newVecX = vecX;
+		if(vecX > 0){
+			vecX = vecX - d;
+
+			if(vecX < 0){
+				vecX = 0;
+			}
+		}
+
+		if(vecX < 0){
+			vecX = vecX + d;
+
+			if(vecX > 0){
+				vecX = 0;
+			}
+		}
+
+	}
+
 	var dampX = function(vec, Damping){
 
 		/*
@@ -128,7 +148,7 @@ module.exports = function Body(w,h) {
 			//console.log("vecX zero");
 			return 0;
 		}
-		if( vecX > 0 && vec > 0){
+		if( vecX > 0 && vec >= 0){
 			//console.log("b4: " + vec);
 			vec = vec - Damping;
 			//console.log("damp right");
@@ -140,7 +160,7 @@ module.exports = function Body(w,h) {
 			*/
 		}
 
-		else if(vecX < 0 && vec < 0){
+		else if(vecX < 0 && vec <= 0){
 			vec = vec + Damping;
 			//console.log("Damp left");
 			/*
@@ -167,6 +187,10 @@ module.exports = function Body(w,h) {
 			jump = j;
 			accY = -j;
 			jumped = true;
+		}
+		else{
+			//console.log("blockedDown: " + blockedDown);
+			//console.log("reject jump");
 		}
 	}
 

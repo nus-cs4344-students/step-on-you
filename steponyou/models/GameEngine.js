@@ -304,8 +304,8 @@ module.exports = function GameEngine(serverOrClient){
 
 
 	var generatePlayerUpdatePacket = function(obj){
+		/*		
 		var pPack = [];
-
 		pPack["updateType"] = "update";
 		pPack["id"] = bodyToPlayerID[obj.objectID];
 		pPack["x"] = obj.renderX;
@@ -313,6 +313,19 @@ module.exports = function GameEngine(serverOrClient){
 		pPack["character"] = "devil";
 		pPack["status"] = "moving"
 		pPack["direction"] = obj.orientation
+		*/
+
+		var pPack = {
+			updateType : "update",
+			id : bodyToPlayerID[obj.objectID],
+			x : obj.renderX,
+			y : obj.renderY,
+			character : "devil",
+			status: "moving",
+			direction : obj.orientation
+
+
+		}
 
 		return pPack;
 
@@ -337,7 +350,8 @@ module.exports = function GameEngine(serverOrClient){
 
 		}
 
-		//console.log(update);
+		//console.log("Game Engine created update: " + JSON.stringify(update));
+
 
 		return update;
 

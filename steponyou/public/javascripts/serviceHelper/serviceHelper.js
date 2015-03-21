@@ -32,6 +32,10 @@ function ServiceHelper(lobbyManager){
 					callback("joinRoom", message);
 					break;
 
+					case "leave":
+					console.log("NETWORK: " + message);
+					callback("leave", message);
+
 				case "update":
 					//console.log(message);
 					gameEngine.processUpdate(message);

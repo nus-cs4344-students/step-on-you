@@ -46,6 +46,9 @@ function LobbyManager () {
 		} else if (eventType == 'joinRoom') {
 			console.log("LOBBY: on join room result");
 			this.setRoom(data.status);
+		} else if (eventType == 'leave') {
+			console.log("LOBBY: on leave room result");
+			this.setRoom(data.status);
 		} else if (eventType == 'new_player') {
 			console.log("LOBBY: on player id assigned");
 			this.setPlayerId(data.id);
@@ -68,7 +71,7 @@ function LobbyManager () {
 			callbackGameEngine(this.playerId);
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "LEAVE ROOM";
-		} else if (pendingRoomId = -1 && status == 'pass') {
+		} else if (pendingRoomId == -1 && status == 'pass') {
 			console.log("LOBBY: Leave Room successfully");
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "JOIN ROOM";

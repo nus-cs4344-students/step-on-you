@@ -349,6 +349,7 @@ function Physics(gameEngine) {
 
 			//apply gravity if not supported
 			//console.log(body.getBlockedDown());
+			if(body.getApplyGravity())
 				body.setAccY( body.getAccY() + Gravity );
 				
 				if( body.getBlockedDown() && body.getAccY() > 0){

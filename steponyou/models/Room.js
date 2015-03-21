@@ -6,6 +6,7 @@ module.exports = function Room(rmID){
 	this.gameEngine = new GameEngine('server');
 	this.players = {};//index via playerid
 	this.sockets = {};//index via playerid
+	this.gameEngine.init(null);
 	this.gameEngine.start();
 	var that = this;
 	this.addPlayer = function(player,conn){

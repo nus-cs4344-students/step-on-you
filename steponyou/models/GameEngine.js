@@ -1,6 +1,6 @@
 var Physics = require("./Physics.js");
 var Player = require("./Player.js");
-
+var Body = require("./Body.js");
 module.exports = function GameEngine(serverOrClient){
 
 	var role = serverOrClient;
@@ -173,7 +173,7 @@ module.exports = function GameEngine(serverOrClient){
 		//body.y = canvas.height - body.height;
 		//body.renderY = canvas.height - body.height;
 
-		body.renderY = 600 - 20;
+		body.renderY = 600 - 70;
 		body.y = body.renderY;
 
 		body.isStatic = true;
@@ -233,7 +233,8 @@ module.exports = function GameEngine(serverOrClient){
 		physics.addPhysicalBody(p.getBody());
 		//console.log(p);
 
-		p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
+		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
+		p.setPosition( 400, 500);
     	p.faceLeft();
 
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
@@ -350,7 +351,7 @@ module.exports = function GameEngine(serverOrClient){
 
 		}
 
-		//console.log("Game Engine created update: " + JSON.stringify(update));
+		console.log("Game Engine created update: " + JSON.stringify(update));
 
 
 		return update;
@@ -360,8 +361,8 @@ module.exports = function GameEngine(serverOrClient){
 	this.processUpdate = function(update){
 
 		
-		console.log("GameEngine : process update");
-		console.log(update);
+		//console.log("GameEngine : process update");
+		//console.log(update);
 		var playersData = update.objects;
 
 		//console.log(playersData[0]);

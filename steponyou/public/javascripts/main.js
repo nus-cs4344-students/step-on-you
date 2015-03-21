@@ -33,8 +33,8 @@ var setupGameEngin = function (playerID) {
     //add to engine
     var thisPlayer = gameEngine.addPlayer(playerID);
     //add this player to room
-    thisPlayer.setPosition(800/2 - 15,600-200);
-    thisPlayer.faceLeft();
+   // thisPlayer.setPosition(800/2 - 15,600-200);
+   // thisPlayer.faceLeft();
 
     gameEngine.registerCurrentPlayer(playerID);
 

@@ -7,6 +7,7 @@ var RIGHT = 3;
 var Body = require("./Body.js");
 module.exports = function Physics(gameEngine) {
 
+
 	var physicObjects = [];
 	var staticObjects = [];
 	var Gravity = 5;

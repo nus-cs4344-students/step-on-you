@@ -171,7 +171,7 @@ function GameEngine(serverOrClient){
 		//body.y = canvas.height - body.height;
 		//body.renderY = canvas.height - body.height;
 
-		body.renderY = 600 - 20;
+		body.renderY = 600 - 70;
 		body.y = body.renderY;
 
 		body.isStatic = true;
@@ -231,7 +231,8 @@ function GameEngine(serverOrClient){
 		physics.addPhysicalBody(p.getBody());
 		//console.log(p);
 
-		p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
+		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
+		p.setPosition( 400, 500);
     	p.faceLeft();
 
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
@@ -361,10 +362,10 @@ function GameEngine(serverOrClient){
 	this.processUpdate = function(msg){
 
 		//console.log("GameEngine : process update");
-		//console.log(msg);
+		console.log(msg);
 		var playersData = msg.objects;
 
-		//console.log(playersData);
+		console.log(playersData);
 		/*
 		for(var i = 0; i < playersData.length; i++){
 			//update all players that are not this player

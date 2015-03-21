@@ -19,6 +19,8 @@ function Player(pid) {
 
 	var jumpAcc = 65;
 
+	this.applyGravity = true;
+
 	this.setPosition = function(x,y){
 		body.renderX = x;
 		body.renderY = y;
@@ -31,6 +33,11 @@ function Player(pid) {
 		//console.log(pid);
 		//console.log( body.renderX + "," + body.renderY);
 		//console.log(body.width + ", " + body.height);
+	}
+
+	this.setApplyGravity = function(b){
+		this.applyGravity = b;
+		body.applyGravity = b;
 	}
 
 	this.faceLeft = function(){

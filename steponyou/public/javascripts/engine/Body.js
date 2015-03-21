@@ -86,6 +86,10 @@ function Body(w,h) {
 		*/
 	}
 
+	this.getApplyGravity = function(){
+		return applyGravity;
+	}
+
 	this.setAccX = function(v){
 		accX = v;
 	}

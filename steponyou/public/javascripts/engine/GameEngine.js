@@ -362,19 +362,26 @@ function GameEngine(serverOrClient){
 	this.processUpdate = function(msg){
 
 		//console.log("GameEngine : process update");
-		console.log(msg);
+		//console.log(msg);
 		var playersData = msg.objects;
 
-		console.log(playersData);
-		/*
+		//console.log(playersData);
+		
 		for(var i = 0; i < playersData.length; i++){
 			//update all players that are not this player
 			var pMsg = playersData[i];
-			if(playersData[i].id != thisPlayerID){
-				playerObjs[playersData[i].id].setPosition( playersData[i].x, playersData[i].y );
+			if(pMsg.id != thisPlayerID){
+
+				//if other player does exist (null or undefined), add and create
+				if(playerObjs[pMsg.id] == null){
+					this.addPlayer(pMsg.id);
+				}
+
+				//set position
+				playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 			}
 		}
-		*/
+		
 		
 	}
 	

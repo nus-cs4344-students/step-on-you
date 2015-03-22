@@ -26,10 +26,12 @@ function Player(pid) {
 		body.renderY = y;
 		body.x = x;
 		body.y = y;
+		/*
 		body.vecX = 0;
 		body.vecY = 0;
 		body.accX = 0;
 		body.accY = 0;
+		*/
 		//console.log(pid);
 		//console.log( body.renderX + "," + body.renderY);
 		//console.log(body.width + ", " + body.height);

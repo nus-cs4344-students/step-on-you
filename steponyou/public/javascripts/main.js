@@ -63,7 +63,7 @@ var handleKey = function(e){
     /*insert conditional here*/
     //40 - down arrow
 
-    gameEngine.registerKeys(keyMap);
+    //gameEngine.registerKeys(keyMap);
     gameEngine.simulatePlayer(lobbyManager.playerId,keyMap);
 	lobbyManager.sendEvent(lobbyManager.playerId, keyMap);
 

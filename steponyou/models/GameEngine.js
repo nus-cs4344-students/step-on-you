@@ -173,7 +173,7 @@ module.exports = function GameEngine(serverOrClient){
 		//body.y = canvas.height - body.height;
 		//body.renderY = canvas.height - body.height;
 
-		body.renderY = 600 - 70;
+		body.renderY = 500;
 		body.y = body.renderY;
 
 		body.isStatic = true;
@@ -234,7 +234,7 @@ module.exports = function GameEngine(serverOrClient){
 		//console.log(p);
 
 		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
-		p.setPosition( 400, 500);
+		p.setPosition( 400, 450);
     	p.faceLeft();
 
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
@@ -351,7 +351,7 @@ module.exports = function GameEngine(serverOrClient){
 
 		}
 
-		console.log("Game Engine created update: " + JSON.stringify(update));
+		//console.log("Game Engine created update: " + JSON.stringify(update));
 
 
 		return update;
@@ -370,11 +370,12 @@ module.exports = function GameEngine(serverOrClient){
 		for(var i = 0; i < playersData.length; i++){
 			//update all players that are not this player
 			var pMsg = playersData[i];
-			if(playersData[i].id != thisPlayerID){
-				playerObjs[playersData[i].id].setPosition( playersData[i].x, playersData[i].y );
+			if(pMsg.id != thisPlayerID){
+				playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 			}
 		}
 		*/
+		
 	}
 	
 }

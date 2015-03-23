@@ -171,10 +171,11 @@ function GameEngine(serverOrClient){
 		//body.y = canvas.height - body.height;
 		//body.renderY = canvas.height - body.height;
 
-		body.renderY = 600 - 70;
+		body.renderY = 500;
 		body.y = body.renderY;
 
 		body.isStatic = true;
+
 		return body;
 	}
 
@@ -232,7 +233,7 @@ function GameEngine(serverOrClient){
 		//console.log(p);
 
 		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
-		p.setPosition( 400, 500);
+		p.setPosition( 400, 450);
     	p.faceLeft();
 
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;

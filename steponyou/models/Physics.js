@@ -50,7 +50,7 @@ module.exports = function Physics(gameEngine) {
 
 	var checkCollision = function(body1, body2){
 		
-		console.log("here");
+		//console.log("here");
 
 		var collision1 = {	
 					collided : false,
@@ -117,7 +117,7 @@ module.exports = function Physics(gameEngine) {
 					//correct body1 position
 					body1.renderY = body2.renderY - body1.height;
 					body1.setVecY(0);
-					console.log("no this?");
+					body1.setSupportingPlatform(body2);
 				}
 				//if body2 is player
 				//b1 passes though as it kills the player 2
@@ -319,7 +319,8 @@ module.exports = function Physics(gameEngine) {
 
 			//apply gravity if not supported
 			//console.log(body.getBlockedDown());
-			body.setAccY( body.getAccY() + Gravity );
+			if(!body.getBlockedDown())
+				body.setAccY( body.getAccY() + Gravity );
 
 			//reset collisions
 			body.resetCollision();

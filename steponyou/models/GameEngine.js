@@ -1,7 +1,9 @@
 var Physics = require("./Physics.js");
 var Player = require("./Player.js");
 var Body = require("./Body.js");
-module.exports = function GameEngine(serverOrClient){
+
+module.exports = 
+function GameEngine(serverOrClient){
 
 	var role = serverOrClient;
 	var that = this;
@@ -21,7 +23,7 @@ module.exports = function GameEngine(serverOrClient){
 	var thisPlayerID = 0;
 
 	var FPS = 60;
-	var timePerFrame = 1000/FPS;
+	this.timePerFrame = 1000/FPS;
 
 	var currentFrameNumber = 0;
 	//stores the physics engine, index is frame number
@@ -34,7 +36,9 @@ module.exports = function GameEngine(serverOrClient){
 	var maxNumStateRecords =  recordTime * FPS;
 	var lastDeletionPoint = 0;
 
-		//to do : better input handling
+	var that = this;
+
+	//to do : better input handling
 	//respawn point generation
 
 	var keyMap = [];
@@ -66,12 +70,16 @@ module.exports = function GameEngine(serverOrClient){
 
 
 		//need function to simulate keys for other players
-	this.simulatePlayer = function(playerID, keysPressed){
+	this.simulatePlayer = function(playerID, keysPressed, frameNumber){
 
 		var thatPlayer = playerObjs[playerID];
 
+		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        console.log("down + jump");
+	        thatPlayer.fallThrough();
+	    }
 
-		if(keysPressed[37] != null && keysPressed[37] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+		else if(keysPressed[37] == true && (keysPressed[32] == true || keysPressed[38] == true)){
 	        //console.log("left + jump");
 	        thatPlayer.moveLeft();
 	        thatPlayer.jump();
@@ -81,6 +89,11 @@ module.exports = function GameEngine(serverOrClient){
 	        //console.log("right + jump");
 	        thatPlayer.moveRight();
 	        thatPlayer.jump();
+	    }
+
+	    else if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        console.log("down + jump");
+	        thatPlayer.fallThrough();
 	    }
 
 
@@ -177,6 +190,7 @@ module.exports = function GameEngine(serverOrClient){
 		body.y = body.renderY;
 
 		body.isStatic = true;
+
 		return body;
 	}
 
@@ -212,6 +226,19 @@ module.exports = function GameEngine(serverOrClient){
 		return right;
 	}
 
+	var createFloat = function(){
+		var f = new Body();
+		f.height = 10;
+		f.width = 100;
+		f.x = 200;
+		f.y = 500 - 150;
+		f.renderX = f.x;
+		f.renderY = f.y;
+		f.isStatic = true;
+		f.setPermissible(true);
+		return f;
+	}
+
 	//load / create map
 	//dummy function for now
 	var loadMap = function(){
@@ -219,9 +246,12 @@ module.exports = function GameEngine(serverOrClient){
 		var ground = new createPlane();
 		var l = createLeft();
 		var r = createRight();
+		var f = createFloat();
+
 		physics.addStaticBody(ground);
 		physics.addStaticBody(l);
 		physics.addStaticBody(r);
+		physics.addStaticBody(f);
 	}
 
 	//generate spawnPosition
@@ -260,7 +290,7 @@ module.exports = function GameEngine(serverOrClient){
 		currentFrameNumber++;
 		physics.step();
 		//debugRender();
-		setTimeout( function(){gameLoop()}, timePerFrame );
+		setTimeout( function(){gameLoop()}, that.timePerFrame );
 
 	}
 
@@ -305,6 +335,8 @@ module.exports = function GameEngine(serverOrClient){
 
 
 	var generatePlayerUpdatePacket = function(obj){
+
+	
 		/*		
 		var pPack = [];
 		pPack["updateType"] = "update";
@@ -328,6 +360,8 @@ module.exports = function GameEngine(serverOrClient){
 
 		}
 
+
+
 		return pPack;
 
 	}
@@ -336,9 +370,9 @@ module.exports = function GameEngine(serverOrClient){
 	this.generateUpdate = function(){
 
 		var update = {
-			"type": "update",
-		    "packageType": "update",
-		    "objects": []
+			type: "update",
+		    packageType: "update",
+		    objects: []
 
 		};
 
@@ -351,30 +385,35 @@ module.exports = function GameEngine(serverOrClient){
 
 		}
 
-		//console.log("Game Engine created update: " + JSON.stringify(update));
-
+		//console.log(update);
 
 		return update;
 
 	}
 
-	this.processUpdate = function(update){
+	this.processUpdate = function(msg){
 
-		
 		//console.log("GameEngine : process update");
-		//console.log(update);
-		var playersData = update.objects;
+		//console.log(msg);
+		var playersData = msg.objects;
 
-		//console.log(playersData[0]);
-		/*
+		//console.log(playersData);
+		
 		for(var i = 0; i < playersData.length; i++){
 			//update all players that are not this player
 			var pMsg = playersData[i];
 			if(pMsg.id != thisPlayerID){
+
+				//if other player does exist (null or undefined), add and create
+				if(playerObjs[pMsg.id] == null){
+					this.addPlayer(pMsg.id);
+				}
+
+				//set position
 				playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 			}
 		}
-		*/
+		
 		
 	}
 	

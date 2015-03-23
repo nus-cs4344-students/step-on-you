@@ -32,7 +32,9 @@ function GameEngine(serverOrClient){
 	var maxNumStateRecords =  recordTime * FPS;
 	var lastDeletionPoint = 0;
 
-		//to do : better input handling
+	var that = this;
+
+	//to do : better input handling
 	//respawn point generation
 
 	var keyMap = [];
@@ -68,8 +70,12 @@ function GameEngine(serverOrClient){
 
 		var thatPlayer = playerObjs[playerID];
 
+		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        console.log("down + jump");
+	        thatPlayer.fallThrough();
+	    }
 
-		if(keysPressed[37] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+		else if(keysPressed[37] == true && (keysPressed[32] == true || keysPressed[38] == true)){
 	        //console.log("left + jump");
 	        thatPlayer.moveLeft();
 	        thatPlayer.jump();
@@ -79,6 +85,11 @@ function GameEngine(serverOrClient){
 	        //console.log("right + jump");
 	        thatPlayer.moveRight();
 	        thatPlayer.jump();
+	    }
+
+	    else if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
+	        console.log("down + jump");
+	        thatPlayer.fallThrough();
 	    }
 
 
@@ -211,6 +222,19 @@ function GameEngine(serverOrClient){
 		return right;
 	}
 
+	var createFloat = function(){
+		var f = new Body();
+		f.height = 10;
+		f.width = 100;
+		f.x = 200;
+		f.y = 500 - 150;
+		f.renderX = f.x;
+		f.renderY = f.y;
+		f.isStatic = true;
+		f.setPermissible(true);
+		return f;
+	}
+
 	//load / create map
 	//dummy function for now
 	var loadMap = function(){
@@ -218,9 +242,12 @@ function GameEngine(serverOrClient){
 		var ground = new createPlane();
 		var l = createLeft();
 		var r = createRight();
+		var f = createFloat();
+
 		physics.addStaticBody(ground);
 		physics.addStaticBody(l);
 		physics.addStaticBody(r);
+		physics.addStaticBody(f);
 	}
 
 	//generate spawnPosition
@@ -259,7 +286,7 @@ function GameEngine(serverOrClient){
 		currentFrameNumber++;
 		physics.step();
 		//debugRender();
-		setTimeout( function(){gameLoop()}, timePerFrame );
+		setTimeout( function(){gameLoop()}, that.timePerFrame );
 
 	}
 

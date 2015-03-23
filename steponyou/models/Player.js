@@ -19,6 +19,16 @@ module.exports = function Player(pid) {
 
 	var jumpAcc = 65;
 
+
+	this.fallThrough = function(){
+		//if body supported below by a static platform
+		if(body.getBlockedDown() && body.getSupportingPlatform().isStatic && body.getSupportingPlatform().getPermissible()){
+			body.y += 5;
+			body.renderY += 5;
+		}
+	}
+
+
 	this.setPosition = function(x,y){
 		body.renderX = x;
 		body.renderY = y;

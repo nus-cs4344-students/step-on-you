@@ -68,6 +68,17 @@ module.exports = function Body(w,h) {
 
 	var dampDirection = "";
 
+	var supportingPlatform;
+	var permissible = true;
+
+	this.setPermissible = function(b){
+		permissible = b;
+	}
+
+	this.getPermissible = function(){
+		return permissible;
+	}
+	
 	this.resetCollision = function() {
 		collisions = [];
 		groundCollisions = [];
@@ -84,6 +95,14 @@ module.exports = function Body(w,h) {
 		collision.overlapX = [0,0,0,0];
 		collision.overlapY = [0,0,0,0];
 		*/
+	}
+
+	this.setSupportingPlatform = function(p){
+		supportingPlatform = p;
+	}
+
+	this.getSupportingPlatform = function(){
+		return supportingPlatform;
 	}
 
 	this.setAccX = function(v){

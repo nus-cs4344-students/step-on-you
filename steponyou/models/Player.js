@@ -1,5 +1,7 @@
 var Body = require("./Body.js");
-module.exports = function Player(pid) {
+module.exports = 
+
+function Player(pid) {
 
 	var playerID = pid;
 	var body = new Body();
@@ -19,6 +21,7 @@ module.exports = function Player(pid) {
 
 	var jumpAcc = 65;
 
+	this.applyGravity = true;
 
 	this.fallThrough = function(){
 		//if body supported below by a static platform
@@ -28,19 +31,29 @@ module.exports = function Player(pid) {
 		}
 	}
 
-
 	this.setPosition = function(x,y){
 		body.renderX = x;
 		body.renderY = y;
 		body.x = x;
 		body.y = y;
+		/*
 		body.vecX = 0;
 		body.vecY = 0;
 		body.accX = 0;
 		body.accY = 0;
+		*/
 		//console.log(pid);
 		//console.log( body.renderX + "," + body.renderY);
 		//console.log(body.width + ", " + body.height);
+	}
+
+	this.getPosition = function(){
+		return { x: body.renderX, y: body.renderY};
+	}
+
+	this.setApplyGravity = function(b){
+		this.applyGravity = b;
+		body.applyGravity = b;
 	}
 
 	this.faceLeft = function(){

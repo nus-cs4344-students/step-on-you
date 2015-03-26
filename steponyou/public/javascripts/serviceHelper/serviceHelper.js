@@ -77,7 +77,7 @@ function ServiceHelper(lobbyManager){
 	}
 	
 	this.sendMove = function(PID, KP){
-		console.log("sending move: " + PID + " keypress: " + KP);
+		//console.log("sending move: " + PID + " keypress: " + KP);
 		sendToServer({type:"move", playerID:PID, keyPress:KP});
 	}
 }

@@ -11,6 +11,7 @@ var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
+var thisPlayer;
 document.gameEngine = gameEngine;
 keyMap[37] = false;
 keyMap[39] = false;
@@ -31,7 +32,7 @@ var setupGameEngin = function (playerID) {
     gameEngine.init(null);
 
     //add to engine
-    var thisPlayer = gameEngine.addPlayer(playerID);
+    thisPlayer = gameEngine.addPlayer(playerID);
     //add this player to room
    // thisPlayer.setPosition(800/2 - 15,600-200);
    // thisPlayer.faceLeft();
@@ -64,7 +65,9 @@ var handleKey = function(e){
     //40 - down arrow
 
     //gameEngine.registerKeys(keyMap);
-    gameEngine.simulatePlayer(lobbyManager.playerId,keyMap);
-	lobbyManager.sendEvent(lobbyManager.playerId, keyMap);
+    var playerEvent = { keyMap : keyMap,
+                        pos :  thisPlayer.getPosition() };
+    gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent);
+	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 
 }

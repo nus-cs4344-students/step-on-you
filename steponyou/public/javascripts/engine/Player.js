@@ -45,6 +45,10 @@ function Player(pid) {
 		//console.log(body.width + ", " + body.height);
 	}
 
+	this.getPosition = function(){
+		return { x: body.renderX, y: body.renderY};
+	}
+
 	this.setApplyGravity = function(b){
 		this.applyGravity = b;
 		body.applyGravity = b;

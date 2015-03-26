@@ -1,7 +1,7 @@
 
 function GameEngine(serverOrClient){
 
-	var role = serverOrClient;
+	this.role = serverOrClient;
 	var that = this;
 	var physics = new Physics(that);
 	var numPlayers = 0;
@@ -51,6 +51,10 @@ function GameEngine(serverOrClient){
 		
 	}
 
+	this.getPlayerPosition = function(pid){
+		return playerObjs[pid].getPosition();
+	}
+
 	//function to clean-up states that are too old
 	var garbageCollection = function(){
 		var deletonStart = lastDeletionPoint;
@@ -66,9 +70,13 @@ function GameEngine(serverOrClient){
 
 
 		//need function to simulate keys for other players
-	this.simulatePlayer = function(playerID, keysPressed, frameNumber){
+	this.simulatePlayer = function(playerID, playerEvent, frameNumber){
 
 		var thatPlayer = playerObjs[playerID];
+
+		var keysPressed = playerEvent.keyMap;
+		//var pos = playerEvent.pos;
+		//thatPlayer.setPosition(pos.x, pos.y);
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
 	        console.log("down + jump");
@@ -129,6 +137,10 @@ function GameEngine(serverOrClient){
 		player = playerObjs[playerID];
 		thisPlayerID = playerID;
 		console.log("playerID: " + playerID);
+	}
+
+	this.getCurrentPlayer = function(){
+		return playerObjs[thisPlayerID];
 	}
 
 	this.processInput = function(){
@@ -398,7 +410,7 @@ function GameEngine(serverOrClient){
 		for(var i = 0; i < playersData.length; i++){
 			//update all players that are not this player
 			var pMsg = playersData[i];
-			if(pMsg.id != thisPlayerID){
+			//if(pMsg.id != thisPlayerID){
 
 				//if other player does exist (null or undefined), add and create
 				if(playerObjs[pMsg.id] == null){
@@ -407,7 +419,7 @@ function GameEngine(serverOrClient){
 
 				//set position
 				playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
-			}
+			//}
 		}
 		
 		

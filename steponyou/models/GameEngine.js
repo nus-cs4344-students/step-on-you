@@ -3,6 +3,8 @@ var Player = require("./Player.js");
 var Body = require("./Body.js");
 
 module.exports = 
+
+
 function GameEngine(serverOrClient){
 
 	this.role = serverOrClient;
@@ -22,7 +24,7 @@ function GameEngine(serverOrClient){
 
 	var thisPlayerID = 0;
 
-	var FPS = 60;
+	var FPS = 30;
 	this.timePerFrame = 1000/FPS;
 
 	var currentFrameNumber = 0;
@@ -79,8 +81,10 @@ function GameEngine(serverOrClient){
 		var thatPlayer = playerObjs[playerID];
 
 		var keysPressed = playerEvent.keyMap;
-		//var pos = playerEvent.pos;
-		//thatPlayer.setPosition(pos.x, pos.y);
+		if(this.role == 'server'){
+			var pos = playerEvent.pos;
+			thatPlayer.setPosition(pos.x, pos.y);
+		}
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
 	        console.log("down + jump");
@@ -281,7 +285,8 @@ function GameEngine(serverOrClient){
 
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
 
-
+		//initialize player score
+		playerScores[newPlayerID] = 0;
 
 		return p;
 	}
@@ -339,11 +344,35 @@ function GameEngine(serverOrClient){
 
 	var addPlayerScore = function(playerBodyId){
 
-		playerScore[bodyToPlayerID[playerBodyId]]++;
+		playerScores[bodyToPlayerID[playerBodyId]]++;
 
 	}
 
-	
+	this.AkilledB = function(aBodyId,bBodyId){
+		addPlayerScore(aBodyId);
+		this.revivePlayerIn(bBodyId, 5000);
+	}
+
+	var generateRespawnPos = function(){
+		var x = (Math.random() * 100 + 20) % 800;
+		var y = (Math.random() * 100 + 20) % 600;
+		return {x: x, y: y};
+	}
+
+	var revivePlayer = function(bodyId){
+		//console.log(bodyId);
+		var pid = bodyToPlayerID[bodyId];
+		//console.log(pid);
+		var pos = generateRespawnPos();
+		playerObjs[pid].getBody().revive(pos.x, pos.y);
+
+	}
+
+	this.revivePlayerIn = function(bodyId, time){
+		setTimeout( revivePlayer(bodyId), time);
+	}
+
+
 
 
 	var generatePlayerUpdatePacket = function(obj){
@@ -367,6 +396,7 @@ function GameEngine(serverOrClient){
 			y : obj.renderY,
 			character : "devil",
 			status: "moving",
+			isDead: obj.isAlive(),
 			direction : obj.orientation
 
 
@@ -409,21 +439,49 @@ function GameEngine(serverOrClient){
 		//console.log(msg);
 		var playersData = msg.objects;
 
+		if(msg.objects == null){
+			console.log("null msg from server received");
+			return;
+		}
+
 		//console.log(playersData);
-		
-		for(var i = 0; i < playersData.length; i++){
+		if(this.role == 'client'){
+			for(var i = 0; i < playersData.length; i++){
+				//update all players that are not this player
+				var pMsg = playersData[i];
+
+				if(pMsg.id != thisPlayerID){
+
+					//if other player does exist (null or undefined), add and create
+					if(playerObjs[pMsg.id] == null){
+						this.addPlayer(pMsg.id);
+					}
+
+					//set position if alive
+					if(playerObjs[pMsg.id].getBody().isAlive()){
+						playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+					}
+				}
+			}
+		}
+		//for server
+		else{
+
+			for(var i = 0; i < playersData.length; i++){
 			//update all players that are not this player
-			var pMsg = playersData[i];
-			//if(pMsg.id != thisPlayerID){
+				var pMsg = playersData[i];
 
 				//if other player does exist (null or undefined), add and create
 				if(playerObjs[pMsg.id] == null){
 					this.addPlayer(pMsg.id);
 				}
 
-				//set position
-				playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
-			//}
+				//set position if alive
+				if(playerObjs[pMsg.id].getBody().isAlive()){
+					playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+				}
+
+			}
 		}
 		
 		

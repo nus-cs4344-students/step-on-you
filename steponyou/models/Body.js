@@ -1,5 +1,7 @@
 
-module.exports = function Body(w,h) {
+module.exports = 
+
+function Body(w,h) {
 	
 	//misc information
 	var objectID = 0;
@@ -50,6 +52,7 @@ module.exports = function Body(w,h) {
 	var jumped = false;
 
 	var isPlayer = false;
+	var isDead = false;
 
 	//collision data
 	/*
@@ -75,10 +78,30 @@ module.exports = function Body(w,h) {
 		permissible = b;
 	}
 
+	this.setDead = function(){
+		isDead = true;
+		x = 10000;
+		y = 10000;
+		renderX = x;
+		renderY = y;
+	}
+
+	this.revive = function(px,py){
+		isDead = false;
+		x = px;
+		y = py;
+		renderX = px;
+		renderY = py;
+	}
+
+	this.isAlive = function(){
+		return !isDead;
+	}
+
 	this.getPermissible = function(){
 		return permissible;
 	}
-	
+
 	this.resetCollision = function() {
 		collisions = [];
 		groundCollisions = [];
@@ -105,6 +128,10 @@ module.exports = function Body(w,h) {
 		return supportingPlatform;
 	}
 
+	this.getApplyGravity = function(){
+		return applyGravity;
+	}
+
 	this.setAccX = function(v){
 		accX = v;
 	}
@@ -128,6 +155,11 @@ module.exports = function Body(w,h) {
 
 	this.setDampDirection = function(dd){
 		dampDirection = dd;
+	}
+
+	this.setTargetPos = function(x,y){
+		targetX = x;
+		targetY = y;
 	}
 
 	this.dampVecX = function(d){

@@ -50,6 +50,7 @@ function Body(w,h) {
 	var jumped = false;
 
 	var isPlayer = false;
+	var isDead = false;
 
 	//collision data
 	/*
@@ -73,6 +74,26 @@ function Body(w,h) {
 
 	this.setPermissible = function(b){
 		permissible = b;
+	}
+
+	this.setDead = function(){
+		isDead = true;
+		x = 10000;
+		y = 10000;
+		renderX = x;
+		renderY = y;
+	}
+
+	this.revive = function(px,py){
+		isDead = false;
+		x = px;
+		y = py;
+		renderX = px;
+		renderY = py;
+	}
+
+	this.isAlive = function(){
+		return !isDead;
 	}
 
 	this.getPermissible = function(){
@@ -132,6 +153,11 @@ function Body(w,h) {
 
 	this.setDampDirection = function(dd){
 		dampDirection = dd;
+	}
+
+	this.setTargetPos = function(x,y){
+		targetX = x;
+		targetY = y;
 	}
 
 	this.dampVecX = function(d){

@@ -4,7 +4,6 @@ var Body = require("./Body.js");
 
 module.exports = 
 
-
 function Physics(gameEngine) {
 
 	var physicObjects = [];
@@ -91,7 +90,8 @@ function Physics(gameEngine) {
 				if(body1.isPlayer() && body2.isPlayer()){
 					console.log("player 1 killed player 2");
 					if(gameEngine.role == "server"){
-						gameEngine.addPlayerScore(body1.objectID);
+						gameEngine.AkilledB( body1.objectID, body2.objectID);
+						body2.setDead();
 					}
 					//if client
 					else{
@@ -139,7 +139,8 @@ function Physics(gameEngine) {
 					console.log("player 2 killed player 1");
 
 					if(gameEngine.role == "server"){
-						gameEngine.addPlayerScore(body2.objectID);
+						gameEngine.AkilledB( body2.objectID, body1.objectID);
+						body1.setDead();
 					}
 					//if client
 					else{

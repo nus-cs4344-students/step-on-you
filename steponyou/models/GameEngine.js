@@ -355,15 +355,15 @@ function GameEngine(serverOrClient){
 
 	var generateRespawnPos = function(){
 		var x = (Math.random() * 100 + 20) % 800;
-		var y = (Math.random() * 100 + 20) % 600;
+		var y = (Math.random() * 100 + 450) % 600;
 		return {x: x, y: y};
 	}
 
 	var revivePlayer = function(bodyId){
 		//console.log(bodyId);
 		var pid = bodyToPlayerID[bodyId];
-		//console.log(pid);
 		var pos = generateRespawnPos();
+		console.log("reviving player: " + pid + " at " + pos.x + ", " + pos.y );
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 
 	}
@@ -388,15 +388,28 @@ function GameEngine(serverOrClient){
 		pPack["status"] = "moving"
 		pPack["direction"] = obj.orientation
 		*/
+		var charSprite;
+		switch( bodyToPlayerID[obj.objectID] % 2 ){
+			case 0: 
+				charSprite = "devil";
+				break;
+			case 1:
+				charSprite = "angel";
+				break;
+			default: 
+				charSprite = "devil";
+				break;
+		}
 
 		var pPack = {
 			updateType : "update",
 			id : bodyToPlayerID[obj.objectID],
 			x : obj.renderX,
 			y : obj.renderY,
-			character : "devil",
+			character : charSprite,
 			status: "moving",
 			isDead: obj.isAlive(),
+			score: playerScores[bodyToPlayerID[obj.objectID]],
 			direction : obj.orientation
 
 
@@ -407,7 +420,6 @@ function GameEngine(serverOrClient){
 		return pPack;
 
 	}
-
 
 	this.generateUpdate = function(){
 
@@ -421,7 +433,8 @@ function GameEngine(serverOrClient){
 		var physicObjects = physics.getPhysicObjects();
 		for(var i = 0; i < physicObjects.length; i++){
 			obj = physicObjects[i];
-			update.objects.push(generatePlayerUpdatePacket(obj));
+			if(obj.isAlive())
+				update.objects.push(generatePlayerUpdatePacket(obj));
 	
 			//console.log("x : " + obj.renderX + ", y : " + obj.renderY + ", w: " + obj.width + ", h: " + obj.height);
 
@@ -457,10 +470,10 @@ function GameEngine(serverOrClient){
 						this.addPlayer(pMsg.id);
 					}
 
-					//set position if alive
-					if(playerObjs[pMsg.id].getBody().isAlive()){
-						playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
-					}
+					playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+					//update score from server
+					playerScores[pMsg.id] = pMsg.score;
+					
 				}
 			}
 		}

@@ -1,4 +1,3 @@
-
 function GameEngine(serverOrClient){
 
 	this.role = serverOrClient;
@@ -343,13 +342,18 @@ function GameEngine(serverOrClient){
 	}
 
 	this.AkilledB = function(aBodyId,bBodyId){
-		addPlayerScore(aBodyId);
+		console.log(aBodyId + ", " + bBodyId );
+		addPlayerScore(aBodyId);;
+		playerObjs[bodyToPlayerID[bBodyId]].setPosition(1000,1000);
+		console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
+		console.log("scheduled reviving player");
+
 		this.revivePlayerIn(bBodyId, 5000);
 	}
 
 	var generateRespawnPos = function(){
 		var x = (Math.random() * 100 + 20) % 800;
-		var y = (Math.random() * 100 + 450) % 600;
+		var y = (Math.random() * 50 + 400) % 600;
 		return {x: x, y: y};
 	}
 
@@ -358,11 +362,13 @@ function GameEngine(serverOrClient){
 		var pid = bodyToPlayerID[bodyId];
 		var pos = generateRespawnPos();
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
+		playerObjs[pid].setPosition(pos.x, pos.y);
+		console.log("revived player - ge");
 
 	}
 
 	this.revivePlayerIn = function(bodyId, time){
-		setTimeout( revivePlayer(bodyId), time);
+		setTimeout( function(){revivePlayer(bodyId);}, time);
 	}
 
 
@@ -482,13 +488,15 @@ function GameEngine(serverOrClient){
 				else{
 					//check for switch from alive to dead
 					if(playerObjs[pMsg.id].getBody().isAlive() == true && pMsg.isAlive == false){
-						console.log("you are dead");
-						playerObjs[pMsg.id].getBody().setDead();	
+						console.log("you are dead, " + pMsg.x + ", " + pMsg.y);
+						playerObjs[pMsg.id].getBody().setDead();
+						playerObjs[pMsg.id].setPosition(pMsg.x, pMsg.y);	
 					}
 					//check for switch from dead to alive
 					else if(playerObjs[pMsg.id].getBody().isAlive() == false && pMsg.isAlive == true){
 						console.log("reviving at: " + pMsg.x + ", " + pMsg.y);
 						playerObjs[pMsg.id].getBody().revive(pMsg.x, pMsg.y);
+						playerObjs[pMsg.id].setPosition(pMsg.x, pMsg.y);
 					}
 				}
 			}

@@ -4,7 +4,6 @@ var Body = require("./Body.js");
 
 module.exports = 
 
-
 function GameEngine(serverOrClient){
 
 	this.role = serverOrClient;
@@ -349,10 +348,13 @@ function GameEngine(serverOrClient){
 	}
 
 	this.AkilledB = function(aBodyId,bBodyId){
-		addPlayerScore(aBodyId);
-		console.log(playerObjs[aBodyId] + " killed " + playerObjs[bBodyId]);
-		this.revivePlayerIn(bBodyId, 5000);
+		console.log(aBodyId + ", " + bBodyId );
+		addPlayerScore(aBodyId);;
+		playerObjs[bodyToPlayerID[bBodyId]].setPosition(1000,1000);
+		console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
 		console.log("scheduled reviving player");
+
+		this.revivePlayerIn(bBodyId, 5000);
 	}
 
 	var generateRespawnPos = function(){
@@ -367,12 +369,12 @@ function GameEngine(serverOrClient){
 		var pos = generateRespawnPos();
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);
-		console.log("revived player");
+		console.log("revived player - ge: " + pos.x + ", " + pos.y);
 
 	}
 
 	this.revivePlayerIn = function(bodyId, time){
-		setTimeout( revivePlayer(bodyId), time);
+		setTimeout( function(){revivePlayer(bodyId);}, time);
 	}
 
 
@@ -492,13 +494,15 @@ function GameEngine(serverOrClient){
 				else{
 					//check for switch from alive to dead
 					if(playerObjs[pMsg.id].getBody().isAlive() == true && pMsg.isAlive == false){
-						console.log("you are dead");
-						playerObjs[pMsg.id].getBody().setDead();	
+						console.log("you are dead, " + pMsg.x + ", " + pMsg.y);
+						playerObjs[pMsg.id].getBody().setDead();
+						playerObjs[pMsg.id].setPosition(pMsg.x, pMsg.y);	
 					}
 					//check for switch from dead to alive
 					else if(playerObjs[pMsg.id].getBody().isAlive() == false && pMsg.isAlive == true){
 						console.log("reviving at: " + pMsg.x + ", " + pMsg.y);
 						playerObjs[pMsg.id].getBody().revive(pMsg.x, pMsg.y);
+						playerObjs[pMsg.id].setPosition(pMsg.x, pMsg.y);
 					}
 				}
 			}
@@ -515,10 +519,12 @@ function GameEngine(serverOrClient){
 					this.addPlayer(pMsg.id);
 				}
 
+				
 				//set position if alive
 				if(playerObjs[pMsg.id].getBody().isAlive()){
 					playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 				}
+				
 
 			}
 		}

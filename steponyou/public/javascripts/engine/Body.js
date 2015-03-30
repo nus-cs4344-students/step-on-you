@@ -92,6 +92,10 @@ function Body(w,h) {
 		renderY = py;
 	}
 
+	this.setAlive = function(){
+		isDead = false;
+	}
+
 	this.isAlive = function(){
 		return !isDead;
 	}

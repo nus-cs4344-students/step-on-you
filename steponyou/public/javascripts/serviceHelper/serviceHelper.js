@@ -34,6 +34,7 @@ function ServiceHelper(lobbyManager){
 
 					case "leave":
 					//console.log("NETWORK: " + message);
+					console.log("a client left the room");
 					callback("leave", message);
 
 				case "update":
@@ -73,6 +74,7 @@ function ServiceHelper(lobbyManager){
 	}
 
 	this.leaveRoom = function(playerId){
+		console.log("this client is leaving the room: " + playerId);
 		sendToServer({type:"leave", playerID:playerId});
 	}
 	

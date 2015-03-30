@@ -82,7 +82,7 @@ function Physics(gameEngine) {
 			if(Yinitial + body1.height <= body2.renderY + body2.getVecY() && Yfinal + body1.height >= body2.renderY + body2.getVecY() ){
 
 				if(body1.isPlayer() && body2.isPlayer()){
-					console.log("player 1 killed player 2");
+					console.log("this player killed other player");
 					if(gameEngine.role == "server"){
 						gameEngine.AkilledB( body1.objectID, body2.objectID);
 						body2.setDead();
@@ -130,7 +130,7 @@ function Physics(gameEngine) {
 			else if( Yinitial >= body2.renderY + body2.height + body2.getVecY() && Yfinal <= body2.renderY + body2.height + body2.getVecY()){
 
 				if(body1.isPlayer() && body2.isPlayer()){
-					console.log("player 2 killed player 1");
+					console.log("other player killed this player");
 
 					if(gameEngine.role == "server"){
 						gameEngine.AkilledB( body2.objectID, body1.objectID);

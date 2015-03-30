@@ -401,7 +401,7 @@ function GameEngine(serverOrClient){
 			y : obj.renderY,
 			character : charSprite,
 			status: "moving",
-			isDead: obj.isAlive(),
+			isAlive: obj.isAlive(),
 			score: playerScores[bodyToPlayerID[obj.objectID]],
 			direction : obj.orientation
 
@@ -427,8 +427,14 @@ function GameEngine(serverOrClient){
 		var physicObjects = physics.getPhysicObjects();
 		for(var i = 0; i < physicObjects.length; i++){
 			obj = physicObjects[i];
-			if(obj.isAlive())
+
+			if(this.role == 'client'){
+				if(obj.isAlive())
+					update.objects.push(generatePlayerUpdatePacket(obj));
+			}
+			else if(this.role == 'server'){
 				update.objects.push(generatePlayerUpdatePacket(obj));
+			}
 	
 			//console.log("x : " + obj.renderX + ", y : " + obj.renderY + ", w: " + obj.width + ", h: " + obj.height);
 
@@ -456,6 +462,9 @@ function GameEngine(serverOrClient){
 			for(var i = 0; i < playersData.length; i++){
 				//update all players that are not this player
 				var pMsg = playersData[i];
+				
+				//update score from server
+				playerScores[pMsg.id] = pMsg.score;
 
 				if(pMsg.id != thisPlayerID){
 
@@ -464,10 +473,23 @@ function GameEngine(serverOrClient){
 						this.addPlayer(pMsg.id);
 					}
 
-					
+					//set other player's position
 					playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
-					//update score from server
-					playerScores[pMsg.id] = pMsg.score;
+					
+					
+				}
+				//else if it this this player
+				else{
+					//check for switch from alive to dead
+					if(playerObjs[pMsg.id].getBody().isAlive() == true && pMsg.isAlive == false){
+						console.log("you are dead");
+						playerObjs[pMsg.id].getBody().setDead();	
+					}
+					//check for switch from dead to alive
+					else if(playerObjs[pMsg.id].getBody().isAlive() == false && pMsg.isAlive == true){
+						console.log("reviving at: " + pMsg.x + ", " + pMsg.y);
+						playerObjs[pMsg.id].getBody().revive(pMsg.x, pMsg.y);
+					}
 				}
 			}
 		}

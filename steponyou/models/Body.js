@@ -51,7 +51,7 @@ function Body(w,h) {
 	var jump = 0;
 	var jumped = false;
 
-	var isPlayer = false;
+	var isAPlayer = false;
 	var isDead = false;
 
 	//collision data
@@ -370,11 +370,11 @@ function Body(w,h) {
 	}
 
 	this.setIsPlayer = function(){
-		isPlayer = true;
+		isAPlayer = true;
 	}
 
 	this.isPlayer = function(){
-		return isPlayer;
+		return isAPlayer;
 	}
 
 }

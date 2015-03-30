@@ -92,6 +92,7 @@ function Physics(gameEngine) {
 					if(gameEngine.role == "server"){
 						gameEngine.AkilledB( body1.objectID, body2.objectID);
 						body2.setDead();
+						console.log("woots");
 						//return;
 					}
 					//if client
@@ -136,12 +137,15 @@ function Physics(gameEngine) {
 			//check if its a jumping but blocked-at top motion
 			else if( Yinitial >= body2.renderY + body2.height + body2.getVecY() && Yfinal <= body2.renderY + body2.height + body2.getVecY()){
 
+				//no need to handle kill as already handled by murderer
+				/*
 				if(body1.isPlayer() && body2.isPlayer()){
 					//console.log("player 2 killed player 1");
 
 					if(gameEngine.role == "server"){
 						gameEngine.AkilledB( body2.objectID, body1.objectID);
 						body1.setDead();
+						console.log("woots2");
 						//return;
 					}
 					//if client
@@ -150,6 +154,7 @@ function Physics(gameEngine) {
 
 					}
 				}
+				*/
 
 				overlap = (body1.renderY + body1.getVecY() ) - (body2.renderY + body2.height + body2.getVecY());
 				overlap = Math.abs(overlap);
@@ -269,6 +274,7 @@ function Physics(gameEngine) {
 		}
 	}
 
+/*
 	//check contact with other modbile elements
 	var checkContactWithOther = function(){
 		var body;
@@ -285,7 +291,18 @@ function Physics(gameEngine) {
 			}
 		}
 	}
+*/
 
+	//check contact with other modbile elements
+	var checkContactWithOther = function(body){
+	
+		//for all non-static bodies
+		for(var i = 0; i < physicObjects.length; i++){
+			if(body.objectID != physicObjects[i].objectID)	
+				checkCollision(body, physicObjects[i]);
+		}
+			
+	}
 
 
 	this.step = function(){

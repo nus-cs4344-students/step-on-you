@@ -190,14 +190,16 @@ function SuperMarioServer() {
 						case "move":
 							var player_id = message.playerID;
 							var keypress = message.keyPress;
-
+							console.log(player_id);
 							var rmNo = that.playerRoomNoMap[player_id];
 							console.log(that.playerRoomNoMap);
+							console.log("room is: " + rmNo);
 							that.rooms[rmNo].updatePlayer(player_id, keypress);
 							break;
 						
 						case "leave":
 							var player_id = message.playerID;
+							console.log("playerID: " + player_id + " left room");
 							that.count--;
 							var roomID = that.playerRoomNoMap[player_id];
 							if(roomID === undefined)

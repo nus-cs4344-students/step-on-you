@@ -283,7 +283,8 @@ function SuperMarioServer() {
 
 			var httpServer = http.createServer(app);
 			sock.installHandlers(httpServer, {prefix:'/mario'});
-			httpServer.listen(3000, '0.0.0.0');
+			httpServer.listen(3000, httpServer.address());
+
 			app.use(express.static(__dirname));
 
 		} catch (e) {

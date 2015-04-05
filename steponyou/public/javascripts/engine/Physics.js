@@ -26,6 +26,10 @@ function Physics(gameEngine) {
 		//console.log(body);
 	}
 
+	this.removePhysicalBody = function(bodyID){
+		delete physicObjects[bodyID];
+	}
+
 	this.addStaticBody = function(body){
 		body.isStatic = true;
 		body.setVecX(0);
@@ -292,7 +296,7 @@ function Physics(gameEngine) {
 	
 		//for all non-static bodies
 		for(var i = 0; i < physicObjects.length; i++){
-			if(body.objectID != physicObjects[i].objectID)	
+			if( physicObjects[i] != undefined && body.objectID != physicObjects[i].objectID)	
 				checkCollision(body, physicObjects[i]);
 		}
 			
@@ -305,6 +309,9 @@ function Physics(gameEngine) {
 
 		if(gameEngine.role =='server'){
 			for(var i = 0; i < physicObjects.length; i++){
+				if(physicObjects[i] == undefined){
+					continue;
+				}
 				body = physicObjects[i];
 				handleStepBody(body);
 

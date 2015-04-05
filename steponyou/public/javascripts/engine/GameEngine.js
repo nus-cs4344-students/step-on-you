@@ -3,7 +3,6 @@ function GameEngine(serverOrClient){
 	this.role = serverOrClient;
 	var that = this;
 	var physics = new Physics(that);
-	var numPlayers = 0;
 	var playerID = 0;
 	//var canvas = canvasObj;
 	//var ctx = canvas.getContext("2d");
@@ -22,14 +21,7 @@ function GameEngine(serverOrClient){
 
 	var currentFrameNumber = 0;
 	//stores the physics engine, index is frame number
-	var stateRecords = [];
-	//how far back to keep states of, in seconds
-	var recordTime = 8;
-	var garbageCollectionInterval = 5000; // 5 seconds
-	//keep about 5 seconds?
-	//1 record per frame
-	var maxNumStateRecords =  recordTime * FPS;
-	var lastDeletionPoint = 0;
+
 
 	var that = this;
 
@@ -42,29 +34,11 @@ function GameEngine(serverOrClient){
 		keyMap = keys;
 	}
 
-	var saveState = function(){
-		stateRecords[currentFrameNumber] = physics;
-	}
 
-	var rewindAndEmulate = function(){
-		
-	}
+
 
 	this.getPlayerPosition = function(pid){
 		return playerObjs[pid].getPosition();
-	}
-
-	//function to clean-up states that are too old
-	var garbageCollection = function(){
-		var deletonStart = lastDeletionPoint;
-		var deletionEnd = currentFrameNumber - maxNumStateRecords;
-
-		for(var i = deletonStart; i < deletionEnd; i++){
-			delete stateRecords[i];
-		}
-
-		lastDeletionPoint = deletionEnd;
-		setTimeout( function(){(garbageCollection);}, garbageCollectionInterval);
 	}
 
 
@@ -284,6 +258,16 @@ function GameEngine(serverOrClient){
 		return p;
 	}
 
+	this.removePlayer = function(playerID){
+		var bid = playerObjs[playerID].getBody().objectID;
+		physics.removePhysicalBody(bid);
+
+		delete bodyToPlayerID[bid];
+		delete playerObjs[playerID];
+
+
+	}
+
 	this.init = function(dataFromServer){
 
 		//map
@@ -432,6 +416,12 @@ function GameEngine(serverOrClient){
 
 		var physicObjects = physics.getPhysicObjects();
 		for(var i = 0; i < physicObjects.length; i++){
+
+			if(physicObjects[i] == undefined){
+				continue;
+			}
+
+
 			obj = physicObjects[i];
 
 			if(this.role == 'client'){

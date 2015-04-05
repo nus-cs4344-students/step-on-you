@@ -1,9 +1,7 @@
 
 var Body = require("./Body.js");
 
-
 module.exports = 
-
 function Physics(gameEngine) {
 
 	var physicObjects = [];
@@ -30,6 +28,10 @@ function Physics(gameEngine) {
 		physicObjects.push(body);
 		//console.log("mobile body added");
 		//console.log(body);
+	}
+
+	this.removePhysicalBody = function(bodyID){
+		delete physicObjects[bodyID];
 	}
 
 	this.addStaticBody = function(body){
@@ -298,7 +300,7 @@ function Physics(gameEngine) {
 	
 		//for all non-static bodies
 		for(var i = 0; i < physicObjects.length; i++){
-			if(body.objectID != physicObjects[i].objectID)	
+			if( physicObjects[i] != undefined && body.objectID != physicObjects[i].objectID)	
 				checkCollision(body, physicObjects[i]);
 		}
 			
@@ -311,6 +313,9 @@ function Physics(gameEngine) {
 
 		if(gameEngine.role =='server'){
 			for(var i = 0; i < physicObjects.length; i++){
+				if(physicObjects[i] == undefined){
+					continue;
+				}
 				body = physicObjects[i];
 				handleStepBody(body);
 

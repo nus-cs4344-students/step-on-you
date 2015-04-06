@@ -38,8 +38,9 @@ function ServiceHelper(lobbyManager){
 					var pid = message["id"];
 					if(pid !== undefined && pid !== null){
 						console.log("client "+pid+" left the room");
-
-						if(pid == gameEngine.thisPlayerID)
+						var currentPlayer = gameEngine.thisPlayerID;
+						gameEngine.removePlayer(pid);
+						if(pid == currentPlayer)
 							callback("leave", message);
 					}
 

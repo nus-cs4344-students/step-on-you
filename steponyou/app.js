@@ -191,12 +191,11 @@ function SuperMarioServer() {
 						case "move":
 							var player_id = message.playerID;
 							var keypress = message.keyPress;
-							console.log(player_id);
+							var timestamp = message.timestamp;
 							var rmNo = that.playerRoomNoMap[player_id];
-							console.log(that.playerRoomNoMap);
-							console.log("room is: " + rmNo);
+
 							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) 
-								that.rooms[rmNo].updatePlayer(player_id, keypress);
+								that.rooms[rmNo].updatePlayer(player_id, keypress, timestamp);
 							break;
 						
 						case "leave":
@@ -208,9 +207,9 @@ function SuperMarioServer() {
 								return;
 
 							that.rooms[roomID].removePlayer(player_id);
-							delete that.playerConnectionIDmap[conn.id];
+							// delete that.playerConnectionIDmap[conn.id];
 							delete that.playerRoomNoMap[player_id];
-							delete that.players[player_id];
+							// delete that.players[player_id];
 							// conn.write(JSON.stringify({type:"leave", status:"pass", id:player_id}));
 							break;
 

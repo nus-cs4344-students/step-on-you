@@ -51,8 +51,8 @@ module.exports = function Room(rmID){
 		socket.write(JSON.stringify(message));
 	};
 
-	this.updatePlayer = function(playerID, message){
-		this.gameEngine.simulatePlayer(playerID, message);
+	this.updatePlayer = function(playerID, message, timestamp){
+		this.gameEngine.simulatePlayer(playerID, message, timestamp);
 	};
 
 	this.generateUpdateState = function(){

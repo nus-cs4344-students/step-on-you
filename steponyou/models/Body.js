@@ -1,3 +1,4 @@
+var FixedQueue = require("./FixedQueue.js");
 
 module.exports = 
 
@@ -73,6 +74,9 @@ function Body(w,h) {
 
 	var supportingPlatform;
 	var permissible = true;
+
+	this.history = new FixedQueue(100);//Save last 100 states for rewinding
+
 
 	this.setPermissible = function(b){
 		permissible = b;

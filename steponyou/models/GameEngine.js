@@ -48,7 +48,7 @@ function GameEngine(serverOrClient){
 
 
 		//need function to simulate keys for other players
-	this.simulatePlayer = function(playerID, playerEvent, frameNumber){
+	this.simulatePlayer = function(playerID, playerEvent, timestamp){
 
 		var thatPlayer = playerObjs[playerID];
 
@@ -56,6 +56,7 @@ function GameEngine(serverOrClient){
 		if(this.role == 'server'){
 			var pos = playerEvent.pos;
 			thatPlayer.setPosition(pos.x, pos.y);
+			thatPlayer.pushHistory({timestamp:timestamp, position:pos});
 		}
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){

@@ -23,6 +23,11 @@ function Player(pid) {
 
 	this.applyGravity = true;
 
+
+	this.pushHistory = function(element){
+		body.history.push(element);
+	}
+
 	this.fallThrough = function(){
 		//if body supported below by a static platform
 		if(body.getBlockedDown() && body.getSupportingPlatform().isStatic && body.getSupportingPlatform().getPermissible()){

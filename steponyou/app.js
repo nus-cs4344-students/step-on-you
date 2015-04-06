@@ -195,7 +195,8 @@ function SuperMarioServer() {
 							var rmNo = that.playerRoomNoMap[player_id];
 							console.log(that.playerRoomNoMap);
 							console.log("room is: " + rmNo);
-							that.rooms[rmNo].updatePlayer(player_id, keypress);
+							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) 
+								that.rooms[rmNo].updatePlayer(player_id, keypress);
 							break;
 						
 						case "leave":
@@ -210,7 +211,7 @@ function SuperMarioServer() {
 							delete that.playerConnectionIDmap[conn.id];
 							delete that.playerRoomNoMap[player_id];
 							delete that.players[player_id];
-							conn.write(JSON.stringify({type:"leave", status:"pass", id:player_id}));
+							// conn.write(JSON.stringify({type:"leave", status:"pass", id:player_id}));
 							break;
 
 						default:

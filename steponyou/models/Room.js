@@ -21,6 +21,8 @@ module.exports = function Room(rmID){
 		return true;		
 	};
 	this.removePlayer = function(playerID){
+		this.broadcast({type:"leave", status:"pass", id:playerID});
+
 		delete this.players[playerID];
 		delete this.sockets[playerID];
 		//Remove player from game engine

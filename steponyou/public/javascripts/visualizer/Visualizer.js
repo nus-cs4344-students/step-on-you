@@ -42,8 +42,10 @@ Visualizer.prototype.update = function (data) {
 			this.updateObject(object);
 		} if (object.updateType == Configurations.KEYWORD_REMOVE) {
 			this.removeObject(object.id);
+			console.log("Remove player "+object.id);
 		}
 	}
+	// console.log(this.objects);
 	this.objectLayer.draw();
 };
 
@@ -67,11 +69,12 @@ Visualizer.prototype.removeObject = function(id) {
 	if (this.objects[id] == null) {
 		return;
 	}
-//remove visual
-var oldVisual = this.objects[id].presentation;
-oldVisual.remove();
-//remove model
-delete this.objects[id];
+	//remove visual
+	var oldVisual = this.objects[id].presentation;
+	oldVisual.remove();
+	//remove model
+	delete this.objects[id];
+
 };
 
 Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {

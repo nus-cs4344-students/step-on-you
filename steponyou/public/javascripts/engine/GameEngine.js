@@ -14,7 +14,7 @@ function GameEngine(serverOrClient){
 	var playerSprites = [];
 	var playerScores = [];
 
-	var thisPlayerID = 0;
+	this.thisPlayerID = 0;
 	this.isPlaying = false;
 	var FPS = 30;
 	this.timePerFrame = 1000/FPS;
@@ -113,12 +113,12 @@ function GameEngine(serverOrClient){
 	this.registerCurrentPlayer = function(playerID){
 		this.isPlaying = true;
 		player = playerObjs[playerID];
-		thisPlayerID = playerID;
+		this.thisPlayerID = playerID;
 		
 	}
 
 	this.getCurrentPlayer = function(){
-		return playerObjs[thisPlayerID];
+		return playerObjs[this.thisPlayerID];
 	}
 
 	this.processInput = function(){
@@ -262,8 +262,8 @@ function GameEngine(serverOrClient){
 	}
 
 	this.removePlayer = function(playerID){
-		if(playerID == thisPlayerID){
-			thisPlayerID = 0;
+		if(playerID == this.thisPlayerID){
+			this.thisPlayerID = 0;
 			this.isPlaying = false;
 		}
 		var bid = playerObjs[playerID].getBody().objectID;
@@ -302,7 +302,7 @@ function GameEngine(serverOrClient){
 
 	var gameLoop = function(){
 		currentFrameNumber++;
-		if(thisPlayerID != 0){
+		if(that.thisPlayerID != 0){
 			physics.step();
 		}
 		//debugRender();
@@ -484,7 +484,7 @@ function GameEngine(serverOrClient){
 				//update score from server
 				playerScores[pMsg.id] = pMsg.score;
 
-				if(pMsg.id != thisPlayerID){
+				if(pMsg.id != this.thisPlayerID){
 
 					//if other player does exist (null or undefined), add and create
 					if(playerObjs[pMsg.id] == null){

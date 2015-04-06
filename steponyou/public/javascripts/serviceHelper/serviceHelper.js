@@ -38,9 +38,12 @@ function ServiceHelper(lobbyManager){
 					var pid = message["id"];
 					if(pid !== undefined && pid !== null){
 						console.log("client "+pid+" left the room");
-						gameEngine.removePlayer(pid);
+
+						if(pid == gameEngine.thisPlayerID)
+							callback("leave", message);
 					}
-					callback("leave", message);
+
+					
 
 				case "update":
 					//console.log("NETWORKUPDATE: " + message.type);

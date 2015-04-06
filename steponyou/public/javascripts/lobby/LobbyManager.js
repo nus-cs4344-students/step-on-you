@@ -48,6 +48,8 @@ function LobbyManager () {
 			this.setRoom(data.status);
 		} else if (eventType == 'leave') {
 			console.log("LOBBY: on leave room result");
+			var pid = data["id"];
+			gameEngine.removePlayer(pid);
 			this.setRoom(data.status);
 		} else if (eventType == 'new_player') {
 			console.log("LOBBY: on player id assigned");

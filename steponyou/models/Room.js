@@ -24,6 +24,7 @@ module.exports = function Room(rmID){
 		delete this.players[playerID];
 		delete this.sockets[playerID];
 		//Remove player from game engine
+		this.gameEngine.removePlayer(playerID);
 	};
 	this.getCurrentNoOfPlayers = function(){
 		return Object.keys(this.players).length;
@@ -57,6 +58,7 @@ module.exports = function Room(rmID){
 		this.broadcast(updatePack);
 		//prepare update
 		setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
+
 	}
 
 

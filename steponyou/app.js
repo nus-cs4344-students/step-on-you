@@ -162,7 +162,8 @@ function SuperMarioServer() {
 						}
 					}
 					switch (message.type) {
-						case "join":						
+						case "join":
+							//TODO: Handle case when player join then leave room and rejoin room again
 							var rmID = message.roomID;				
 							var playerID = message.playerID;
 							var player = that.players[playerID];
@@ -209,7 +210,7 @@ function SuperMarioServer() {
 							delete that.playerConnectionIDmap[conn.id];
 							delete that.playerRoomNoMap[player_id];
 							delete that.players[player_id];
-							conn.write(JSON.stringify({type:"leave", status:"pass"}));
+							conn.write(JSON.stringify({type:"leave", status:"pass", id:player_id}));
 							break;
 
 						default:

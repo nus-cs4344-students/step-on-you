@@ -15,7 +15,7 @@ function GameEngine(serverOrClient){
 	var playerScores = [];
 
 	var thisPlayerID = 0;
-
+	this.isPlaying = false;
 	var FPS = 30;
 	this.timePerFrame = 1000/FPS;
 
@@ -44,7 +44,9 @@ function GameEngine(serverOrClient){
 
 		//need function to simulate keys for other players
 	this.simulatePlayer = function(playerID, playerEvent, frameNumber){
-
+		
+		if (!this.isPlaying)
+			return;
 		var thatPlayer = playerObjs[playerID];
 
 		var keysPressed = playerEvent.keyMap;
@@ -109,9 +111,10 @@ function GameEngine(serverOrClient){
 	}
 
 	this.registerCurrentPlayer = function(playerID){
+		this.isPlaying = true;
 		player = playerObjs[playerID];
 		thisPlayerID = playerID;
-		console.log("playerID: " + playerID);
+		
 	}
 
 	this.getCurrentPlayer = function(){
@@ -259,13 +262,30 @@ function GameEngine(serverOrClient){
 	}
 
 	this.removePlayer = function(playerID){
+		if(playerID == thisPlayerID){
+			thisPlayerID = 0;
+			this.isPlaying = false;
+		}
 		var bid = playerObjs[playerID].getBody().objectID;
 		physics.removePhysicalBody(bid);
 
 		delete bodyToPlayerID[bid];
 		delete playerObjs[playerID];
 
+		var update = {
+			type: "update",
+	    	packageType: "update",
+	    	objects: []
 
+		};
+
+		removePack = {
+			updateType : "remove",
+			id : playerID
+		};
+		update.objects.push(removePack);
+		visualizer.update(update);
+			
 	}
 
 	this.init = function(dataFromServer){
@@ -282,7 +302,9 @@ function GameEngine(serverOrClient){
 
 	var gameLoop = function(){
 		currentFrameNumber++;
-		physics.step();
+		if(thisPlayerID != 0){
+			physics.step();
+		}
 		//debugRender();
 		setTimeout( function(){gameLoop()}, that.timePerFrame );
 

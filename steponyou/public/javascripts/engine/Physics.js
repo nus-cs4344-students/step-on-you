@@ -27,7 +27,17 @@ function Physics(gameEngine) {
 	}
 
 	this.removePhysicalBody = function(bodyID){
+		
 		delete physicObjects[bodyID];
+		for(var i = physicObjects.length-1; i >= 0; i--){
+			var body = physicObjects[i];
+			if(body.objectID == bodyID){
+				console.log(physicObjects);
+				physicObjects.splice(i,1);
+				return;
+			}
+		}
+		
 	}
 
 	this.addStaticBody = function(body){

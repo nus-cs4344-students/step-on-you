@@ -1,7 +1,7 @@
 //init visualizer
 var assets = new AssetManager();
 var visualizer = new Visualizer();
-
+document.visualizer = visualizer;
 assets.load(function() {
     visualizer.init();
 });
@@ -59,6 +59,10 @@ lobbyManager.startConnection(setupGameEngin);
 
 
 var handleKey = function(e){
+    //Player is not playing, don't need to handle his key event
+    if(!gameEngine.isPlaying){
+        return;
+    }
     e = e || event; // to deal with IE
     keyMap[e.keyCode] = e.type == 'keydown';
     /*insert conditional here*/

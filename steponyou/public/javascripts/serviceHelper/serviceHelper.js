@@ -34,7 +34,12 @@ function ServiceHelper(lobbyManager){
 
 					case "leave":
 					//console.log("NETWORK: " + message);
-					console.log("a client left the room");
+					
+					var pid = message["id"];
+					if(pid !== undefined && pid !== null){
+						console.log("client "+pid+" left the room");
+						gameEngine.removePlayer(pid);
+					}
 					callback("leave", message);
 
 				case "update":

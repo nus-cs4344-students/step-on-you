@@ -126,11 +126,11 @@ var magnetometer  = function(event){
 //		
 //	}
 //	else{ //device is not flat
-		if(event.gamma < centerGamma){ //tilt left
+		if(event.gamma < centerGamma - 15){ //tilt left
 			tiltLeft = true;
 			tiltRight = false;
 		}
-		else if(event.gamma > centerGamma){ //tilt right
+		else if(event.gamma > centerGamma + 15){ //tilt right
 			tiltLeft = false;
 			tiltRight = true;
 		}
@@ -174,21 +174,24 @@ var checkOrientation = function(){
 		if(previousOrientation == 0){ //portrait
 			rotationCenter = 0;
 			centerGamma = 0;
+			document.getElementById("dori").innerHTML = "portrait";
 		}
 		else if(previousOrientation == -90){ //landscape rotate right
 			rotationCenter = -90;
 			centerGamma = 90;
+			document.getElementById("dori").innerHTML = "lright";
 		}
 		else if(previousOrientation == 90){ //landscape rotate left
 			rotationCenter = 90;
 			centerGamma = -90;
+			document.getElementById("dori").innerHTML = "lleft";
 		}
     }
 };
 
 //add mobile event listeners
 if(document.DeviceMotionEvent){
-	document.addEventListener("devicemotion", accelerometer, false);
+	window.addEventListener("devicemotion", accelerometer, false);
 	document.getElementById("dmotion").innerHTML = "yes";
 }else{
 	console.log("DeviceMotionEvent is not supported");

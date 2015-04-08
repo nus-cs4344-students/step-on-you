@@ -112,7 +112,8 @@ var accelerometer  = function(event){
 }
 
 var startAlpha;
-var centerGamma = 0;
+var gammaCenter = 0;
+var centerThreshold = 20;
 var magnetometer  = function(event){
 	document.getElementById("alph").innerHTML = event.alpha;
 	document.getElementById("bet").innerHTML = event.beta;
@@ -120,17 +121,13 @@ var magnetometer  = function(event){
 	if(startAlpha == null){ //init start compass
 		startAlpha = event.alpha;
 	}
-//	if(event.beta < 25 || event.beta > 155){ //device is flat
-//		var rotate;
-//		if(event.alpha
-//		
-//	}
-//	else{ //device is not flat
-		if(event.gamma < centerGamma - 15){ //tilt left
+	if(dOrient == 1){ //portrait
+		//[-90, 0) , 0, (0, 90]
+		if(event.gamma < gammaCenter - centerThreshold){ //tilt left
 			tiltLeft = true;
 			tiltRight = false;
 		}
-		else if(event.gamma > centerGamma + 15){ //tilt right
+		else if(event.gamma > gammaCenter + centerThreshold){ //tilt right
 			tiltLeft = false;
 			tiltRight = true;
 		}
@@ -138,8 +135,39 @@ var magnetometer  = function(event){
 			tiltLeft = false;
 			tiltRight = false;
 		}
-		convertMobileEvent();
-//	}
+	}
+	else if(dOrient == 0){ // landscape left
+		//[0, -90), -90, (90, 0]
+		if(event.gamma < 0 && event.gamma > gammaCenter + centerThreshold){ //tilt left
+			tiltLeft = true;
+			tiltRight = false;
+		}
+		else if(event.gamma > 0 + centerThreshold){ //tilt right
+			tiltLeft = false;
+			tiltRight = true;
+		}
+		else{ //neutral position
+			tiltLeft = false;
+			tiltRight = false;
+		}
+	}
+	else if(dOrient == 1){ // landscape right
+		//[0, 90), 90, (-90, 0]
+		if(event.gamma > centerGamma + centerThreshold){ //tilt left
+			tiltLeft = true;
+			tiltRight = false;
+		}
+		else if(event.gamma < 0 && event.gamma > -90 + centerThreshold){ //tilt right
+			tiltLeft = false;
+			tiltRight = true;
+		}
+		else{ //neutral position
+			tiltLeft = false;
+			tiltRight = false;
+		}
+	}
+
+	convertMobileEvent();
 }
 
 var startJump = function(){
@@ -167,23 +195,28 @@ var convertMobileEvent = function(){
 }
 
 var previousOrientation = window.orientation;
+var dOrient = 1;
 var checkOrientation = function(){
     if(window.orientation !== previousOrientation){
         previousOrientation = window.orientation;
 		console.log(previousOrientation);
 		if(previousOrientation == 0){ //portrait
+			dOrient = 1;
+			gammaCenter = 0;
 			rotationCenter = 0;
-			centerGamma = 0;
 			document.getElementById("dori").innerHTML = "portrait";
+			
 		}
 		else if(previousOrientation == -90){ //landscape rotate right
+			dOrient = 2;
+			gammaCenter = 90;
 			rotationCenter = -90;
-			centerGamma = 90;
 			document.getElementById("dori").innerHTML = "lright";
 		}
 		else if(previousOrientation == 90){ //landscape rotate left
+			dOrient = 1;
+			gammaCenter = -90;
 			rotationCenter = 90;
-			centerGamma = -90;
 			document.getElementById("dori").innerHTML = "lleft";
 		}
     }

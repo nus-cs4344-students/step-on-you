@@ -149,6 +149,9 @@ var endJump = function(){
 }
 
 var convertMobileEvent = function(){
+	if(!gameEngine.isPlaying){
+        return;
+    }
 	keyMap[37] = tiltLeft;
 	keyMap[38] = tapJump;
 	keyMap[39] = tiltRight;

@@ -142,7 +142,7 @@ var magnetometer  = function(event){
 			tiltLeft = true;
 			tiltRight = false;
 		}
-		else if(event.beta > mcenter + mThreshold){ //tilt right
+		else if(event.beta > mCenter + mThreshold){ //tilt right
 			tiltLeft = false;
 			tiltRight = true;
 		}
@@ -153,7 +153,7 @@ var magnetometer  = function(event){
 	}
 	else if(dOrient == 1){ // landscape right
 		//beta: +ve, 0 , -ve
-		if(event.beta > mcenter + mThreshold){ //tilt left
+		if(event.beta > mCenter + mThreshold){ //tilt left
 			tiltLeft = true;
 			tiltRight = false;
 		}

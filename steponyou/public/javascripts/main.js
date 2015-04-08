@@ -112,8 +112,8 @@ var accelerometer  = function(event){
 }
 
 var startAlpha;
-var gammaCenter = 0;
-var centerThreshold = 20;
+var mCenter = 0;
+var mThreshold = 20;
 var magnetometer  = function(event){
 	document.getElementById("alph").innerHTML = event.alpha;
 	document.getElementById("bet").innerHTML = event.beta;
@@ -122,12 +122,12 @@ var magnetometer  = function(event){
 		startAlpha = event.alpha;
 	}
 	if(dOrient == 1){ //portrait
-		//[-90, 0) , 0, (0, 90]
-		if(event.gamma < gammaCenter - centerThreshold){ //tilt left
+		//gamma: [-90, 0) , 0 , (0, 90]
+		if(event.gamma < mCenter - mThreshold){ //tilt left
 			tiltLeft = true;
 			tiltRight = false;
 		}
-		else if(event.gamma > gammaCenter + centerThreshold){ //tilt right
+		else if(event.gamma > mCenter + mThreshold){ //tilt right
 			tiltLeft = false;
 			tiltRight = true;
 		}
@@ -136,13 +136,13 @@ var magnetometer  = function(event){
 			tiltRight = false;
 		}
 	}
-	else if(dOrient == 0){ // landscape left
-		//[0, -90), -90, (90, 0]
-		if(event.gamma < 0 && event.gamma > gammaCenter + centerThreshold){ //tilt left
+	else if(dOrient == 0){ // landscape left 
+		//beta: -ve , 0 , +ve
+		if(event.beta < mCenter - mThreshold){ //tilt left
 			tiltLeft = true;
 			tiltRight = false;
 		}
-		else if(event.gamma > 0 + centerThreshold){ //tilt right
+		else if(event.beta > mcenter + mThreshold){ //tilt right
 			tiltLeft = false;
 			tiltRight = true;
 		}
@@ -152,12 +152,12 @@ var magnetometer  = function(event){
 		}
 	}
 	else if(dOrient == 1){ // landscape right
-		//[0, 90), 90, (-90, 0]
-		if(event.gamma > centerGamma + centerThreshold){ //tilt left
+		//beta: +ve, 0 , -ve
+		if(event.beta > mcenter + mThreshold){ //tilt left
 			tiltLeft = true;
 			tiltRight = false;
 		}
-		else if(event.gamma < 0 && event.gamma > -90 + centerThreshold){ //tilt right
+		else if(event.beta < mCenter - mThreshold){ //tilt right
 			tiltLeft = false;
 			tiltRight = true;
 		}

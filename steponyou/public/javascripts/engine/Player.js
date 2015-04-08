@@ -21,6 +21,13 @@ function Player(pid) {
 
 	this.applyGravity = true;
 
+	this.setDefaultVec = function(){
+		console.log("set default");
+		body.setDefaultVec();
+		console.log(body.getVecX() + " ," + body.getVecY());
+		acceleration = 50;
+	}
+
 	this.fallThrough = function(){
 		//if body supported below by a static platform
 		if(body.getBlockedDown() && body.getSupportingPlatform().isStatic && body.getSupportingPlatform().getPermissible()){
@@ -79,18 +86,18 @@ function Player(pid) {
 		body.setVecX(newVecX);
 		*/
 
-		
 		//body.setVecX(body.getVecX() - speed);
 		//var newAcc = body.getAccX() - acceleration;
 		var newAcc = - acceleration;
 
-		//console.log(newAcc);
+		
 	
 		
 		if( Math.abs(newAcc) > maxAccX ){
 			newAcc *=   maxAccX / Math.abs(newAcc);
 		}
 
+		//console.log("leftAcc: "  + newAcc);
 
 		//console.log(newAcc);
 		//console.log(maxAccX / Math.abs(newAcc));

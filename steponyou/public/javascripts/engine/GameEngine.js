@@ -252,7 +252,7 @@ function GameEngine(serverOrClient){
 		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
 		p.setPosition( 400, 450);
     	p.faceLeft();
-
+    	p.setDefaultVec();
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
 
 		//initialize player score

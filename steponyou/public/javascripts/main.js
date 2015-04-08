@@ -107,12 +107,16 @@ var accelerometer  = function(event){
 		tiltLeft = false;
 		tiltRight = false;
 	}
+	document.getElementById("calcr").innerHTML = rotation;
 	convertMobileEvent();
 }
 
 var startAlpha;
 var centerGamma = 0;
 var magnetometer  = function(event){
+	document.getElementById("alph").innerHTML = event.alpha;
+	document.getElementById("bet").innerHTML = event.beta;
+	document.getElementById("gamm").innerHTML = event.gamma;
 	if(startAlpha == null){ //init start compass
 		startAlpha = event.alpha;
 	}
@@ -185,14 +189,18 @@ var checkOrientation = function(){
 //add mobile event listeners
 if(document.DeviceMotionEvent){
 	document.addEventListener("devicemotion", accelerometer, false);
+	document.getElementById("dmotion").innerHTML = "yes";
 }else{
 	console.log("DeviceMotionEvent is not supported");
+	document.getElementById("dmotion").innerHTML = "no";
 }
 
 if(window.DeviceOrientationEvent){
 	window.addEventListener("deviceorientation", magnetometer, false);
+	document.getElementById("dmOrient").innerHTML = "yes";
 }else{
 	console.log("DeviceOrientationEvent is not supported");
+	document.getElementById("dmOrient").innerHTML = "no";
 }
 
 window.addEventListener("touchstart", startJump, false);

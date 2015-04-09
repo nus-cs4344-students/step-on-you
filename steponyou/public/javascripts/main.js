@@ -275,5 +275,4 @@ else if(window.orientation == 90){ //lanscape left
 }
 else if(window.orientation == -90){ //lanscape right
 	dOrient = 2;
->>>>>>> c8c35eb031643d42f002e05d0b60b8e04463ec72
 }

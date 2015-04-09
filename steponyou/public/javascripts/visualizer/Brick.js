@@ -4,9 +4,10 @@ function Brick (model) {
 		y: model.y,
 		width: model.width, 
 		height: model.height,
-		fill: 'red',
-        stroke: 'black',
-        strokeWidth: 1
+		fill: 'black',
+		cornerRadius: 5,
+        	stroke: 'black',
+        	opacity: 0.5
 	});
 	this.parent.constructor.call(this, model, visual);
 }

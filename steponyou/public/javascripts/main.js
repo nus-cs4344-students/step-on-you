@@ -41,6 +41,10 @@ var setupGameEngin = function (playerID) {
 
     gameEngine.start();
 
+/*
+    var map = gameEngine.getMap();
+    visualizer.updateMap(map);
+*/
     updateVisualizer();
     updateServer();
 }

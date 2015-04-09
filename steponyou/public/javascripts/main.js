@@ -115,13 +115,14 @@ var startAlpha;
 var mCenter = 0;
 var mThreshold = 20;
 var magnetometer  = function(event){
-	document.getElementById("alph").innerHTML = event.alpha;
-	document.getElementById("bet").innerHTML = event.beta;
-	document.getElementById("gamm").innerHTML = event.gamma;
+	document.getElementById("alph").innerHTML = Math.round(event.alpha);
+	document.getElementById("bet").innerHTML = Math.round(event.beta);
+	document.getElementById("gamm").innerHTML = Math.round(event.gamma);
 	if(startAlpha == null){ //init start compass
 		startAlpha = event.alpha;
 	}
 	if(dOrient == 1){ //portrait
+		document.getElementById("mbranch").innerHTML = "portrait";
 		//gamma: [-90, 0) , 0 , (0, 90]
 		if(event.gamma < mCenter - mThreshold){ //tilt left
 			tiltLeft = true;
@@ -137,6 +138,7 @@ var magnetometer  = function(event){
 		}
 	}
 	else if(dOrient == 0){ // landscape left 
+		document.getElementById("mbranch").innerHTML = "lleft";
 		//beta: -ve , 0 , +ve
 		if(event.beta < mCenter - mThreshold){ //tilt left
 			tiltLeft = true;
@@ -151,7 +153,8 @@ var magnetometer  = function(event){
 			tiltRight = false;
 		}
 	}
-	else if(dOrient == 1){ // landscape right
+	else if(dOrient == 2){ // landscape right
+		document.getElementById("mbranch").innerHTML = "lright";
 		//beta: +ve, 0 , -ve
 		if(event.beta > mCenter + mThreshold){ //tilt left
 			tiltLeft = true;
@@ -188,6 +191,10 @@ var convertMobileEvent = function(){
 	keyMap[38] = tapJump;
 	keyMap[39] = tiltRight;
 	
+	document.getElementById("tleft").innerHTML = tiltLeft;
+	document.getElementById("tright").innerHTML = tiltRight;
+	document.getElementById("tjump").innerHTML = tapJump;
+	
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
     gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent);
@@ -202,20 +209,16 @@ var checkOrientation = function(){
 		console.log(previousOrientation);
 		if(previousOrientation == 0){ //portrait
 			dOrient = 1;
-			gammaCenter = 0;
 			rotationCenter = 0;
 			document.getElementById("dori").innerHTML = "portrait";
-			
 		}
 		else if(previousOrientation == -90){ //landscape rotate right
 			dOrient = 2;
-			gammaCenter = 90;
 			rotationCenter = -90;
 			document.getElementById("dori").innerHTML = "lright";
 		}
 		else if(previousOrientation == 90){ //landscape rotate left
-			dOrient = 1;
-			gammaCenter = -90;
+			dOrient = 0;
 			rotationCenter = 90;
 			document.getElementById("dori").innerHTML = "lleft";
 		}

@@ -35,6 +35,7 @@ function Physics(gameEngine) {
 		for(var i = physicObjects.length-1; i >= 0; i--){
 			var body = physicObjects[i];
 			if(body.objectID == bodyID){
+				console.log(physicObjects);
 				physicObjects.splice(i,1);
 				return;
 			}
@@ -345,6 +346,10 @@ function Physics(gameEngine) {
 
 
 	var handleStepBody = function(body){
+
+		if(!body.isAlive()){
+			return;
+		}
 
 		var newVecX = body.getVecX() + ( body.getAccX() ) * 1000/60/1000;
 		var newVecY = body.getVecY() + (body.getAccY() ) * 1000/60/1000;

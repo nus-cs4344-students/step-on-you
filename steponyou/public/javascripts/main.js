@@ -114,7 +114,7 @@ var accelerometer  = function(event){
 var startAlpha;
 var mCenter = 0;
 var pThreshold = 20;
-var lThreshold = 15;
+var lThreshold = 10;
 var magnetometer  = function(event){
 	//document.getElementById("alph").innerHTML = Math.round(event.alpha);
 	//document.getElementById("bet").innerHTML = Math.round(event.beta);
@@ -125,11 +125,11 @@ var magnetometer  = function(event){
 	if(dOrient == 1){ //portrait
 		//document.getElementById("mbranch").innerHTML = "portrait";
 		//gamma: [-90, 0) , 0 , (0, 90]
-		if(event.gamma < mCenter - mThreshold){ //tilt left
+		if(event.gamma < mCenter - pThreshold){ //tilt left
 			tiltLeft = true;
 			tiltRight = false;
 		}
-		else if(event.gamma > mCenter + mThreshold){ //tilt right
+		else if(event.gamma > mCenter + pThreshold){ //tilt right
 			tiltLeft = false;
 			tiltRight = true;
 		}

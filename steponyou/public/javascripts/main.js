@@ -107,7 +107,7 @@ var accelerometer  = function(event){
 		tiltLeft = false;
 		tiltRight = false;
 	}
-	document.getElementById("calcr").innerHTML = rotation;
+	//document.getElementById("calcr").innerHTML = rotation;
 	convertMobileEvent();
 }
 
@@ -115,14 +115,14 @@ var startAlpha;
 var mCenter = 0;
 var mThreshold = 20;
 var magnetometer  = function(event){
-	document.getElementById("alph").innerHTML = Math.round(event.alpha);
-	document.getElementById("bet").innerHTML = Math.round(event.beta);
-	document.getElementById("gamm").innerHTML = Math.round(event.gamma);
+	//document.getElementById("alph").innerHTML = Math.round(event.alpha);
+	//document.getElementById("bet").innerHTML = Math.round(event.beta);
+	//document.getElementById("gamm").innerHTML = Math.round(event.gamma);
 	if(startAlpha == null){ //init start compass
 		startAlpha = event.alpha;
 	}
 	if(dOrient == 1){ //portrait
-		document.getElementById("mbranch").innerHTML = "portrait";
+		//document.getElementById("mbranch").innerHTML = "portrait";
 		//gamma: [-90, 0) , 0 , (0, 90]
 		if(event.gamma < mCenter - mThreshold){ //tilt left
 			tiltLeft = true;
@@ -138,7 +138,7 @@ var magnetometer  = function(event){
 		}
 	}
 	else if(dOrient == 0){ // landscape left 
-		document.getElementById("mbranch").innerHTML = "lleft";
+		//document.getElementById("mbranch").innerHTML = "lleft";
 		//beta: -ve , 0 , +ve
 		if(event.beta < mCenter - mThreshold){ //tilt left
 			tiltLeft = true;
@@ -154,7 +154,7 @@ var magnetometer  = function(event){
 		}
 	}
 	else if(dOrient == 2){ // landscape right
-		document.getElementById("mbranch").innerHTML = "lright";
+		//document.getElementById("mbranch").innerHTML = "lright";
 		//beta: +ve, 0 , -ve
 		if(event.beta > mCenter + mThreshold){ //tilt left
 			tiltLeft = true;
@@ -191,9 +191,9 @@ var convertMobileEvent = function(){
 	keyMap[38] = tapJump;
 	keyMap[39] = tiltRight;
 	
-	document.getElementById("tleft").innerHTML = tiltLeft;
-	document.getElementById("tright").innerHTML = tiltRight;
-	document.getElementById("tjump").innerHTML = tapJump;
+	//document.getElementById("tleft").innerHTML = tiltLeft;
+	//document.getElementById("tright").innerHTML = tiltRight;
+	//document.getElementById("tjump").innerHTML = tapJump;
 	
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
@@ -210,17 +210,17 @@ var checkOrientation = function(){
 		if(previousOrientation == 0){ //portrait
 			dOrient = 1;
 			rotationCenter = 0;
-			document.getElementById("dori").innerHTML = "portrait";
+			//document.getElementById("dori").innerHTML = "portrait";
 		}
 		else if(previousOrientation == -90){ //landscape rotate right
 			dOrient = 2;
 			rotationCenter = -90;
-			document.getElementById("dori").innerHTML = "lright";
+			//document.getElementById("dori").innerHTML = "lright";
 		}
 		else if(previousOrientation == 90){ //landscape rotate left
 			dOrient = 0;
 			rotationCenter = 90;
-			document.getElementById("dori").innerHTML = "lleft";
+			//document.getElementById("dori").innerHTML = "lleft";
 		}
     }
 };
@@ -228,18 +228,18 @@ var checkOrientation = function(){
 //add mobile event listeners
 if(document.DeviceMotionEvent){
 	window.addEventListener("devicemotion", accelerometer, false);
-	document.getElementById("dmotion").innerHTML = "yes";
+	//document.getElementById("dmotion").innerHTML = "yes";
 }else{
 	console.log("DeviceMotionEvent is not supported");
-	document.getElementById("dmotion").innerHTML = "no";
+	//document.getElementById("dmotion").innerHTML = "no";
 }
 
 if(window.DeviceOrientationEvent){
 	window.addEventListener("deviceorientation", magnetometer, false);
-	document.getElementById("dmOrient").innerHTML = "yes";
+	//document.getElementById("dmOrient").innerHTML = "yes";
 }else{
 	console.log("DeviceOrientationEvent is not supported");
-	document.getElementById("dmOrient").innerHTML = "no";
+	//document.getElementById("dmOrient").innerHTML = "no";
 }
 
 window.addEventListener("touchstart", startJump, false);

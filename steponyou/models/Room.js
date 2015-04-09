@@ -9,6 +9,9 @@ module.exports = function Room(rmID){
 	this.gameEngine.init(null);
 	this.gameEngine.start();
 	var that = this;
+	this.states = [];
+	this.inputHistory = [];
+
 	this.addPlayer = function(player,conn){
 		if(this.getCurrentNoOfPlayers() == MAX_NO_PLAYERS){
 			return false;

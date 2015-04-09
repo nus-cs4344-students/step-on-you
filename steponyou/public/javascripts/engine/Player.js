@@ -11,8 +11,8 @@ function Player(pid) {
 	var jump = 200;
 	var Scale = 1;
 
-	body.width = 50;
-	body.height = 50;
+	body.width = 100;
+	body.height = 100;
 
 	var maxAccX = 2000;
 	var maxAccY = 20;
@@ -20,6 +20,13 @@ function Player(pid) {
 	var jumpAcc = 65;
 
 	this.applyGravity = true;
+
+	this.setDefaultVec = function(){
+		console.log("set default");
+		body.setDefaultVec();
+		console.log(body.getVecX() + " ," + body.getVecY());
+		acceleration = 50;
+	}
 
 	this.fallThrough = function(){
 		//if body supported below by a static platform
@@ -79,18 +86,18 @@ function Player(pid) {
 		body.setVecX(newVecX);
 		*/
 
-		
 		//body.setVecX(body.getVecX() - speed);
 		//var newAcc = body.getAccX() - acceleration;
 		var newAcc = - acceleration;
 
-		//console.log(newAcc);
+		console.log(body.width + ", " +  body.height);
 	
 		
 		if( Math.abs(newAcc) > maxAccX ){
 			newAcc *=   maxAccX / Math.abs(newAcc);
 		}
 
+		//console.log("leftAcc: "  + newAcc);
 
 		//console.log(newAcc);
 		//console.log(maxAccX / Math.abs(newAcc));

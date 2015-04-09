@@ -11,7 +11,6 @@ function GameEngine(serverOrClient){
 
 	var bodyToPlayerID = [];
 
-	var playerSprites = [];
 	var playerScores = [];
 
 	this.thisPlayerID = 0;
@@ -30,15 +29,160 @@ function GameEngine(serverOrClient){
 
 	var keyMap = [];
 
+	var map = [];
+
+
+	var generateMap = function(mapWidth,mapHeight){
+		var offset = 20;
+		//define borders
+		//ground
+		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
+		//ceiling
+		map.push( { x:0, y:0, width:offset, height:offset, permissible:false  } );
+		//left
+		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
+		//right
+		map.push({x:mapWidth-offset, y:0, width:offset, height:mapHeight, permissible:false});
+
+		//floating platforms
+		map.push(generateFloatingPlatforms());
+
+	}
+
+	//hard coded for now
+	var generateFloatingPlatforms = function(){
+		return {x:200, y:350, width:100, height:20, permissible:false};
+	}
+
+	var installMap = function(){
+		for(var i = 0; i < map.length; i++){
+			installPlatform(map[i]);
+		}
+	}
+
+	var installPlatform = function(plane){
+		var p = createPlatform(plane.x, plane.y, plane.width, plane.height, plane.permissible);
+		physics.addStaticBody(p);
+	}
+
+	this.getMap = function(){
+		return map;
+	}
+
+	var createPlatform = function(x,y,w,h,permissible){
+		var f = new Body();
+		f.height = h;
+		f.width = w;
+		f.x = x;
+		f.y = y;
+		f.renderX = f.x;
+		f.renderY = f.y;
+		f.isStatic = true;
+		f.setPermissible(permissible);
+		console.log("created platform at: " + f.x + ", " + f.y + " width: " + f.width + " height: " + f.height);
+		return f;
+	}
+
+	//load / create map
+	//dummy function for now
+	var loadMap = function(){
+		console.log("loading map");
+		/*
+		var ground = new createPlane();
+		var l = createLeft();
+		var r = createRight();
+		var f = createFloat();
+
+		physics.addStaticBody(ground);
+		physics.addStaticBody(l);
+		physics.addStaticBody(r);
+		physics.addStaticBody(f);
+		*/
+		generateMap(800,600);
+		console.log("generated map");
+		installMap();
+		console.log("installed map");
+	}
+
+
+	//create a flat ground to use as map
+	var createPlane = function(){
+		var body = new Body();
+		//body.width = canvas.width;
+		body.width = 800;
+		body.height = 20;
+		body.x = 0;
+		body.renderX = 0;
+		
+		//body.y = canvas.height - body.height;
+		//body.renderY = canvas.height - body.height;
+
+		body.renderY = 500;
+		body.y = body.renderY;
+
+		body.isStatic = true;
+
+		return body;
+	}
+
+	//create sides
+	var createLeft = function(){
+		var left = new Body();
+		//left.height = canvas.height;
+		left.height = 600;
+		left.width = 20;
+		left.x = 0;
+		left.renderX = 0;
+		left.y = 0;
+		left.renderY = 0;
+		left.isStatic = true;
+
+		return left;
+	}
+
+	var createRight = function(){
+		var right = new Body();
+		//right.height = canvas.height;
+		right.height = 600;
+		right.width = 20;
+		//right.x = canvas.width - 20;
+		//right.renderX = canvas.width-20;
+		right.x = 800 - 20;
+		right.renderX = 800 - 20;
+		
+		right.y = 0;
+		right.renderY = 0;
+		right.isStatic = true;
+
+		return right;
+	}
+
+	var createFloat = function(){
+		var f = new Body();
+		f.height = 10;
+		f.width = 100;
+		f.x = 200;
+		f.y = 500 - 150;
+		f.renderX = f.x;
+		f.renderY = f.y;
+		f.isStatic = true;
+		f.setPermissible(true);
+		return f;
+	}
+
+	//generate spawnPosition
+
+
+
 	this.registerKeys = function(keys){
 		keyMap = keys;
 	}
 
-
-
-
 	this.getPlayerPosition = function(pid){
-		return playerObjs[pid].getPosition();
+
+		if(!playerObjs[pid] == null)
+			return playerObjs[pid].getPosition();
+		return -10;
 	}
 
 
@@ -225,21 +369,6 @@ function GameEngine(serverOrClient){
 		return f;
 	}
 
-	//load / create map
-	//dummy function for now
-	var loadMap = function(){
-		
-		var ground = new createPlane();
-		var l = createLeft();
-		var r = createRight();
-		var f = createFloat();
-
-		physics.addStaticBody(ground);
-		physics.addStaticBody(l);
-		physics.addStaticBody(r);
-		physics.addStaticBody(f);
-	}
-
 	//generate spawnPosition
 
 	this.addPlayer = function(newPlayerID){
@@ -252,7 +381,7 @@ function GameEngine(serverOrClient){
 		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
 		p.setPosition( 400, 450);
     	p.faceLeft();
-
+    	p.setDefaultVec();
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
 
 		//initialize player score
@@ -289,7 +418,7 @@ function GameEngine(serverOrClient){
 	}
 
 	this.init = function(dataFromServer){
-
+		console.log("initializing");
 		//map
 		loadMap();
 		//players
@@ -341,6 +470,10 @@ function GameEngine(serverOrClient){
 		}
 	}
 
+	var retrieveMapData = function(){
+		return map;
+	}
+
 	var addPlayerScore = function(playerBodyId){
 
 		playerScores[bodyToPlayerID[playerBodyId]]++;
@@ -369,7 +502,7 @@ function GameEngine(serverOrClient){
 		var pos = generateRespawnPos();
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);
-		console.log("revived player - ge");
+		console.log("revived player  at " + pos.x + ", " + pos.y);
 
 	}
 

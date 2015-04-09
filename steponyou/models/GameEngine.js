@@ -58,7 +58,7 @@ function GameEngine(serverOrClient){
 
 	//hard coded for now
 	var generateFloatingPlatforms = function(){
-		return {x:200, y:350, width:100, height:20, permissible:false};
+		return {x:200, y:420, width:100, height:20, permissible:true};
 	}
 
 	var installMap = function(){

@@ -75,8 +75,6 @@ function Body(w,h) {
 	var supportingPlatform;
 	var permissible = true;
 
-	this.history = new FixedQueue(100);//Save last 100 states for rewinding
-
 	this.setDefaultVec = function(){
 		vecX = 0;
 		vecY = 0;

@@ -49,7 +49,7 @@ var setupGameEngin = function (playerID) {
     visualizer.updateMap(map);
 
     updateVisualizer();
-    updateServer();
+    //updateServer();
 }
    
 var updateVisualizer = function(){

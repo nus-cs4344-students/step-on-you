@@ -247,6 +247,16 @@ window.addEventListener("touchstart", startJump, false);
 window.addEventListener("touchmove", startJump, false);
 window.addEventListener("touchend", endJump, false);
 window.addEventListener("touchcancel", endJump, false);
-
 window.addEventListener("resize", checkOrientation, false);
 window.addEventListener("orientationchange", checkOrientation, false);
+
+//check start orientation
+if(window.orientation == 0){ //portrait
+	dOrient = 1;
+}
+else if(window.orientation == 90){ //lanscape left
+	dOrient = 0;
+}
+else if(window.orientation == -90){ //lanscape right
+	dOrient = 2;
+}

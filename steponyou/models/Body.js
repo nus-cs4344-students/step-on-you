@@ -77,6 +77,12 @@ function Body(w,h) {
 
 	this.history = new FixedQueue(100);//Save last 100 states for rewinding
 
+	this.setDefaultVec = function(){
+		vecX = 0;
+		vecY = 0;
+		accX = 0;
+		accY = 0;
+	}
 
 	this.setPermissible = function(b){
 		permissible = b;

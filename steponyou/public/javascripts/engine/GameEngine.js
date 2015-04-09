@@ -30,12 +30,57 @@ function GameEngine(serverOrClient){
 
 	var keyMap = [];
 
+	var map = [];
+
+	this.generateMap = function(mapWidth,mapHeight){
+		var offset = 20;
+		//define borders
+		//ground
+		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
+		//ceiling
+		map.push( { x:0, y:0, width:offset, height:offset, permissible:false  } );
+		//left
+		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
+		//right
+		map.push({x:mapWidth-offset, y:0, width:offset, height:mapHeight, permissible:false});
+
+		//floating platforms
+		map.push(generateFloatingPlatforms());
+
+	}
+
+	//hard coded for now
+	var generateFloatingPlatforms = function(){
+		return {x:200, y:350, width:100, height:20, permissible:false};
+	}
+
+	this.installMap = function(){
+		for(var i = 0; i < map.length; i++){
+			installPlatform(map[i]);
+		}
+	}
+
+	var installPlatform = function(plane){
+		var p = createPlatform(plane.x, plane.y, plane.w, plane.h, plane.permissible);
+		physics.addStaticBody(p);
+	}
+
+	var createPlatform = function(x,y,w,h,permissible){
+		var f = new Body();
+		f.height = h;
+		f.width = w;
+		f.x = x;
+		f.y = y;
+		f.renderX = f.x;
+		f.renderY = f.y;
+		f.isStatic = true;
+		f.setPermissible(permissible);
+		return f;
+	}
+
 	this.registerKeys = function(keys){
 		keyMap = keys;
 	}
-
-
-
 
 	this.getPlayerPosition = function(pid){
 		return playerObjs[pid].getPosition();
@@ -252,7 +297,7 @@ function GameEngine(serverOrClient){
 		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
 		p.setPosition( 400, 450);
     	p.faceLeft();
-
+    	p.setDefaultVec();
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
 
 		//initialize player score
@@ -339,6 +384,10 @@ function GameEngine(serverOrClient){
 			ctx.fillRect(obj.renderX, obj.renderY, obj.width, obj.height);
 			//console.log("x : " + obj.renderX + ", y : " + obj.renderY + ", w: " + obj.width + ", h: " + obj.height);
 		}
+	}
+
+	var retrieveMapData = function(){
+		return map;
 	}
 
 	var addPlayerScore = function(playerBodyId){

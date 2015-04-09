@@ -355,6 +355,8 @@ function Physics(gameEngine) {
 		if(Math.abs(newVecX) > MaxVecX){
 			newVecX *= MaxVecX / Math.abs(newVecX);
 		}
+
+		//console.log("newVecX : " + newVecX);
 		
 
 		if(Math.abs(newVecY) > MaxVecY){

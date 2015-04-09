@@ -42,6 +42,7 @@ var setupGameEngin = function (playerID) {
     gameEngine.start();
 
     updateVisualizer();
+    updateServer();
 }
    
 var updateVisualizer = function(){
@@ -72,6 +73,13 @@ var handleKey = function(e){
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
     gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent);
-	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
+	//lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 
+}
+
+var updateServer = function(){
+     var playerEvent = { keyMap : keyMap,
+                        pos :  thisPlayer.getPosition() };
+    lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
+    setTimeout(function(){updateServer();} , 33 );
 }

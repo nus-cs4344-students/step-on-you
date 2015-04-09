@@ -23,6 +23,12 @@ function Player(pid) {
 
 	this.applyGravity = true;
 
+	this.setDefaultVec = function(){
+		console.log("set default");
+		body.setDefaultVec();
+		console.log(body.getVecX() + " ," + body.getVecY());
+		acceleration = 50;
+	}
 
 	this.pushHistory = function(element){
 		body.history.push(element);

@@ -58,7 +58,7 @@ function GameEngine(serverOrClient){
 
 	//hard coded for now
 	var generateFloatingPlatforms = function(){
-		return {x:200, y:350, width:100, height:20, permissible:false};
+		return {x:200, y:420, width:100, height:20, permissible:true};
 	}
 
 	var installMap = function(){
@@ -134,7 +134,7 @@ function GameEngine(serverOrClient){
 		if(this.role == 'server'){
 			var pos = playerEvent.pos;
 			thatPlayer.setPosition(pos.x, pos.y);
-			
+			thatPlayer.pushHistory({timestamp:timestamp, position:pos});
 		}
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){

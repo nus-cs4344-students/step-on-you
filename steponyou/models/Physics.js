@@ -35,6 +35,7 @@ function Physics(gameEngine) {
 		for(var i = physicObjects.length-1; i >= 0; i--){
 			var body = physicObjects[i];
 			if(body.objectID == bodyID){
+				console.log(physicObjects);
 				physicObjects.splice(i,1);
 				return;
 			}

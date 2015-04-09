@@ -108,27 +108,37 @@ function SuperMarioServer() {
 				conn.on('close', function () {
 					var playerID = that.playerConnectionIDmap[conn.id];					
 					var roomID = that.playerRoomNoMap[playerID];
-					
-					delete that.playerConnectionIDmap[conn.id];
-					delete that.players[playerID];
+					// if(that.rooms[roomID].getPlayer(playerID) != null){
+					// 	that.rooms[roomID].getPlayer(playerID).status = 2;
+					// }
 					if(roomID === undefined)
-						//Player has left room
 						return;
 
 					if(that.rooms[roomID].getPlayer(playerID) == null){
 						return;
 					}
-
-					//Player has not left room
-
-					if(that.playerRoomNoMap[playerID] !== undefined && that.playerRoomNoMap[playerID] !== null){
-						//This person has not leave room yet but disconnect -> Reduce number of player
-						that.count--;
-					}
-
+					that.count--;
 					that.rooms[roomID].removePlayer(playerID);
+					delete that.playerConnectionIDmap[conn.id];
 					delete that.playerRoomNoMap[playerID];
+					delete that.players[playerID];
 
+					// Wait for 15s then Remove player who wants to quit/closed the window
+					// setTimeout(function(){
+						// if(that.players[playerID].status == 2){
+							//This player has not been able to connect back after 15s => remove him
+							// that.count--;
+							// that.rooms[roomID].removePlayer(playerID);
+							// delete that.playerConnectionIDmap[conn.ID];
+							// delete that.playerRoomNoMap[playerID];
+							// delete that.players[playerID];
+						// }else{
+							//This player has changed connection id since he reconnected
+							//Remove the old connection id;
+							// delete that.playerConnectionIDmap[conn.ID];
+						// }
+
+					// },15000);
 					
 				});
 

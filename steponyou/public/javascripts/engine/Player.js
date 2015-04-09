@@ -90,7 +90,7 @@ function Player(pid) {
 		//var newAcc = body.getAccX() - acceleration;
 		var newAcc = - acceleration;
 
-		
+		console.log(body.width + ", " +  body.height);
 	
 		
 		if( Math.abs(newAcc) > maxAccX ){

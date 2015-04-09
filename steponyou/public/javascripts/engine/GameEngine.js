@@ -11,7 +11,6 @@ function GameEngine(serverOrClient){
 
 	var bodyToPlayerID = [];
 
-	var playerSprites = [];
 	var playerScores = [];
 
 	this.thisPlayerID = 0;
@@ -31,6 +30,7 @@ function GameEngine(serverOrClient){
 	var keyMap = [];
 
 	var map = [];
+
 
 	var generateMap = function(mapWidth,mapHeight){
 		var offset = 20;

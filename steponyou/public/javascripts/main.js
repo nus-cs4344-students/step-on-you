@@ -29,6 +29,8 @@ document.addEventListener('keyup', function(event) {
 });
 
 var setupGameEngin = function (playerID) {
+    gameEngine = new GameEngine("client");
+    //visualizer.reset();
     gameEngine.init(null);
 
     //add to engine
@@ -40,6 +42,10 @@ var setupGameEngin = function (playerID) {
     gameEngine.registerCurrentPlayer(playerID);
 
     gameEngine.start();
+
+
+    var map = gameEngine.getMap();
+    visualizer.updateMap(map);
 
     updateVisualizer();
     updateServer();

@@ -11,8 +11,8 @@ function Player(pid) {
 	var jump = 200;
 	var Scale = 1;
 
-	body.width = 50;
-	body.height = 50;
+	body.width = 100;
+	body.height = 100;
 
 	var maxAccX = 2000;
 	var maxAccY = 20;
@@ -90,7 +90,7 @@ function Player(pid) {
 		//var newAcc = body.getAccX() - acceleration;
 		var newAcc = - acceleration;
 
-		
+		console.log(body.width + ", " +  body.height);
 	
 		
 		if( Math.abs(newAcc) > maxAccX ){

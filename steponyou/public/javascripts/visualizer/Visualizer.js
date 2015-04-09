@@ -13,22 +13,12 @@ function Visualizer () {
 };
 
 Visualizer.prototype.init = function() {
-	this.insertImage(this.backgroundLayer, 'background', 0, 0);
-	//brick 1
-	var model = {x:200, y:400, width:100, height:50};
-	var brick = new Brick(model);
-	this.objectLayer.add(brick.presentation);
+	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
+};
 
-	//brick 2
-	model = {x:500, y:350, width:200, height:30};
-	brick = new Brick(model);
-	this.objectLayer.add(brick.presentation);
-
-	//brick 3
-	model = {x:300, y:200, width:200, height:50};
-	brick = new Brick(model);
-	this.objectLayer.add(brick.presentation);
-	this.objectLayer.draw();
+Visualizer.prototype.reset = function() {
+	this.objectLayer.clear();
+	this.object = {};
 };
 
 Visualizer.prototype.update = function (data) {
@@ -47,6 +37,15 @@ Visualizer.prototype.update = function (data) {
 	}
 	// console.log(this.objects);
 	this.objectLayer.draw();
+};
+
+Visualizer.prototype.updateMap = function(bricks) {
+	var objectLayer = this.objectLayer;
+	bricks.forEach(function(element, index, array) {
+		var brick = new Brick(element);
+		objectLayer.add(brick.presentation);
+		objectLayer.draw();
+	});
 };
 
 Visualizer.prototype.updateObject = function (data) {

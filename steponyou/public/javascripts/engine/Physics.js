@@ -49,6 +49,7 @@ function Physics(gameEngine) {
 		body.objectID = runningID;
 		runningID++;
 		staticObjects.push(body);
+		console.log("static body added");
 	}
 
 	this.getStaticObjects = function(){

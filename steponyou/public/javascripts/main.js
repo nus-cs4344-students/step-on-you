@@ -79,7 +79,7 @@ var handleKey = function(e){
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
     gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent);
-	//lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
+	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 
 }
 
@@ -87,5 +87,5 @@ var updateServer = function(){
      var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
     lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
-    setTimeout(function(){updateServer();} , 33 );
+    setTimeout(function(){updateServer();} ,3*1000.0 / 30.0 );
 }

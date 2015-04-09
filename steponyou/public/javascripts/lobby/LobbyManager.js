@@ -37,7 +37,7 @@ function LobbyManager () {
 		if (eventType == 'connection_ready') {
 			console.log("LOBBY: connection ready");
 			//querry room status every 0.1 sec
-			setInterval(function () {that.getRooms()}, 100);
+			setInterval(function () {that.getRooms()}, 1000);
 			this.getPlayerId();
 		} else if (eventType == 'roomList') {
 			console.log("LOBBY: on room list received");

@@ -1,14 +1,23 @@
 function visualPlayer (model) {
 	var image = this.getImage(model.character);
 	var scale = Configurations.characterHeight / image.height;
+	// var visual = new Kinetic.Rect({
+	// 	x: model.x, 
+	// 	y: model.y,
+	// 	width: image.width, 
+	// 	height: image.height,
+	// 	fillPatternImage: image,
+	// 	fillPatternRepeat: 'no-repeat',
+	// 	scale: {x: scale, y: scale},
+	// });
 	var visual = new Kinetic.Rect({
-		x: model.x, 
+		x: model.x,
 		y: model.y,
-		width: image.width, 
-		height: image.height,
-		fillPatternImage: image,
-		fillPatternRepeat: 'no-repeat',
-		scale: {x: scale, y: scale},
+		width: Configurations.characterHeight,
+		height: Configurations.characterHeight,
+		cornerRadius: 10,
+		fill: 'red',
+		opacity: 0.5
 	});
 	this.parent.constructor.call(this, model, visual);
 	this.character = model.character;

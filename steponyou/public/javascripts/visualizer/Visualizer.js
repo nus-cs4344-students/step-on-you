@@ -10,10 +10,32 @@ function Visualizer () {
 	this.stage.add(this.backgroundLayer);
 	this.stage.add(this.objectLayer);
 	this.objects = {}; //index is ID of the object
+	this.scoreObjects = {};
 };
 
 Visualizer.prototype.init = function() {
 	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
+	var model = {character: 'devil', x: 25, y: 10};
+	var score = new Score(model);
+	this.objectLayer.add(score.presentation);
+	this.scoreObjects['devil'] = score;
+
+	model = {character: 'angel', x: 225, y: 10};
+	score = new Score(model);
+	this.objectLayer.add(score.presentation);
+	this.scoreObjects['angel'] = score;
+
+	model = {character: 'white', x: 425, y: 10};
+	score = new Score(model);
+	this.objectLayer.add(score.presentation);
+	this.scoreObjects['white'] = score;
+
+	model = {character: 'green', x: 625, y: 10};
+	score = new Score(model);
+	this.objectLayer.add(score.presentation);
+	this.scoreObjects['green'] = score;
+
+	this.objectLayer.draw();
 };
 
 Visualizer.prototype.reset = function() {
@@ -55,6 +77,8 @@ Visualizer.prototype.updateObject = function (data) {
 	} else {
 		object.updatePossition(data.x, data.y);
 	}
+	var scoreObj = this.scoreObjects[data.character];
+	scoreObj.updateScore(data.score);
 };
 
 Visualizer.prototype.createObject = function (object) {

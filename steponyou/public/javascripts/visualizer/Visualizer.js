@@ -16,6 +16,11 @@ Visualizer.prototype.init = function() {
 	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
 };
 
+Visualizer.prototype.reset = function() {
+	this.objectLayer.clear();
+	this.object = {};
+};
+
 Visualizer.prototype.update = function (data) {
 	if (data.packageType != Configurations.KEYWORD_UPDATE) {
 		return;

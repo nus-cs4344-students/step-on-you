@@ -22,9 +22,9 @@ function Player(pid) {
 	this.applyGravity = true;
 
 	this.setDefaultVec = function(){
-		console.log("set default");
+		//console.log("set default");
 		body.setDefaultVec();
-		console.log(body.getVecX() + " ," + body.getVecY());
+		//console.log(body.getVecX() + " ," + body.getVecY());
 		acceleration = 50;
 	}
 
@@ -90,7 +90,7 @@ function Player(pid) {
 		//var newAcc = body.getAccX() - acceleration;
 		var newAcc = - acceleration;
 
-		console.log(body.width + ", " +  body.height);
+		//console.log(body.width + ", " +  body.height);
 	
 		
 		if( Math.abs(newAcc) > maxAccX ){

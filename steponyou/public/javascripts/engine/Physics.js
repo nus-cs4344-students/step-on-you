@@ -107,6 +107,7 @@ function Physics(gameEngine) {
 					//if client
 					else{
 
+						console.log("kill?");
 
 					}
 				}

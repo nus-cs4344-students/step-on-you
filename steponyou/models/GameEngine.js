@@ -132,6 +132,12 @@ function GameEngine(serverOrClient){
 
 		var keysPressed = playerEvent.keyMap;
 		if(this.role == 'server'){
+
+			//if player is dead, reject input
+			if(!playerObjs[playerID].getBody().isAlive()){
+				return;
+			}
+
 			var pos = playerEvent.pos;
 			thatPlayer.setPosition(pos.x, pos.y);
 			thatPlayer.pushHistory({timestamp:timestamp, position:pos});

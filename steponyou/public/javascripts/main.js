@@ -78,9 +78,11 @@ var handleKey = function(e){
     //gameEngine.registerKeys(keyMap);
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
-    gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent);
+
 	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 
+	setTimeout( function(){gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent); }, 100 );
+    
 }
 
 var updateServer = function(){
@@ -94,7 +96,7 @@ var updateServer = function(){
 	    lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 	}
 
-    setTimeout(function(){updateServer();} ,3*1000.0 / 30.0 );
+    setTimeout(function(){updateServer();} , 330 );
 }
 
 //mobile controls

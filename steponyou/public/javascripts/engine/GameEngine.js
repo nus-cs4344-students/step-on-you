@@ -195,6 +195,7 @@ function GameEngine(serverOrClient){
 		
 		if (!this.isPlaying)
 			return;
+
 		var thatPlayer = playerObjs[playerID];
 
 		var keysPressed = playerEvent.keyMap;
@@ -376,6 +377,7 @@ function GameEngine(serverOrClient){
 	//generate spawnPosition
 
 	this.addPlayer = function(newPlayerID){
+
 		players.push( {id : newPlayerID, spawnPosition : 0 });
 		var p = new Player(newPlayerID);
 		playerObjs[newPlayerID] = p;
@@ -635,6 +637,10 @@ function GameEngine(serverOrClient){
 				}
 				//else if it this this player
 				else{
+
+					//console.log("server thinks player is at: " + pMsg.x + ", " + pMsg.y);
+					//console.log("player is actually at: " + playerObjs[pMsg.id].getBody().renderX + ", " + playerObjs[pMsg.id].getBody().renderY);
+
 					//check for switch from alive to dead
 					if(playerObjs[pMsg.id].getBody().isAlive() == true && pMsg.isAlive == false){
 						console.log("you are dead, " + pMsg.x + ", " + pMsg.y);

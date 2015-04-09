@@ -346,6 +346,10 @@ function Physics(gameEngine) {
 
 	var handleStepBody = function(body){
 
+		if(!body.isAlive()){
+			return;
+		}
+
 		var newVecX = body.getVecX() + ( body.getAccX() ) * 1000/60/1000;
 		var newVecY = body.getVecY() + (body.getAccY() ) * 1000/60/1000;
 		//console.log("newVecX: " + newVecX + ", newVecY: " + newVecY);

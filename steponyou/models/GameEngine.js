@@ -401,7 +401,7 @@ function GameEngine(serverOrClient){
 		console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
 		console.log("scheduled reviving player");
 
-		this.revivePlayerIn(bBodyId, 5000);
+		this.revivePlayerIn(bBodyId, 3000);
 	}
 
 	var generateRespawnPos = function(){

@@ -31,6 +31,10 @@ function GameEngine(serverOrClient){
 
 	var map = [];
 
+	this.getCurrentPlayerStatus = function(){
+		return playerObjs[this.thisPlayerID].getBody().isAlive();
+	}
+
 
 	var generateMap = function(mapWidth,mapHeight){
 		var offset = 20;
@@ -635,7 +639,22 @@ function GameEngine(serverOrClient){
 					if(playerObjs[pMsg.id].getBody().isAlive() == true && pMsg.isAlive == false){
 						console.log("you are dead, " + pMsg.x + ", " + pMsg.y);
 						playerObjs[pMsg.id].getBody().setDead();
-						playerObjs[pMsg.id].setPosition(pMsg.x, pMsg.y);	
+						playerObjs[pMsg.id].setPosition(pMsg.x, pMsg.y);
+
+						var update = {
+							type: "update",
+					    	packageType: "update",
+					    	objects: []
+
+						};
+
+						removePack = {
+							updateType : "remove",
+							id : pMsg.id
+						};
+						update.objects.push(removePack);
+						visualizer.update(update);
+
 					}
 					//check for switch from dead to alive
 					else if(playerObjs[pMsg.id].getBody().isAlive() == false && pMsg.isAlive == true){

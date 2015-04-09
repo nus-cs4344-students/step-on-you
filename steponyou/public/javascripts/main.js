@@ -8,7 +8,7 @@ assets.load(function() {
 
 //init game engin
 var gameEngine = new GameEngine("client");
-var FPS = 60;
+var FPS = 30;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
 var thisPlayer;
@@ -84,11 +84,17 @@ var handleKey = function(e){
 }
 
 var updateServer = function(){
-     var playerEvent = { keyMap : keyMap,
-                        pos :  thisPlayer.getPosition() };
-    lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
-    setTimeout(function(){updateServer();} ,3*1000.0 / 30.0 );
 
+	//only need to update if alive
+	var thisPlayerIsAlive = gameEngine.getCurrentPlayerStatus();
+
+	if(thisPlayerIsAlive){
+	     var playerEvent = { keyMap : keyMap,
+	                        pos :  thisPlayer.getPosition() };
+	    lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
+	}
+
+    setTimeout(function(){updateServer();} ,3*1000.0 / 30.0 );
 }
 
 //mobile controls

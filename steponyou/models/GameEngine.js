@@ -43,7 +43,7 @@ function GameEngine(serverOrClient){
 		var offset = 20;
 		//define borders
 		//ground
-		map.push( { x:0, y:mapHeight-offset-80, width:mapWidth, height:offset, permissible:false } );
+		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
 		//ceiling
 		map.push( { x:0, y:0, width:offset, height:offset, permissible:false  } );
 		//left

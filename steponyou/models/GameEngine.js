@@ -383,6 +383,7 @@ function GameEngine(serverOrClient){
 	}
 
 	this.step = function(){
+		currentFrameNumber++;
 		physics.step();
 	}
 

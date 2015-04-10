@@ -72,8 +72,8 @@ function LobbyManager () {
 		if (rooms != null) {
 			document.getElementById("roomStatus1").textContent=rooms[0] + "/4";
 			document.getElementById("roomStatus2").textContent=rooms[1] + "/4";
-			document.getElementById("roomStatus1").textContent=rooms[2] + "/4";
-			document.getElementById("roomStatus1").textContent=rooms[3] + "/4";
+			document.getElementById("roomStatus3").textContent=rooms[2] + "/4";
+			document.getElementById("roomStatus4").textContent=rooms[3] + "/4";
 		}
 	}
 

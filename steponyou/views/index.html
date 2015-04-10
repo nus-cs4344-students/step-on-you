@@ -31,7 +31,7 @@
 
         <!-- ROOM VIEW -->
         <div class="row" id='roomView'>
-          <div class='col-sm-6'> 
+          <div class='col-sm-6 col-xs-6'> 
             <div class='row'>
               <div class='col-sm-4'>
                 <h4 id='roomStatus1'>0/4</h4>
@@ -43,7 +43,7 @@
             </div>
           </div>
 
-          <div class='col-sm-6'> 
+          <div class='col-sm-6 col-xs-6'> 
             <div class='row'>
               <div class='col-sm-4'>
                 <h4 id='roomStatus2'>0/4</h4>
@@ -54,29 +54,53 @@
               </div>
             </div>
           </div>
+
+          <div class='col-sm-6 col-xs-6'> 
+            <div class='row'>
+              <div class='col-sm-4'>
+                <h4 id='roomStatus2'>0/4</h4>
+              </div>
+
+              <div class='col-sm-8'>
+                <button id='buttonRoom1' type="button" class="btn btn-success" onclick='onRoomButtonClick(2)'>JOIN ROOM</button>  
+              </div>
+            </div>
+          </div>
+
+          <div class='col-sm-6 col-xs-6'> 
+            <div class='row'>
+              <div class='col-sm-4'>
+                <h4 id='roomStatus2'>0/4</h4>
+              </div>
+
+              <div class='col-sm-8'>
+                <button id='buttonRoom1' type="button" class="btn btn-success" onclick='onRoomButtonClick(3)'>JOIN ROOM</button>  
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- CHAR VIEW -->
-        <div>
+        <!-- <div>
           <div class='row'> 
             <div class='col-sm-3 col-xs-3'>
-              <img class='displayed' src="images/Character_Angel.png">
+              <img class='displayed' src="images/Character_Angel.png" onclick='onCharacterSeclect(0)' >
             </div>
 
             <div class='col-sm-3 col-xs-3'>
-              <img class='displayed' src="images/Character_Devil.png">
+              <img class='displayed' src="images/Character_Devil.png" onclick='onCharacterSeclect(1)'>
             </div>
 
             <div class='col-sm-3 col-xs-3'>
-              <img class='displayed' src="images/Character_Green.png">
+              <img class='displayed' src="images/Character_Green.png" onclick='onCharacterSeclect(2)'>
             </div>
 
             <div class='col-sm-3 col-xs-3'>
-              <img class='displayed' src="images/Character_White.png">
+              <img class='displayed' src="images/Character_White.png" onclick='onCharacterSeclect(3)'>
             </div>
           </div>
           <h4>CHOOSE YOUR HERO</h4>
-        </div>
+        </div> -->
 
         <!-- GAME CANVAS -->
         <div id="gameCanvas">

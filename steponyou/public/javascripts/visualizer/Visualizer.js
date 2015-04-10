@@ -14,13 +14,11 @@ function Visualizer () {
 	
 	this.objects = {}; //index is ID of the object
 	this.scoreObjects = {};
-	this.localPlayer;
 	this.redCover;
+	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
 };
 
 Visualizer.prototype.init = function() {
-	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
-
 	this.redCover = new Kinetic.Rect({
 		x: 0, 
 		y: 0,
@@ -56,7 +54,11 @@ Visualizer.prototype.init = function() {
 
 Visualizer.prototype.reset = function() {
 	this.objectLayer.clear();
+	this.coverLayer.clear();
 	this.object = {};
+	this.scoreObj = {};
+	redCover.opacity(0);
+	this.init();
 };
 
 Visualizer.prototype.update = function (data) {
@@ -102,6 +104,13 @@ Visualizer.prototype.createObject = function (object) {
 	var player = new visualPlayer(object);
 	this.objectLayer.add(player.presentation);	
 	this.objects[object.id] = player;
+	//set reswap effect
+	if (this.objects[object.id].isLocal === true) {
+		this.redCover.opacity(0);
+		//update score board
+		var scoreObj = this.scoreObjects[object.character];
+		scoreObj.setLocal();
+	}
 };
 
 Visualizer.prototype.removeObject = function(id) {
@@ -109,7 +118,7 @@ Visualizer.prototype.removeObject = function(id) {
 		return;
 	}
 	//set dead effect
-	if (this.localPlayer === this.objects[id].character) {
+	if (this.objects[id].isLocal === 'true') {
 		this.redCover.opacity(0.5);
 	}
 	//remove visual

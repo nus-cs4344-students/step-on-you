@@ -441,8 +441,13 @@ function GameEngine(serverOrClient){
 	}
 
 	var revivePlayer = function(bodyId){
-		
+
 		var pid = bodyToPlayerID[bodyId];
+
+		if(pid == null){
+			console.log("aborting revive, this player is already dead");
+			return;
+		}
 		var pos = generateRespawnPos();
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);

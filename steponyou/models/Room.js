@@ -64,12 +64,17 @@ module.exports = function Room(rmID){
 
 	this.updatePlayer = function(playerID, message, timestamp){
 
-		gameEngine.stop();
+		this.gameEngine.stop();
 		var packet = {playerID:playerID, message:message, timeStamp:timestamp};
-		var cIndex = -1;
-		var eIndex = -1;
+		var cIndex = -5;
+		var eIndex = -5;
 		//if first element
-		if(this.inputHistory.length == 0 ||(this.inputHistory[inputHistory.length-1].timeStamp <= timestamp )) {
+		if(this.inputHistory.length == 0 ){
+			this.inputHistory.push(packet);
+			cIndex = this.inputHistory.length - 1;
+			eIndex = 0;
+		}
+		else if (this.inputHistory[this.inputHistory.length-1].timeStamp <= timestamp ) {
 			this.inputHistory.push(packet);
 			cIndex = this.inputHistory.length - 1;
 			eIndex = this.states.length - 1;
@@ -103,8 +108,28 @@ module.exports = function Room(rmID){
 		//now we have identified the engine to use and the starting point of the input to run from
 		//this may be the last engine state and only 1 input to run
 
+		if(this.states[eIndex] != null){
+			this.gameEngine = this.states[eIndex].engine;
+		}
+
+
+		console.log(this.gameEngine);
+		console.log("expected engine index: " + eIndex);
+
 		var overwriteEIndex = eIndex + 1;
-		var engineTime = this.states[eIndex].time;
+		var engineTime = 0;
+		if(this.states[eIndex] == null){
+			if(eIndex == 0)
+				engineTime = (new Date()).getTime();
+			else{
+				console.log("you should not be seeing this...");
+				console.log("expected engine index: " + eIndex);
+				engineTime = this.states[eIndex-1] + this.gameEngine.timePerFrame;
+			}
+		}
+		else{
+			engineTime = this.states[eIndex].time;
+		}
 		//for all inputs to fastforward / run
 		for(var i = cIndex; i < this.inputHistory.length; i++ ){
 
@@ -112,16 +137,19 @@ module.exports = function Room(rmID){
 			var timeGap =  engineTime - currentInput.timeStamp;
 
 			//number of times to fast forward the engine to closest time to run the input
-			var numFFSteps = timeGap / this.gameEngine.timePerFrame;
+			var numFFSteps = Math.floor( timeGap / this.gameEngine.timePerFrame );
+			console.log("fastforward: " + numFFSteps);
 			//"fastforward" the gameEngine by stepping
 			for(var j = 0; j < numFFSteps; j++){
 				engineTime += this.gameEngine.timePerFrame;
-				stepEngine(overwriteEIndex++, engineTime);
+				this.stepEngine(overwriteEIndex++, engineTime);
 			}
 			//run the simulation for the player
 			this.gameEngine.simulatePlayer(packet.playerID, packet.message, packet.timestamp);
 			engineTime += this.gameEngine.timePerFrame;
-			stepEngine(overwriteEIndex++, engineTime);
+			console.log("tadah");
+			console.log(this.gameEngine);
+			this.stepEngine(overwriteEIndex++, engineTime);
 		}
 
 		//this.gameEngine.simulatePlayer(playerID, message, timestamp);
@@ -131,12 +159,13 @@ module.exports = function Room(rmID){
 
 	//save game engine states AFTER simulation to be sure that no more player inputs exist at that time
 	//replaceIndex is the index to override if needed
-	var stepEngine = function(replaceIndex, overrideTime){
+	this.stepEngine = function(replaceIndex, overrideTime){
+		console.log(this.gameEngine);
 		this.gameEngine.step();
 		if(overrideTime == null){
 			overrideTime = (new Date()).getTime();
 		}
-		var state = {engine:gameEngine, time: overrideTime};
+		var state = {engine:this.gameEngine, time: overrideTime};
 		if(replaceIndex == null){
 			this.states.push(state);
 			if(this.states.length > this.maxStateHistory ){
@@ -159,7 +188,7 @@ module.exports = function Room(rmID){
 
 	var loopEngine = function(){
 		if(runEngine){
-			stepEngine();
+			this.stepEngine();
 			setTimeout(function(){loopEngine();}, this.gameEngine.timePerFrame);
 		}
 	}

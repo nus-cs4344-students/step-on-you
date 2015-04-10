@@ -369,6 +369,10 @@ function GameEngine(serverOrClient){
 		gameLoop();
 	}
 
+	this.stop  = function(){
+		run = false;
+	}
+
 	var gameLoop = function(){
 
 		if(!run){
@@ -437,7 +441,7 @@ function GameEngine(serverOrClient){
 	}
 
 	var revivePlayer = function(bodyId){
-
+		
 		var pid = bodyToPlayerID[bodyId];
 		var pos = generateRespawnPos();
 		playerObjs[pid].getBody().revive(pos.x, pos.y);

@@ -90,7 +90,7 @@ function LobbyManager () {
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "JOIN ROOM";
 			this.roomId = -1;
-			visualization.reset();
+			visualizer.reset();
 		}
 	}
 

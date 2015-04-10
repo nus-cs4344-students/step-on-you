@@ -8,7 +8,7 @@ assets.load(function() {
 
 //init game engin
 var gameEngine = new GameEngine("client");
-var FPS = 30;
+var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
 var thisPlayer;

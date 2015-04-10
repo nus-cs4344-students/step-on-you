@@ -3,8 +3,8 @@
 var Configurations = {
 	canvasWidth: 800,
 	canvasHeight: 600,
-	characterWidth: 100,
-	characterHeight: 100,
+	characterWidth: 50,
+	characterHeight: 50,
 	
 	KEYWORD_UPDATE: "update",
 	KEYWORD_CREATE: "create",

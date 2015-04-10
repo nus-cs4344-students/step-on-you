@@ -16,7 +16,7 @@ function SuperMarioServer() {
 	this.playerRoomNoMap = {};      // Mapping from player id -> his room number
 	this.playerConnectionIDmap = {} // Mapping from connection id -> player id
 	this.rooms = {};
-	var NO_OF_ROOMS = 2;
+	var NO_OF_ROOMS = 4;
 	for(var i=0; i<NO_OF_ROOMS; i++){
 		this.rooms[i] = new Room(i);//X should be new Game engine
 		this.rooms[i].generateUpdateState();
@@ -187,7 +187,7 @@ function SuperMarioServer() {
 
 							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) {
 								that.rooms[rmNo].updatePlayer(player_id, keypress, timestamp);
-								that.rooms[rmNo].calculateLatency(playerID, message.timestamp);
+								that.rooms[rmNo].calculateLatency(player_id, message.timestamp);
 							}
 							
 							break;

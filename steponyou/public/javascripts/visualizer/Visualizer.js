@@ -57,7 +57,7 @@ Visualizer.prototype.reset = function() {
 	this.coverLayer.clear();
 	this.object = {};
 	this.scoreObj = {};
-	redCover.opacity(0);
+	// redCover.opacity(0);
 	this.init();
 };
 

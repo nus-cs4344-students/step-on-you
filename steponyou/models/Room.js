@@ -180,7 +180,6 @@ module.exports = function Room(rmID){
 	
 	this.calculateLatency = function(pid, timestamp){
 		var latency = (new Date).getTime() - timestamp;
-		
 		if(pid == null || pid == -1){
 			//nothing
 		} else if(this.playerLatency[pid] == null){
@@ -201,8 +200,7 @@ module.exports = function Room(rmID){
 			else{
 				that.playerLag[pid] = 0;
 			}
-			//console.log("Lag of player " + pid + ": " + that.playerLag[pid]);
-			//console.log("Latency of player " + pid + ": " + that.playerLatency[pid]);
+			console.log("Lag, latency of player " + pid + ": " + that.playerLag[pid] + " , " + that.playerLatency[pid]);
 		}
 	}
 	

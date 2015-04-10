@@ -127,7 +127,6 @@ function ServiceHelper(lobbyManager){
 	}
 	
 	this.syncClocks = function(){
-		console.log("CLIENT: syncing clocks");
 		socket.send(JSON.stringify({type:"sync", timestamp:(new Date).getTime()}));
 	}
 	

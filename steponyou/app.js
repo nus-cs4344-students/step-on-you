@@ -187,7 +187,7 @@ function SuperMarioServer() {
 
 							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) {
 								that.rooms[rmNo].updatePlayer(player_id, keypress, timestamp);
-								that.rooms[rmNo].calculateLatency(playerID, message.timestamp);
+								that.rooms[rmNo].calculateLatency(player_id, message.timestamp);
 							}
 							
 							break;

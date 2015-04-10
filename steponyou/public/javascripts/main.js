@@ -17,6 +17,7 @@ keyMap[37] = false;
 keyMap[39] = false;
 var minimumLag = 100;
 
+
 document.addEventListener('keydown', function(event) {
 
   handleKey(event);
@@ -82,7 +83,7 @@ var handleKey = function(e){
     //gameEngine.registerKeys(keyMap);
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
-
+	
 	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 
 	//console.log("Current local lag: " + lobbyManager.localLag);

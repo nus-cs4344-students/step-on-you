@@ -70,12 +70,36 @@ function ServiceHelper(lobbyManager){
         }
     }
 
-	
+	var testLag = false;
+	//simulate different players having different latencies
+	//change max, min values in order to alter how different the latencies are between players
+	var max = 100;
+	var min = 0;
+	var temp = Math.floor(Math.random()*(max-min+1)+min);
 	var sendToServer = function (msg) {
-		var date = new Date();
-		var currentTime = date.getTime();
-		msg["timestamp"] = currentTime + offset;
-		socket.send(JSON.stringify(msg));
+		var date;
+		var currentTime;
+		if(testLag){
+			var testDelay;
+			var errorPercentage = 20;
+			var to = temp + errorPercentage*temp/100;
+			var from = temp - errorPercentage*temp/100;
+			if (temp != 0) {
+				testDelay = Math.floor(Math.random() * (to - from + 1) + from);
+			} else {
+				testDelay = 0;
+			}
+			date = new Date();
+			currentTime = date.getTime();
+			msg["timestamp"] = currentTime + offset;
+			setTimeout(function(){socket.send(JSON.stringify(msg));}, testDelay);
+			console.log("Artificial delay: " + testDelay);
+		}else{
+			date = new Date();
+			currentTime = date.getTime();
+			msg["timestamp"] = currentTime + offset;
+			socket.send(JSON.stringify(msg));
+		}
 	}
 
 	this.requestId = function(currentId) {

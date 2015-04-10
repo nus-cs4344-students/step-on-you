@@ -36,11 +36,14 @@ var setupGameEngin = function (playerID) {
 
     //add to engine
     thisPlayer = gameEngine.addPlayer(playerID);
+
     //add this player to room
    // thisPlayer.setPosition(800/2 - 15,600-200);
    // thisPlayer.faceLeft();
 
     gameEngine.registerCurrentPlayer(playerID);
+
+    updateServer();
 
     gameEngine.start();
     visualizer.reset();
@@ -99,7 +102,7 @@ var updateServer = function(){
 	    lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 	}
 
-    setTimeout(function(){updateServer();} , 330 );
+    //setTimeout(function(){updateServer();} , 330 );
 }
 
 //mobile controls

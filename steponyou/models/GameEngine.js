@@ -13,6 +13,7 @@ function GameEngine(serverOrClient){
 	//var ctx = canvas.getContext("2d");
 	var players = [];
 	var playerObjs = [];
+	var playerSprites = [];
 
 	var bodyToPlayerID = [];
 
@@ -35,9 +36,11 @@ function GameEngine(serverOrClient){
 
 	var keyMap = [];
 
-
-
 	var map = [];
+
+	this.setPlayerSprite= function(pid, spriteName){
+		playerSprites[pid] = spriteName;
+	}
 
 	var generateMap = function(mapWidth,mapHeight){
 		var offset = 20;
@@ -327,7 +330,11 @@ function GameEngine(serverOrClient){
 		//console.log(p);
 
 		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
-		p.setPosition( 400, 450);
+		//p.setPosition( 400, 450);
+
+		var pos = generateRespawnPos();
+		p.setPosition(pos.x, pos.y);
+
     	p.faceLeft();
     	p.setDefaultVec();
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
@@ -416,8 +423,8 @@ function GameEngine(serverOrClient){
 	}
 
 	var generateRespawnPos = function(){
-		var x = (Math.random() * 100 + 20) % 800;
-		var y = (Math.random() * 50 + 400) % 600;
+		var x = 20 + (Math.random() * 780);
+		var y = (430 + Math.random() *  100) ;
 		return {x: x, y: y};
 	}
 
@@ -453,17 +460,31 @@ function GameEngine(serverOrClient){
 		pPack["direction"] = obj.orientation
 		*/
 		var charSprite;
-		switch( bodyToPlayerID[obj.objectID] % 2 ){
-			case 0: 
-				charSprite = "devil";
-				break;
-			case 1:
-				charSprite = "angel";
-				break;
-			default: 
-				charSprite = "devil";
-				break;
+
+		if(bodyToPlayerID[obj.objectID] == null || playerSprites[bodyToPlayerID[obj.objectID]] == null){
+
+			switch( bodyToPlayerID[obj.objectID] % 4 ){
+				case 0: 
+					charSprite = "devil";
+					break;
+				case 1:
+					charSprite = "angel";
+					break;
+				case 3:
+					charSprite = "green";
+					break;
+				case 4:
+					charSprite = "white";
+				default: 
+					charSprite = "devil";
+					break;
+			}
+
 		}
+		else{
+			charSprite = playerSprites[bodyToPlayerID[obj.objectID]];
+		}
+
 
 		var pPack = {
 			updateType : "update",

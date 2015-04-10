@@ -228,8 +228,10 @@ var convertMobileEvent = function(){
 	
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
-    gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent);
 	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
+	setTimeout( function(){gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent); },
+				Math.max(lobbyManager.localLag, minimumLag) );
+	
 }
 
 var previousOrientation = window.orientation;

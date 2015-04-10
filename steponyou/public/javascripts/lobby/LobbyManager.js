@@ -48,7 +48,6 @@ function LobbyManager () {
 			this.getPlayerId();
 			syncClocks();
 		} else if (eventType == 'roomList') {
-			console.log("LOBBY: on room list received");
 			this.updateRooms(data);
 			isRoomReady = true;
 		} else if (eventType == 'joinRoom') {

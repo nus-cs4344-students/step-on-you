@@ -15,25 +15,26 @@ function Visualizer () {
 
 Visualizer.prototype.init = function() {
 	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
-	var model = {character: 'devil', x: 25, y: 10};
-	var score = new Score(model);
-	this.objectLayer.add(score.presentation);
-	this.scoreObjects['devil'] = score;
 
-	model = {character: 'angel', x: 225, y: 10};
-	score = new Score(model);
+	var model = {character: 'angel', x: 25, y: 10};
+	var score = new Score(model);
 	this.objectLayer.add(score.presentation);
 	this.scoreObjects['angel'] = score;
 
-	model = {character: 'white', x: 425, y: 10};
+	model = {character: 'devil', x: 225, y: 10};
 	score = new Score(model);
 	this.objectLayer.add(score.presentation);
-	this.scoreObjects['white'] = score;
+	this.scoreObjects['devil'] = score;
 
-	model = {character: 'green', x: 625, y: 10};
+	model = {character: 'green', x: 425, y: 10};
 	score = new Score(model);
 	this.objectLayer.add(score.presentation);
 	this.scoreObjects['green'] = score;
+
+	model = {character: 'white', x: 625, y: 10};
+	score = new Score(model);
+	this.objectLayer.add(score.presentation);
+	this.scoreObjects['white'] = score;
 
 	this.objectLayer.draw();
 };

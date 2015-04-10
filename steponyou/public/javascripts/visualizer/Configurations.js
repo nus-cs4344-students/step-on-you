@@ -16,7 +16,6 @@ var ASSET_LIST = {
 	background: 'background3.jpg',
 	character_devil: 'Character_Devil.png',
 	character_angel: 'Character_Angel.png',
-	character_chicken: 'Character_Chicken.png',
 	character_green: 'Character_Green.png',
 	character_white: 'Character_White.png'
 };

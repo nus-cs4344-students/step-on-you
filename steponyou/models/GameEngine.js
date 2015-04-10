@@ -37,6 +37,7 @@ function GameEngine(serverOrClient){
 	var keyMap = [];
 
 	var map = [];
+	var run = false;
 
 	this.setPlayerSprite= function(pid, spriteName){
 		playerSprites[pid] = spriteName;
@@ -364,10 +365,16 @@ function GameEngine(serverOrClient){
 	}
 
 	this.start = function(){
+		run = true;
 		gameLoop();
 	}
 
 	var gameLoop = function(){
+
+		if(!run){
+			return;
+		}
+
 		currentFrameNumber++;
 		physics.step();
 		//debugRender();

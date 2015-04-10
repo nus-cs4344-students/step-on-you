@@ -8,7 +8,7 @@ assets.load(function() {
 
 //init game engin
 var gameEngine = new GameEngine("client");
-var FPS = 30;
+var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
 var thisPlayer;
@@ -36,11 +36,14 @@ var setupGameEngin = function (playerID) {
 
     //add to engine
     thisPlayer = gameEngine.addPlayer(playerID);
+
     //add this player to room
    // thisPlayer.setPosition(800/2 - 15,600-200);
    // thisPlayer.faceLeft();
 
     gameEngine.registerCurrentPlayer(playerID);
+
+    updateServer();
 
     gameEngine.start();
     visualizer.reset();
@@ -99,7 +102,7 @@ var updateServer = function(){
 	    lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 	}
 
-    setTimeout(function(){updateServer();} , 330 );
+    //setTimeout(function(){updateServer();} , 330 );
 }
 
 //mobile controls
@@ -225,8 +228,10 @@ var convertMobileEvent = function(){
 	
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
-    gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent);
 	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
+	setTimeout( function(){gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent); },
+				Math.max(lobbyManager.localLag, minimumLag) );
+	
 }
 
 var previousOrientation = window.orientation;

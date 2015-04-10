@@ -13,8 +13,8 @@ function Player(pid) {
 	var jump = 200;
 	var Scale = 1;
 
-	body.width = 100;
-	body.height = 100;
+	body.width = 50;
+	body.height = 50;
 
 	var maxAccX = 2000;
 	var maxAccY = 20;

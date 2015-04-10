@@ -8,6 +8,7 @@ function GameEngine(serverOrClient){
 	//var ctx = canvas.getContext("2d");
 	var players = [];
 	var playerObjs = [];
+	var playerSprites = [];
 
 	var bodyToPlayerID = [];
 
@@ -15,7 +16,7 @@ function GameEngine(serverOrClient){
 
 	this.thisPlayerID = 0;
 	this.isPlaying = false;
-	var FPS = 30;
+	var FPS = 60;
 	this.timePerFrame = 1000/FPS;
 
 	var currentFrameNumber = 0;
@@ -30,6 +31,10 @@ function GameEngine(serverOrClient){
 	var keyMap = [];
 
 	var map = [];
+
+	this.setPlayerSprite= function(pid, spriteName){
+		playerSprites[pid] = spriteName;
+	}
 
 	this.getCurrentPlayerStatus = function(){
 		return playerObjs[this.thisPlayerID].getBody().isAlive();
@@ -49,7 +54,11 @@ function GameEngine(serverOrClient){
 		map.push({x:mapWidth-offset, y:0, width:offset, height:mapHeight, permissible:false});
 
 		//floating platforms
-		map.push(generateFloatingPlatforms());
+		map.push({x:200, y:420, width:100, height:20, permissible:true});
+		map.push({x:320, y:320, width:300, height:20, permissible:true});
+		map.push({x:500, y:420, width:180, height:20, permissible:true});
+		map.push({x:700, y:220, width:100, height:20, permissible:true});
+
 
 	}
 
@@ -175,8 +184,6 @@ function GameEngine(serverOrClient){
 	}
 
 	//generate spawnPosition
-
-
 
 	this.registerKeys = function(keys){
 		keyMap = keys;
@@ -385,7 +392,9 @@ function GameEngine(serverOrClient){
 		//console.log(p);
 
 		//p.setPosition( (Math.random() * 100 + 20) % 800, (Math.random() * 100 + 20) % 600);
-		p.setPosition( 400, 450);
+		//p.setPosition( 400, 450);
+		var pos = generateRespawnPos();
+		p.setPosition(pos.x, pos.y);
     	p.faceLeft();
     	p.setDefaultVec();
 		bodyToPlayerID[p.getBody().objectID] = newPlayerID;
@@ -497,8 +506,8 @@ function GameEngine(serverOrClient){
 	}
 
 	var generateRespawnPos = function(){
-		var x = (Math.random() * 100 + 20) % 800;
-		var y = (Math.random() * 50 + 400) % 600;
+		var x = 20 + (Math.random() * 780);
+		var y = (430 + Math.random() *  100) ;
 		return {x: x, y: y};
 	}
 
@@ -533,17 +542,33 @@ function GameEngine(serverOrClient){
 		pPack["direction"] = obj.orientation
 		*/
 		var charSprite;
-		switch( bodyToPlayerID[obj.objectID] % 2 ){
-			case 0: 
-				charSprite = "devil";
-				break;
-			case 1:
-				charSprite = "angel";
-				break;
-			default: 
-				charSprite = "devil";
-				break;
+
+		if(bodyToPlayerID[obj.objectID] == null || playerSprites[bodyToPlayerID[obj.objectID]] == null){
+
+			switch( bodyToPlayerID[obj.objectID] % 4 ){
+				case 0: 
+					charSprite = "devil";
+					break;
+				case 1:
+					charSprite = "angel";
+					break;
+				case 3:
+					charSprite = "green";
+					break;
+				case 4:
+					charSprite = "white";
+				default: 
+					charSprite = "devil";
+					break;
+			}
+
 		}
+		else{
+			charSprite = playerSprites[bodyToPlayerID[obj.objectID]];
+		}
+
+		var local = (bodyToPlayerID[obj.objectID] == this.thisPlayerID);
+		
 
 		var pPack = {
 			updateType : "update",
@@ -554,8 +579,8 @@ function GameEngine(serverOrClient){
 			status: "moving",
 			isAlive: obj.isAlive(),
 			score: playerScores[bodyToPlayerID[obj.objectID]],
-			direction : obj.orientation
-
+			direction : obj.orientation,
+			isLocal: local
 
 		}
 

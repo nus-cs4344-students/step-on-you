@@ -172,8 +172,7 @@ function SuperMarioServer() {
 							if(that.rooms[rmID].addPlayer(player,conn)){
 								that.playerRoomNoMap[playerID] = rmID;
 								conn.write(JSON.stringify({type:"joinRoom", status:"pass"}))
-								
-								//begin lag calc
+								that.rooms[rmID].calculateLatency(playerID, message.timestamp);
 
 							}else{
 								conn.write(JSON.stringify({type:"joinRoom", status:"fail", message:"Room is full, cannot join room "+rmID}));
@@ -189,9 +188,6 @@ function SuperMarioServer() {
 							that.playerConnectionIDmap[conn.id] = that.count;
 							that.players[that.count] = player;
 							conn.write(JSON.stringify({type:"new_player", status:"pass", id:that.count}));
-							
-							//begin lag calc
-							
 							break;
 						case "move":
 							var player_id = message.playerID;
@@ -199,10 +195,10 @@ function SuperMarioServer() {
 							var timestamp = message.timestamp;
 							var rmNo = that.playerRoomNoMap[player_id];
 
-							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) 
+							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) {
 								that.rooms[rmNo].updatePlayer(player_id, keypress, timestamp);
-								
-							//begin lag calc
+								that.rooms[rmNo].calculateLatency(playerID, message.timestamp);
+							}
 							
 							break;
 						
@@ -214,13 +210,15 @@ function SuperMarioServer() {
 							if(roomID === undefined)
 								return;
 
+							delete that.rooms[roomID].playerLatency[player_id];
+							delete that.rooms[roomID].playerLag[player_id];
+							that.rooms[roomID].calculateLatency(-1, message.timestamp);
+							
 							that.rooms[roomID].removePlayer(player_id);
 							// delete that.playerConnectionIDmap[conn.id];
 							delete that.playerRoomNoMap[player_id];
 							// delete that.players[player_id];
 							// conn.write(JSON.stringify({type:"leave", status:"pass", id:player_id}));
-							
-							//begin lag calc (for rest of room)
 							
 							break;
 							

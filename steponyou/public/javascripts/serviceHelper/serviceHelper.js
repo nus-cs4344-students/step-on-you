@@ -42,18 +42,23 @@ function ServiceHelper(lobbyManager){
 							console.log("client "+pid+" left the room");
 							var currentPlayer = gameEngine.thisPlayerID;
 							gameEngine.removePlayer(pid);
-							if(pid == currentPlayer)
+							if(pid == currentPlayer){
 								callback("leave", message);
+							}else{
+								callback("update", message); //to get the updated lag
+							}
 						}
 
 					case "update":
 						//console.log("NETWORKUPDATE: " + message.type);
 						gameEngine.processUpdate(message);
+						//console.log("received: " + message.lag);
+						callback("update", message);
 
 						break;	
 					
 					case "sync":
-						console.log(message);
+						//console.log(message);
 						calcOffset(message);
 						break;
                 default: 

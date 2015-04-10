@@ -9,6 +9,8 @@ function LobbyManager () {
 	var serviceHelper = new ServiceHelper();
 	var callbackGameEngine;
 	
+	this.localLag = 0;
+	
 	
 	//public methods
 	this.getRooms = function () {
@@ -35,6 +37,10 @@ function LobbyManager () {
 
 	//private helper methods
 	this.onNetworkEvent = function(eventType, data) {
+		// if(data !== null && data.lag !== 'undefined'){
+			//console.log("Current local lag: " + data.lag);
+			// this.localLag = data.lag;
+		// }
 		if (eventType == 'connection_ready') {
 			console.log("LOBBY: connection ready");
 			//querry room status every 0.1 sec
@@ -55,7 +61,9 @@ function LobbyManager () {
 			console.log("LOBBY: on player id assigned");
 			this.setPlayerId(data.id);
 		} else if (eventType == "update"){
-			console.log("LOBBY: Recevied update on players");
+			this.localLag = data.lag;
+			//console.log("lobbymanager lag: " + this.localLag);
+			//console.log("LOBBY: Recevied update on players");
 		}
 	}
 

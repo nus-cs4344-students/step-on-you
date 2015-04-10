@@ -11,6 +11,8 @@ module.exports = function Room(rmID){
 	var that = this;
 	this.states = [];
 	this.inputHistory = [];
+	this.playerLatency = [];
+	this.playerLag = [];
 
 	this.addPlayer = function(player,conn){
 		if(this.getCurrentNoOfPlayers() == MAX_NO_PLAYERS){
@@ -46,10 +48,12 @@ module.exports = function Room(rmID){
 	};
 	this.broadcast = function(message){
 		for (id in this.sockets) {
+			message["lag"] = this.playerLag[id];
 			this.sockets[id].write(JSON.stringify(message));
 		}
 	};
 	this.unicast = function(message, playerID){
+		message["lag"] = this.playerLag[playerID];
 		var socket = this.sockets[playerID];
 		socket.write(JSON.stringify(message));
 	};
@@ -64,6 +68,46 @@ module.exports = function Room(rmID){
 		//prepare update
 		setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
 
+	}
+	
+	
+	
+	this.calculateLatency = function(pid, timestamp){
+		var latency = (new Date).getTime() - timestamp;
+		
+		if(pid == null || pid == -1){
+			//nothing
+		} else if(this.playerLatency[pid] == null){
+			this.playerLatency[pid] = latency;
+		} else{
+			var temp = latency * 0.7 + this.playerLatency[pid] * 0.3;
+			this.playerLatency[pid] = temp;
+		}
+		calcLag();
+	}
+	
+	var calcLag = function(){
+		var maxLatency = getMaxLatency();
+		for(pid in that.playerLatency){
+			if(that.playerLatency[pid] !== maxLatency){
+				that.playerLag[pid] = maxLatency - that.playerLatency[pid];
+			}
+			else{
+				that.playerLag[pid] = 0;
+			}
+			//console.log("Lag of player " + pid + ": " + that.playerLag[pid]);
+			//console.log("Latency of player " + pid + ": " + that.playerLatency[pid]);
+		}
+	}
+	
+	var getMaxLatency = function(){
+		var max = 0;
+		for(pid in that.playerLatency){
+			if(that.playerLatency[pid] > max){
+				max = that.playerLatency[pid];
+			}
+		}
+		return max;
 	}
 
 

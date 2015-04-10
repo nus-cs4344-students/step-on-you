@@ -7,36 +7,51 @@ function Visualizer () {
 	
 	this.backgroundLayer = new Kinetic.Layer();
 	this.objectLayer = new Kinetic.Layer();
+	this.coverLayer = new Kinetic.Layer();
 	this.stage.add(this.backgroundLayer);
 	this.stage.add(this.objectLayer);
+	this.stage.add(this.coverLayer);
+	
 	this.objects = {}; //index is ID of the object
 	this.scoreObjects = {};
+	this.localPlayer;
+	this.redCover;
 };
 
 Visualizer.prototype.init = function() {
 	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
 
+	this.redCover = new Kinetic.Rect({
+		x: 0, 
+		y: 0,
+		width: Configurations.canvasWidth, 
+		height: Configurations.canvasHeight,
+		fill: 'red',
+        	opacity: 0
+	});
+	this.coverLayer.add(this.redCover);
+
 	var model = {character: 'angel', x: 25, y: 10};
 	var score = new Score(model);
-	this.objectLayer.add(score.presentation);
+	this.coverLayer.add(score.presentation);
 	this.scoreObjects['angel'] = score;
 
 	model = {character: 'devil', x: 225, y: 10};
 	score = new Score(model);
-	this.objectLayer.add(score.presentation);
+	this.coverLayer.add(score.presentation);
 	this.scoreObjects['devil'] = score;
 
 	model = {character: 'green', x: 425, y: 10};
 	score = new Score(model);
-	this.objectLayer.add(score.presentation);
+	this.coverLayer.add(score.presentation);
 	this.scoreObjects['green'] = score;
 
 	model = {character: 'white', x: 625, y: 10};
 	score = new Score(model);
-	this.objectLayer.add(score.presentation);
+	this.coverLayer.add(score.presentation);
 	this.scoreObjects['white'] = score;
 
-	this.objectLayer.draw();
+	this.coverLayer.draw();
 };
 
 Visualizer.prototype.reset = function() {
@@ -93,12 +108,15 @@ Visualizer.prototype.removeObject = function(id) {
 	if (this.objects[id] == null) {
 		return;
 	}
+	//set dead effect
+	if (this.localPlayer === this.objects[id].character) {
+		this.redCover.opacity(0.5);
+	}
 	//remove visual
 	var oldVisual = this.objects[id].presentation;
 	oldVisual.remove();
 	//remove model
 	delete this.objects[id];
-
 };
 
 Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {
@@ -120,6 +138,10 @@ Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {
 		layer.draw();
 	};
 	img.src = src;
+};
+
+Visualizer.prototype.setLocalPlayer = function(character) {
+	this.localPlayer = character;
 };
 
 //test

@@ -15,7 +15,7 @@ function GameEngine(serverOrClient){
 
 	this.thisPlayerID = 0;
 	this.isPlaying = false;
-	var FPS = 30;
+	var FPS = 60;
 	this.timePerFrame = 1000/FPS;
 
 	var currentFrameNumber = 0;
@@ -49,7 +49,11 @@ function GameEngine(serverOrClient){
 		map.push({x:mapWidth-offset, y:0, width:offset, height:mapHeight, permissible:false});
 
 		//floating platforms
-		map.push(generateFloatingPlatforms());
+		map.push({x:200, y:420, width:100, height:20, permissible:true});
+		map.push({x:320, y:320, width:300, height:20, permissible:true});
+		map.push({x:500, y:420, width:180, height:20, permissible:true});
+		map.push({x:700, y:220, width:100, height:20, permissible:true});
+
 
 	}
 

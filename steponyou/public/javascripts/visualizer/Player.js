@@ -1,6 +1,7 @@
 function visualPlayer (model) {
 	var image = this.getImage(model.character);
-	var scale = Configurations.characterHeight / image.height;
+	var scaleX = Configurations.characterWidth / image.width;
+	var scaleY = Configurations.characterHeight / image.height;
 	var visual = new Kinetic.Rect({
 		x: model.x, 
 		y: model.y,
@@ -8,7 +9,7 @@ function visualPlayer (model) {
 		height: image.height,
 		fillPatternImage: image,
 		fillPatternRepeat: 'no-repeat',
-		scale: {x: scale, y: scale},
+		scale: {x: scaleX, y: scaleY},
 	});
 	this.parent.constructor.call(this, model, visual);
 	this.character = model.character;

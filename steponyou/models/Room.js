@@ -7,7 +7,7 @@ module.exports = function Room(rmID){
 	this.players = {};//index via playerid
 	this.sockets = {};//index via playerid
 	this.gameEngine.init(null);
-	//this.gameEngine.start();
+	this.gameEngine.start();
 
 	var that = this;
 
@@ -63,6 +63,10 @@ module.exports = function Room(rmID){
 	};
 
 	this.updatePlayer = function(playerID, message, timestamp){
+		this.gameEngine.simulatePlayer(playerID, message, timestamp);
+	}
+
+	this.updatePlayerRewind = function(playerID, message, timestamp){
 
 		this.gameEngine.stop();
 		var packet = {playerID:playerID, message:message, timeStamp:timestamp};
@@ -229,7 +233,7 @@ module.exports = function Room(rmID){
 			else{
 				that.playerLag[pid] = 0;
 			}
-			console.log("Lag, latency of player " + pid + ": " + that.playerLag[pid] + " , " + that.playerLatency[pid]);
+			//console.log("Lag, latency of player " + pid + ": " + that.playerLag[pid] + " , " + that.playerLatency[pid]);
 		}
 	}
 	

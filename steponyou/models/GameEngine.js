@@ -435,8 +435,8 @@ function GameEngine(serverOrClient){
 	}
 
 	var generateRespawnPos = function(){
-		var x = 20 + (Math.random() * 780);
-		var y = (430 + Math.random() *  100) ;
+		var x = 50 + (Math.random() * 650);
+		var y = (480 + Math.random() *  20) ;
 		return {x: x, y: y};
 	}
 

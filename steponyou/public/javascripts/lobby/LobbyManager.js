@@ -9,6 +9,7 @@ function LobbyManager () {
 	var serviceHelper = new ServiceHelper();
 	var callbackGameEngine;
 	
+	
 	//public methods
 	this.getRooms = function () {
 		serviceHelper.requestRoomList();
@@ -39,6 +40,7 @@ function LobbyManager () {
 			//querry room status every 0.1 sec
 			setInterval(function () {that.getRooms()}, 1000);
 			this.getPlayerId();
+			syncClocks();
 		} else if (eventType == 'roomList') {
 			console.log("LOBBY: on room list received");
 			this.updateRooms(data);
@@ -52,10 +54,8 @@ function LobbyManager () {
 		} else if (eventType == 'new_player') {
 			console.log("LOBBY: on player id assigned");
 			this.setPlayerId(data.id);
-		}
-		else if (eventType == "update"){
+		} else if (eventType == "update"){
 			console.log("LOBBY: Recevied update on players");
-			
 		}
 	}
 
@@ -101,5 +101,10 @@ function LobbyManager () {
 	
 	this.sendEvent = function(pid, KP){
 		serviceHelper.sendMove(pid, KP);
+	}
+	
+	var syncClocks = function(){
+		serviceHelper.syncClocks();
+		setTimeout(function(){ syncClocks() }, 5000); //resync every 5 sec
 	}
 }

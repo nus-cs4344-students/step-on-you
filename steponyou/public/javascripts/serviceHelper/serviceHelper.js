@@ -5,6 +5,8 @@ function ServiceHelper(lobbyManager){
 
 	var socket;
 	var that = this;
+	var rtt = 0;
+	var offset = 0;
 
 	this.initNetwork = function(callback) {
 		try {
@@ -17,40 +19,43 @@ function ServiceHelper(lobbyManager){
 				var message = JSON.parse(e.data);
 				switch (message.type) {
 					case "new_player":
-					//console.log("NETWORK: receive pid: " + message.id);
-					callback("new_player", message);
-					break;
+						//console.log("NETWORK: receive pid: " + message.id);
+						callback("new_player", message);
+						break;
 
 					case "roomList":
-					roomList = message.rooms;
-					callback("roomList", roomList);
-					// console.log("NETWORK: " + roomList);
-					break;
+						roomList = message.rooms;
+						callback("roomList", roomList);
+						// console.log("NETWORK: " + roomList);
+						break;
 					
 					case "joinRoom":
-					//console.log("NETWORK: " + message);
-					callback("joinRoom", message);
-					break;
+						//console.log("NETWORK: " + message);
+						callback("joinRoom", message);
+						break;
 
 					case "leave":
-					//console.log("NETWORK: " + message);
+						//console.log("NETWORK: " + message);
+						
+						var pid = message["id"];
+						if(pid !== undefined && pid !== null){
+							console.log("client "+pid+" left the room");
+							var currentPlayer = gameEngine.thisPlayerID;
+							gameEngine.removePlayer(pid);
+							if(pid == currentPlayer)
+								callback("leave", message);
+						}
+
+					case "update":
+						//console.log("NETWORKUPDATE: " + message.type);
+						gameEngine.processUpdate(message);
+
+						break;	
 					
-					var pid = message["id"];
-					if(pid !== undefined && pid !== null){
-						console.log("client "+pid+" left the room");
-						var currentPlayer = gameEngine.thisPlayerID;
-						gameEngine.removePlayer(pid);
-						if(pid == currentPlayer)
-							callback("leave", message);
-					}
-
-					
-
-				case "update":
-					//console.log("NETWORKUPDATE: " + message.type);
-					gameEngine.processUpdate(message);
-
-					break;	
+					case "sync":
+						console.log(message);
+						calcOffset(message);
+						break;
                 default: 
                     console.log("serverMsg", "unhandled message type " + message.type);
                 }
@@ -64,7 +69,7 @@ function ServiceHelper(lobbyManager){
 	var sendToServer = function (msg) {
 		var date = new Date();
 		var currentTime = date.getTime();
-		msg["timestamp"] = currentTime;
+		msg["timestamp"] = currentTime + offset;
 		socket.send(JSON.stringify(msg));
 	}
 
@@ -90,5 +95,19 @@ function ServiceHelper(lobbyManager){
 	this.sendMove = function(PID, KP){
 		//console.log("sending move: " + PID + " keypress: " + KP);
 		sendToServer({type:"move", playerID:PID, keyPress:KP});
+	}
+	
+	this.syncClocks = function(){
+		console.log("CLIENT: syncing clocks");
+		socket.send(JSON.stringify({type:"sync", timestamp:(new Date).getTime()}));
+	}
+	
+	var calcOffset = function(msg){
+		var t3 = (new Date).getTime();
+		var t0 = msg.t0;
+		var t1 = msg.t1;
+		var t2 = msg.t2;
+		rtt = (t3 - t0) - (t2 - t1);
+		offset = ((t1 - t0) + (t2 - t3)) / 2;
 	}
 }

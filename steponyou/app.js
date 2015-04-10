@@ -172,6 +172,8 @@ function SuperMarioServer() {
 							if(that.rooms[rmID].addPlayer(player,conn)){
 								that.playerRoomNoMap[playerID] = rmID;
 								conn.write(JSON.stringify({type:"joinRoom", status:"pass"}))
+								
+								//begin lag calc
 
 							}else{
 								conn.write(JSON.stringify({type:"joinRoom", status:"fail", message:"Room is full, cannot join room "+rmID}));
@@ -187,6 +189,9 @@ function SuperMarioServer() {
 							that.playerConnectionIDmap[conn.id] = that.count;
 							that.players[that.count] = player;
 							conn.write(JSON.stringify({type:"new_player", status:"pass", id:that.count}));
+							
+							//begin lag calc
+							
 							break;
 						case "move":
 							var player_id = message.playerID;
@@ -196,6 +201,9 @@ function SuperMarioServer() {
 
 							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) 
 								that.rooms[rmNo].updatePlayer(player_id, keypress, timestamp);
+								
+							//begin lag calc
+							
 							break;
 						
 						case "leave":
@@ -211,6 +219,20 @@ function SuperMarioServer() {
 							delete that.playerRoomNoMap[player_id];
 							// delete that.players[player_id];
 							// conn.write(JSON.stringify({type:"leave", status:"pass", id:player_id}));
+							
+							//begin lag calc (for rest of room)
+							
+							break;
+							
+						case "sync":
+							var date = new Date();
+							var receiveTime = date.getTime();
+							
+							//assume server processing time is 0
+							//date = new Date();
+							//var receiveTime = date.getTime();
+							
+							conn.write(JSON.stringify({type:"sync", t0:message.timestamp, t1:receiveTime, t2:receiveTime}))
 							break;
 
 						default:

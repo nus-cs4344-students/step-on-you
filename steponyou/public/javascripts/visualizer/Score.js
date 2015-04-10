@@ -6,7 +6,7 @@ function Score (model) {
       });
 
       var image = this.getImage(model.character);
-      var height = Configurations.characterHeight*0.5;
+      var height = Configurations.characterHeight;
       var scale =  height / image.height;
 
 	var avata = new Kinetic.Rect({

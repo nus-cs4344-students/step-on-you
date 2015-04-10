@@ -48,7 +48,6 @@ function LobbyManager () {
 			this.getPlayerId();
 			syncClocks();
 		} else if (eventType == 'roomList') {
-			console.log("LOBBY: on room list received");
 			this.updateRooms(data);
 			isRoomReady = true;
 		} else if (eventType == 'joinRoom') {
@@ -90,7 +89,7 @@ function LobbyManager () {
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "JOIN ROOM";
 			this.roomId = -1;
-			visualization.reset();
+			visualizer.reset();
 		}
 	}
 

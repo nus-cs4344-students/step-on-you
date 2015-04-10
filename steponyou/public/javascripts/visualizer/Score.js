@@ -6,12 +6,12 @@ function Score (model) {
       });
 
       var image = this.getImage(model.character);
-      var height = Configurations.characterHeight*0.75;
+      var height = Configurations.characterHeight*0.5;
       var scale =  height / image.height;
 
 	var avata = new Kinetic.Rect({
-		x: 0, 
-		y: 0,
+		x: 10, 
+		y: 10,
 		width: image.width, 
 		height: image.height,
 		fillPatternImage: image,
@@ -22,8 +22,8 @@ function Score (model) {
 	var frame = new Kinetic.Rect({
 		x: 0,
 		y: 0,
-		width: image.width * scale * 2,
-		height: height,
+		width: image.width * scale * 3,
+		height: height + 20,
 		cornerRadius: 20,
 		fill: 'black',
 		opacity: 0.3
@@ -31,7 +31,7 @@ function Score (model) {
 
 	this.scoreText = new Kinetic.Text({
         x: 80,
-        y: 10,
+        y: 20,
         text: '',
         fontSize: height * 0.75,
         fontFamily: 'Roboto',

@@ -33,6 +33,9 @@ function GameEngine(serverOrClient){
 	var map = [];
 	var run = false;
 
+	var startTime = 0;
+	var currentTime = 0;
+
 	this.setPlayerSprite= function(pid, spriteName){
 		playerSprites[pid] = spriteName;
 	}
@@ -48,7 +51,7 @@ function GameEngine(serverOrClient){
 		//ground
 		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
 		//ceiling
-		map.push( { x:0, y:0, width:offset, height:offset, permissible:false  } );
+		map.push( { x:0, y:0, width:mapWidth, height:10, permissible:false  } );
 		//left
 		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
 		//right
@@ -94,7 +97,7 @@ function GameEngine(serverOrClient){
 		f.renderY = f.y;
 		f.isStatic = true;
 		f.setPermissible(permissible);
-		console.log("created platform at: " + f.x + ", " + f.y + " width: " + f.width + " height: " + f.height);
+		//console.log("created platform at: " + f.x + ", " + f.y + " width: " + f.width + " height: " + f.height);
 		return f;
 	}
 
@@ -444,8 +447,10 @@ function GameEngine(serverOrClient){
 
 	}
 
-	this.start = function(){
+	this.start = function(st){
 		run = true;
+		start = st;
+		currentTime = startTime;
 		gameLoop();
 	}
 

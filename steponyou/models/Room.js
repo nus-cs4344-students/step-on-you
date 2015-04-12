@@ -64,9 +64,11 @@ module.exports = function Room(rmID){
 		socket.write(JSON.stringify(message));
 	};
 
+	
 	this.updatePlayer = function(playerID, message, timestamp){
 		this.gameEngine.simulatePlayer(playerID, message, timestamp);
 	}
+	
 
 	this.updatePlayerRewind = function(playerID, message, timestamp){
 
@@ -248,6 +250,8 @@ module.exports = function Room(rmID){
 		}
 		return max;
 	}
+
+	//this.loopEngine();
 
 
 }

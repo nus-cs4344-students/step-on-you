@@ -92,6 +92,7 @@ function Body(w,h) {
 		isDead = true;
 		x = 10000;
 		y = 10000;
+		this.setDefaultVec();
 		renderX = x;
 		renderY = y;
 	}

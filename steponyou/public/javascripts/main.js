@@ -7,7 +7,7 @@ assets.load(function() {
 });
 
 //init game engin
-var gameEngine = new GameEngine("client");
+var gameEngine;// = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
@@ -15,7 +15,7 @@ var thisPlayer;
 document.gameEngine = gameEngine;
 keyMap[37] = false;
 keyMap[39] = false;
-var maximumLocalLag = 100;
+var maximumLocalLag = 0;
 
 
 document.addEventListener('keydown', function(event) {

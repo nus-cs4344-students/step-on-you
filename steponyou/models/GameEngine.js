@@ -570,7 +570,7 @@ function GameEngine(serverOrClient){
 
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);
-		//console.log("revived player  at " + pos.x + ", " + pos.y);
+		console.log("revived player  at " + pos.x + ", " + pos.y);
 
 
 	}

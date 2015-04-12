@@ -774,6 +774,15 @@ function GameEngine(serverOrClient){
 					}
 					//check for switch from dead to alive
 					else if(playerObjs[pMsg.id].getBody().isAlive() == false && pMsg.isAlive == true){
+
+						//safety check
+						if(pMsg.x > 730 || pMsg.y > 530){
+							var pos = generateRespawnPos();
+							pMsg.x = pos.x;
+							pMsg.y = pos.y;
+						}
+
+
 						console.log("reviving at: " + pMsg.x + ", " + pMsg.y);
 						playerObjs[pMsg.id].getBody().revive(pMsg.x, pMsg.y);
 						playerObjs[pMsg.id].setPosition(pMsg.x, pMsg.y);

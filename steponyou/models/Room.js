@@ -7,7 +7,9 @@ module.exports = function Room(rmID){
 	this.players = {};//index via playerid
 	this.sockets = {};//index via playerid
 	this.gameEngine.init(null);
+	
 	this.gameEngine.start();
+
 
 	var that = this;
 
@@ -190,14 +192,14 @@ module.exports = function Room(rmID){
 		}
 	}
 
-	var loopEngine = function(){
+	this.loopEngine = function(){
 		if(runEngine){
 			this.stepEngine();
 			setTimeout(function(){loopEngine();}, this.gameEngine.timePerFrame);
 		}
 	}
 
-	var stopLoopEngine = function(){
+	this.stopLoopEngine = function(){
 		runEngine = false;
 	}
 

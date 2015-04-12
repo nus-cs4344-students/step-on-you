@@ -75,7 +75,7 @@ function Body(w,h) {
 	var dampDirection = "";
 
 	var supportingPlatform;
-	var permissible = true;
+	var permissible = false;
 
 	this.setDefaultVec = function(){
 		vecX = 0;

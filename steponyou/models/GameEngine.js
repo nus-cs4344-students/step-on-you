@@ -152,6 +152,11 @@ function GameEngine(serverOrClient){
 		var thatPlayer = playerObjs[playerID];
 		var pos = playerEvent.pos;
 		var keysPressed = playerEvent.keyMap;
+
+		var packet = {playerID:playerID, playerEvent:playerEvent, timeStamp:timestamp};
+		var cIndex = -5;
+		var eIndex = -5;
+
 		if(this.role == 'server'){
 
 			//if player is dead, reject input
@@ -164,7 +169,42 @@ function GameEngine(serverOrClient){
 			}
 
 			if(useRewind){
-				inputHistory.push({timestamp:timestamp, playerID:playerID, playerEvent:playerEvent});
+
+				//inputHistory.push({timestamp:timestamp, playerID:playerID, playerEvent:playerEvent});
+
+				//if first element
+				if(inputHistory.length == 0 ){
+					inputHistory.push(packet);
+					cIndex = 0;
+				}
+				else if (inputHistory[inputHistory.length-1].timeStamp <= timestamp ) {
+					inputHistory.push(packet);
+					cIndex = inputHistory.length - 1;
+				}
+				else{
+					//determine where to insert the new packet
+					for(var i = 0; i < inputHistory.length; i++){
+						if(inputHistory[i].timeStamp >= timestamp){
+							cIndex = i;
+							break;
+						}
+					}
+
+					//insert the new packet
+					inputHistory.splice(cIndex,0, packet );
+				}
+
+				//determine index of engine
+				//scan from the back
+				for(var i = stateHistory.length-1; i > 0; i--){
+					if(stateHistory[i].time <= timestamp){
+						eIndex = i;
+						break;
+					}
+				}
+
+
+
 			}
 		}
 
@@ -208,7 +248,7 @@ function GameEngine(serverOrClient){
 	    }
 
 	    
-	   else if(keysPressed[39] == false && keysPressed[37] == false){
+	   if(keysPressed[39] == false && keysPressed[37] == false){
 	    	//console.log("uhh");
 	    	//console.log("left: " + keysPressed[37] + " right: " + keysPressed[39]);
 	    	thatPlayer.removeAccelerationX();

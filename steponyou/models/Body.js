@@ -73,7 +73,7 @@ function Body(w,h) {
 	var dampDirection = "";
 
 	var supportingPlatform;
-	var permissible = true;
+	var permissible = false;
 
 	this.history = new FixedQueue(100);//Save last 100 states for rewinding
 

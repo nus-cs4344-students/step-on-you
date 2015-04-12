@@ -38,6 +38,8 @@ function GameEngine(serverOrClient){
 
 	var useConvergence = false;
 
+	var updateFromServerFreq = 200;
+
 	this.changeFPS = function(fp){
 		FPS = fp;
 	}
@@ -239,12 +241,6 @@ function GameEngine(serverOrClient){
 	        thatPlayer.moveRight();
 	        thatPlayer.jump();
 	    }
-
-	    else if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        console.log("down + jump");
-	        thatPlayer.fallThrough();
-	    }
-
 
 	    else if(keysPressed[37] == true) {
 	        //left
@@ -655,6 +651,7 @@ function GameEngine(serverOrClient){
 
 	}
 
+
 	this.processUpdate = function(msg){
 
 		//console.log("GameEngine : process update");
@@ -683,6 +680,7 @@ function GameEngine(serverOrClient){
 					}
 					
 					if(useConvergence){
+
 						//set other player's position
 						var playerPositionX = playerObjs[pMsg.id].getPosition().x;
 						var playerPositionY = playerObjs[pMsg.id].getPosition().y;

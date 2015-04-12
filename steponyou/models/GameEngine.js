@@ -58,7 +58,7 @@ function GameEngine(serverOrClient){
 		//ground
 		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
 		//ceiling
-		map.push( { x:0, y:0, width:mapWidth, height:offset, permissible:false  } );
+		map.push( { x:0, y:0, width:mapWidth, height:10, permissible:false  } );
 		//left
 		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
 		//right
@@ -181,12 +181,6 @@ function GameEngine(serverOrClient){
 	        thatPlayer.moveRight();
 	        thatPlayer.jump();
 	    }
-
-	    else if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        //console.log("down + jump");
-	        thatPlayer.fallThrough();
-	    }
-
 
 	    else if(keysPressed[37] == true) {
 	        //left

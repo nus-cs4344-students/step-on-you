@@ -209,8 +209,8 @@ module.exports = function Room(rmID){
 		var updatePack = this.gameEngine.generateUpdate();
 		this.broadcast(updatePack);
 		//prepare update
-		setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
-
+		//setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
+		setTimeout( function(){that.generateUpdateState()}, 200 );
 	}
 	
 	

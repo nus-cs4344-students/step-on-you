@@ -519,7 +519,7 @@ function GameEngine(serverOrClient){
 	}
 
 	var generateRespawnPos = function(){
-		var x = 20 + (Math.random() * 780);
+		var x = 20 + (Math.random() * 680);
 		var y = (430 + Math.random() *  100) ;
 		return {x: x, y: y};
 	}
@@ -581,7 +581,6 @@ function GameEngine(serverOrClient){
 		}
 
 		var local = (bodyToPlayerID[obj.objectID] == this.thisPlayerID);
-		
 
 		var pPack = {
 			updateType : "update",

@@ -257,19 +257,16 @@ function GameEngine(serverOrClient){
 	    }
 	    
 	    else if(keysPressed[32] == true || keysPressed[38] == true) {
-
-	         //console.log("jump");
 	         thatPlayer.jump();     
 	    }
 
 	    
-	   else if(keysPressed[39] == false && keysPressed[37] == false){
+	   if(keysPressed[39] == false && keysPressed[37] == false){
 	    	//console.log("uhh");
 	    	//console.log("left: " + keysPressed[37] + " right: " + keysPressed[39]);
 	    	thatPlayer.removeAccelerationX();
 	    }
 	    
-
 	}
 
 	this.registerCurrentPlayer = function(playerID){

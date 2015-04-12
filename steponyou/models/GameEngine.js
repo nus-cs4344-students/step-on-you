@@ -538,11 +538,11 @@ function GameEngine(serverOrClient){
 	}
 
 	this.AkilledB = function(aBodyId,bBodyId){
-		console.log(aBodyId + ", " + bBodyId );
+		//console.log(aBodyId + ", " + bBodyId );
 		addPlayerScore(aBodyId);;
 		playerObjs[bodyToPlayerID[bBodyId]].setPosition(1000,1000);
-		console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
-		console.log("scheduled reviving player");
+		//console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
+		//console.log("scheduled reviving player");
 
 		this.revivePlayerIn(bBodyId, 2000);
 	}
@@ -558,7 +558,7 @@ function GameEngine(serverOrClient){
 		var pid = bodyToPlayerID[bodyId];
 
 		if(pid == null){
-			console.log("aborting revive, this player is already not in the room");
+			//console.log("aborting revive, this player is already not in the room");
 			return;
 		}
 		var pos = generateRespawnPos();
@@ -570,7 +570,7 @@ function GameEngine(serverOrClient){
 
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);
-		console.log("revived player  at " + pos.x + ", " + pos.y);
+		//console.log("revived player  at " + pos.x + ", " + pos.y);
 
 
 	}

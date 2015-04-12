@@ -38,6 +38,7 @@ function GameEngine(serverOrClient){
 
 	var useConvergence = true;
 
+	var lastUpdateFromServer = 0;
 	var updateFromServerFreq = 200;
 	var numFramesToConverge = 10;
 
@@ -676,6 +677,16 @@ function GameEngine(serverOrClient){
 		//console.log("GameEngine : process update");
 		//console.log(msg);
 		var playersData = msg.objects;
+		var now = (new Date()).getTime();
+		if(lastUpdateFromServer == 0){
+			lastUpdateFromServer = now;
+		}
+		else{
+			updateFromServerFreq = 0.25 * updateFromServerFreq + 0.75 * ( now - lastUpdateFromServer );
+			lastUpdateFromServer = now;
+		}
+
+		numFramesToConverge = Math.floor(0.55 * (updateFromServerFreq / this.timePerFrame));
 
 		if(msg.objects == null){
 			console.log("null msg from server received");

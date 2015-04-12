@@ -5,5 +5,6 @@ var onRoomButtonClick = function(roomId) {
  		document.getElementById("buttonRoom"+roomId).blur();
 	} else if (currentRoomId > -1 && currentRoomId == roomId) {
 		lobbyManager.leaveRoom();
+		document.getElementById("buttonRoom"+roomId).blur();
 	}
 }

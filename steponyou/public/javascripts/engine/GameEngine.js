@@ -36,9 +36,10 @@ function GameEngine(serverOrClient){
 	var startTime = 0;
 	var currentTime = 0;
 
-	var useConvergence = false;
+	var useConvergence = true;
 
 	var updateFromServerFreq = 200;
+	var numFramesToConverge = 10;
 
 	this.changeFPS = function(fp){
 		FPS = fp;
@@ -468,9 +469,10 @@ function GameEngine(serverOrClient){
 			return;
 		}
 
-		currentFrameNumber++;
+
 		if(that.thisPlayerID != 0){
-			physics.step();
+			//physics.step();
+			step();
 		}
 		//debugRender();
 		setTimeout( function(){gameLoop()}, that.timePerFrame );
@@ -479,6 +481,26 @@ function GameEngine(serverOrClient){
 
 	this.step = function(){
 		currentFrameNumber++;
+		physics.step();
+	}
+
+	var step = function(){
+		currentFrameNumber++;
+
+		if(useConvergence){
+			//converge all other players first then run physics
+			//converge all other players
+			for(var i = 0; i < playerObjs.length; i++){
+				if(playerObjs[i] == null){
+					continue;
+				}
+				//converge other players
+				if(playerObjs[i].playerID != currentPlayer){
+					playerObjs[i].performConvergence();
+				}
+			}
+		}
+		//run physics
 		physics.step();
 	}
 
@@ -681,6 +703,7 @@ function GameEngine(serverOrClient){
 					
 					if(useConvergence){
 
+						/*
 						//set other player's position
 						var playerPositionX = playerObjs[pMsg.id].getPosition().x;
 						var playerPositionY = playerObjs[pMsg.id].getPosition().y;
@@ -705,6 +728,9 @@ function GameEngine(serverOrClient){
 						}else{
 							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 						}
+						*/
+						playerObjs[pMsg.id].defineConvergence(pMsg.x, pMsg.y, numFramesToConverge);
+
 					}
 					else{
 							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );

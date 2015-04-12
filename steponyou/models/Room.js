@@ -210,7 +210,7 @@ module.exports = function Room(rmID){
 		this.broadcast(updatePack);
 		//prepare update
 		//setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
-		setTimeout( function(){that.generateUpdateState()}, 200 );
+		setTimeout( function(){that.generateUpdateState()}, 100 );
 	}
 	
 	

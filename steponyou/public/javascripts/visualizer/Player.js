@@ -1,17 +1,31 @@
 function visualPlayer (model) {
-	var image = this.getImage(model.character);
-	var scale = Configurations.characterHeight / image.height;
-	var visual = new Kinetic.Rect({
-		x: model.x, 
-		y: model.y,
-		width: image.width, 
-		height: image.height,
-		fillPatternImage: image,
-		fillPatternRepeat: 'no-repeat',
-		scale: {x: scale, y: scale},
-	});
+	if (model.character == 'debug') {
+		var visual = new Kinetic.Rect({
+			x: model.x, 
+			y: model.y,
+			width: Configurations.characterWidth, 
+			height: Configurations.characterHeight,
+			fill: red,
+			opacity: 0.5
+		});
+	} else {
+		var image = this.getImage(model.character);
+		var scaleX = Configurations.characterWidth / image.width;
+		var scaleY = Configurations.characterHeight / image.height;
+		var visual = new Kinetic.Rect({
+			x: model.x, 
+			y: model.y,
+			width: image.width, 
+			height: image.height,
+			fillPatternImage: image,
+			fillPatternRepeat: 'no-repeat',
+			scale: {x: scaleX, y: scaleY},
+		});
+	}
+	
 	this.parent.constructor.call(this, model, visual);
 	this.character = model.character;
+	this.isLocal = model.isLocal;
 }
 visualPlayer.prototype = Object.create(Obj.prototype);
 visualPlayer.prototype.constructor = visualPlayer;

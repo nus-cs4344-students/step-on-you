@@ -48,7 +48,6 @@ function LobbyManager () {
 			this.getPlayerId();
 			syncClocks();
 		} else if (eventType == 'roomList') {
-			console.log("LOBBY: on room list received");
 			this.updateRooms(data);
 			isRoomReady = true;
 		} else if (eventType == 'joinRoom') {
@@ -72,6 +71,8 @@ function LobbyManager () {
 		if (rooms != null) {
 			document.getElementById("roomStatus1").textContent=rooms[0] + "/4";
 			document.getElementById("roomStatus2").textContent=rooms[1] + "/4";
+			document.getElementById("roomStatus3").textContent=rooms[2] + "/4";
+			document.getElementById("roomStatus4").textContent=rooms[3] + "/4";
 		}
 	}
 
@@ -88,7 +89,7 @@ function LobbyManager () {
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "JOIN ROOM";
 			this.roomId = -1;
-			
+			visualizer.reset();
 		}
 	}
 

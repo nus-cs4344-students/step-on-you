@@ -16,7 +16,7 @@ function SuperMarioServer() {
 	this.playerRoomNoMap = {};      // Mapping from player id -> his room number
 	this.playerConnectionIDmap = {} // Mapping from connection id -> player id
 	this.rooms = {};
-	var NO_OF_ROOMS = 2;
+	var NO_OF_ROOMS = 4;
 	for(var i=0; i<NO_OF_ROOMS; i++){
 		this.rooms[i] = new Room(i);//X should be new Game engine
 		this.rooms[i].generateUpdateState();
@@ -108,38 +108,28 @@ function SuperMarioServer() {
 				conn.on('close', function () {
 					var playerID = that.playerConnectionIDmap[conn.id];					
 					var roomID = that.playerRoomNoMap[playerID];
-					// if(that.rooms[roomID].getPlayer(playerID) != null){
-					// 	that.rooms[roomID].getPlayer(playerID).status = 2;
-					// }
+
+					delete that.playerConnectionIDmap[conn.id];
+					delete that.players[playerID];
+
 					if(roomID === undefined)
+						//Player has left room
 						return;
 
 					if(that.rooms[roomID].getPlayer(playerID) == null){
 						return;
 					}
-					that.count--;
+
+					//Player has not left room
+
+					if(that.playerRoomNoMap[playerID] !== undefined && that.playerRoomNoMap[playerID] !== null){
+						//This person has not leave room yet but disconnect -> Reduce number of player
+						that.count--;
+					}
+
 					that.rooms[roomID].removePlayer(playerID);
-					delete that.playerConnectionIDmap[conn.id];
 					delete that.playerRoomNoMap[playerID];
-					delete that.players[playerID];
 
-					// Wait for 15s then Remove player who wants to quit/closed the window
-					// setTimeout(function(){
-						// if(that.players[playerID].status == 2){
-							//This player has not been able to connect back after 15s => remove him
-							// that.count--;
-							// that.rooms[roomID].removePlayer(playerID);
-							// delete that.playerConnectionIDmap[conn.ID];
-							// delete that.playerRoomNoMap[playerID];
-							// delete that.players[playerID];
-						// }else{
-							//This player has changed connection id since he reconnected
-							//Remove the old connection id;
-							// delete that.playerConnectionIDmap[conn.ID];
-						// }
-
-					// },15000);
-					
 				});
 
 				// When the client send something to the server.
@@ -197,7 +187,7 @@ function SuperMarioServer() {
 
 							if(that.rooms[rmNo] !== undefined && that.rooms[rmNo] !== null) {
 								that.rooms[rmNo].updatePlayer(player_id, keypress, timestamp);
-								that.rooms[rmNo].calculateLatency(playerID, message.timestamp);
+								that.rooms[rmNo].calculateLatency(player_id, message.timestamp);
 							}
 							
 							break;

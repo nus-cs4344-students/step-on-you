@@ -6,7 +6,7 @@ function Score (model) {
       });
 
       var image = this.getImage(model.character);
-      var height = Configurations.characterHeight*0.5;
+      var height = Configurations.characterHeight;
       var scale =  height / image.height;
 
 	var avata = new Kinetic.Rect({
@@ -19,7 +19,7 @@ function Score (model) {
 		scale: {x: scale, y: scale},
 	});
 
-	var frame = new Kinetic.Rect({
+	this.frame = new Kinetic.Rect({
 		x: 0,
 		y: 0,
 		width: image.width * scale * 3,
@@ -38,7 +38,7 @@ function Score (model) {
         fill: 'white'
       });
 
-	groupVisual.add(frame);
+	groupVisual.add(this.frame);
 	groupVisual.add(avata);
 	groupVisual.add(this.scoreText);
 
@@ -65,3 +65,7 @@ Score.prototype.getImage = function (imgName) {
 		return assets.character_white;
 	}
 };
+
+Score.prototype.setLocal = function() {
+	this.frame.setFill('yellow');
+}

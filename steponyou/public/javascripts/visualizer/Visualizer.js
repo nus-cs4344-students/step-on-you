@@ -120,7 +120,7 @@ Visualizer.prototype.removeObject = function(id) {
 		return;
 	}
 	//set dead effect
-	if (this.objects[id].isLocal === 'true') {
+	if (this.objects[id].isLocal == true) {
 		this.redCover.opacity(0.5);
 	}
 	//remove visual

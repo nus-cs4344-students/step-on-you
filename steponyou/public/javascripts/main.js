@@ -15,7 +15,7 @@ var thisPlayer;
 document.gameEngine = gameEngine;
 keyMap[37] = false;
 keyMap[39] = false;
-var maximumLocalLag = 100;
+var maximumLocalLag = 0;
 
 
 document.addEventListener('keydown', function(event) {

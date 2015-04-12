@@ -21,6 +21,8 @@ function Player(pid) {
 
 	this.applyGravity = true;
 
+	this.converging = false;
+
 	this.setDefaultVec = function(){
 		//console.log("set default");
 		body.setDefaultVec();
@@ -54,6 +56,61 @@ function Player(pid) {
 
 	this.getPosition = function(){
 		return { x: body.renderX, y: body.renderY};
+	}
+
+
+	this.defineConvergence = function(x, y , numFrames){
+
+		//safety check : nothing to converge
+		if(body.renderX == x && body.renderY == y){
+			return;
+		}
+
+		if(body.framesLeftToConverge > 0){
+			//console.log("player: unable to register convergence as old task has not been completed");
+			return;
+		}
+
+		body.framesLeftToConverge = numFrames;
+		body.targetX = x;
+		body.targetY = y;
+		body.advVecX = (x - body.renderX) / numFrames;
+		body.advVecY = (y - body.renderY) / numFrames;
+		this.converging = true;
+		//console.log("defined convergence: " + body.advVecX + ", " + body.advVecY);
+	}
+
+	this.performConvergence = function(){
+		if(this.converging == false){
+			//console.log("player: no converge task. returning");
+			return;
+		}
+
+		body.framesLeftToConverge--;
+
+		if(body.framesLeftToConverge < 0){
+			console.log("player: converge frames exceeded. returning.");
+			body.renderX = body.targetX;
+			body.renderY = body.targetY;
+			body.x = body.renderX;
+			body.y = body.renderY;
+			this.converging = false;
+			return;
+		}
+		//if it is the last frame, just hop to final position (prevents float errors)
+		if(body.framesLeftToConverge == 0){
+			body.renderX = body.targetX;
+			body.renderY = body.targetY;
+			body.x = body.renderX;
+			body.y = body.renderY;
+			this.converging = false;
+		}
+		else{
+			body.renderX = body.renderX + body.advVecX;
+			body.renderY = body.renderY + body.advVecY;
+			body.x = body.renderX;
+			body.y = body.renderY;
+		}
 	}
 
 	this.setApplyGravity = function(b){

@@ -39,6 +39,17 @@ function GameEngine(serverOrClient){
 	var map = [];
 	var run = false;
 
+	var startTime = 0;
+	var currentTime = 0;
+	var maxTime = 0;
+
+	var historySize = 0.5 * FPS;
+	var maxBacklogTime = Math.floor(historySize * this.timePerFrame)
+	var inputHistory = [];
+	var stateHistory = [];
+
+	var useRewind = false;
+
 	this.setPlayerSprite= function(pid, spriteName){
 		playerSprites[pid] = spriteName;
 	}
@@ -49,7 +60,7 @@ function GameEngine(serverOrClient){
 		//ground
 		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
 		//ceiling
-		map.push( { x:0, y:0, width:offset, height:offset, permissible:false  } );
+		map.push( { x:0, y:0, width:mapWidth, height:10, permissible:false  } );
 		//left
 		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
 		//right
@@ -96,7 +107,7 @@ function GameEngine(serverOrClient){
 		f.renderY = f.y;
 		f.isStatic = true;
 		f.setPermissible(permissible);
-		console.log("created platform at: " + f.x + ", " + f.y + " width: " + f.width + " height: " + f.height);
+		//console.log("created platform at: " + f.x + ", " + f.y + " width: " + f.width + " height: " + f.height);
 		return f;
 	}
 
@@ -135,11 +146,11 @@ function GameEngine(serverOrClient){
 	}
 
 
-		//need function to simulate keys for other players
+	//need function to simulate keys for other players
 	this.simulatePlayer = function(playerID, playerEvent, timestamp){
 
 		var thatPlayer = playerObjs[playerID];
-
+		var pos = playerEvent.pos;
 		var keysPressed = playerEvent.keyMap;
 		if(this.role == 'server'){
 
@@ -147,14 +158,18 @@ function GameEngine(serverOrClient){
 			if(!playerObjs[playerID].getBody().isAlive()){
 				return;
 			}
+			else{
+				//re-sync player position before running input
+				playerObjs[playerID].setPosition(pos.x, pos.y);
+			}
 
-			var pos = playerEvent.pos;
-			thatPlayer.setPosition(pos.x, pos.y);
-			thatPlayer.pushHistory({timestamp:timestamp, position:pos});
+			if(useRewind){
+				inputHistory.push({timestamp:timestamp, playerID:playerID, playerEvent:playerEvent});
+			}
 		}
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        console.log("down + jump");
+	        //console.log("down + jump");
 	        thatPlayer.fallThrough();
 	    }
 
@@ -169,12 +184,6 @@ function GameEngine(serverOrClient){
 	        thatPlayer.moveRight();
 	        thatPlayer.jump();
 	    }
-
-	    else if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        console.log("down + jump");
-	        thatPlayer.fallThrough();
-	    }
-
 
 	    else if(keysPressed[37] == true) {
 	        //left
@@ -211,13 +220,14 @@ function GameEngine(serverOrClient){
 	this.registerCurrentPlayer = function(playerID){
 		player = playerObjs[playerID];
 		thisPlayerID = playerID;
-		console.log("playerID: " + playerID);
+		//console.log("playerID: " + playerID);
 	}
 
 	this.getCurrentPlayer = function(){
 		return playerObjs[thisPlayerID];
 	}
 
+	//deprecated
 	this.processInput = function(){
 
 		if(keyMap[37] == true && (keyMap[32] == true || keyMap[38] == true)){
@@ -365,8 +375,11 @@ function GameEngine(serverOrClient){
 
 	}
 
-	this.start = function(){
+	this.start = function(st){
 		run = true;
+		startTime = st;
+		currentTime = startTime;
+		maxTime = currentTime;
 		gameLoop();
 	}
 
@@ -380,9 +393,14 @@ function GameEngine(serverOrClient){
 			return;
 		}
 
+		/*
 		currentFrameNumber++;
 		physics.step();
+		*/
+		step();
+
 		//debugRender();
+
 		setTimeout( function(){gameLoop()}, that.timePerFrame );
 
 	}
@@ -390,6 +408,60 @@ function GameEngine(serverOrClient){
 	this.step = function(){
 		currentFrameNumber++;
 		physics.step();
+	}
+
+	var step = function(overrideIndex){
+		currentFrameNumber++;
+		physics.step();
+
+		if(!useRewind){
+			return;
+		}
+
+		currentTime += this.timePerFrame;
+
+		if(overrideIndex == null){
+			stateHistory.push({time:currentTime, state: clone(physics)});
+		}
+		else{
+
+			if(overrideIndex >= stateHistory.length){
+				console.log("ge - you should be seeing this...attempting recovery methods");
+				console.log(overrideIndex + " index requested but size is " + stateHistory.length);
+				stateHistory.push({time:currentTime, state: clone(physics)});	
+			}
+			else{
+				stateHistory[i] = {time:currentTime, state: clone(physics)};
+			}
+
+		}
+
+		//keep history size in check
+		while(stateHistory.length > historySize){
+			stateHistory.shift();
+		}
+		//keep inputHistory size in check
+		//clean up inputHistory
+		//find last allowed index
+		var lastAllowedIndex = -1;
+		for(var i = 0; i < inputHistory.length; i++){
+			if(currentTime - inputHistory[i].timestamp <= maxBacklogTime){
+				lastAllowedIndex = i;
+				break;
+			}
+		}
+
+		//only need to clean if lastAllowedIndex >= 0
+		if(lastAllowedIndex > 0){
+			inputHistory = inputHistory.splice(0,lastAllowedIndex);
+		}
+
+
+	}
+
+	var clone = function(jsonObject){
+		mObj=JSON.parse(JSON.stringify(jsonObject));
+		return mObj;
 	}
 
 	var debugRender = function(){
@@ -432,7 +504,7 @@ function GameEngine(serverOrClient){
 		console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
 		console.log("scheduled reviving player");
 
-		this.revivePlayerIn(bBodyId, 3000);
+		this.revivePlayerIn(bBodyId, 2000);
 	}
 
 	var generateRespawnPos = function(){
@@ -446,10 +518,16 @@ function GameEngine(serverOrClient){
 		var pid = bodyToPlayerID[bodyId];
 
 		if(pid == null){
-			console.log("aborting revive, this player is already dead");
+			console.log("aborting revive, this player is already not in the room");
 			return;
 		}
 		var pos = generateRespawnPos();
+
+		if(pos.x > 730)
+			pos.x = 730;
+		if(pos.y > 530)
+			pos.y = 530;
+
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);
 		console.log("revived player  at " + pos.x + ", " + pos.y);

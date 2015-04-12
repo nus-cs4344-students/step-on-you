@@ -33,10 +33,19 @@ function GameEngine(serverOrClient){
 	var map = [];
 	var run = false;
 
+	var startTime = 0;
+	var currentTime = 0;
+
+	var useConvergence = true;
+
+	var updateFromServerFreq = 200;
+	var numFramesToConverge = 10;
+
 	this.changeFPS = function(fp){
 		FPS = fp;
 	}
 	
+
 	this.setPlayerSprite= function(pid, spriteName){
 		playerSprites[pid] = spriteName;
 	}
@@ -52,7 +61,7 @@ function GameEngine(serverOrClient){
 		//ground
 		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
 		//ceiling
-		map.push( { x:0, y:0, width:offset, height:offset, permissible:false  } );
+		map.push( { x:0, y:0, width:mapWidth, height:10, permissible:false  } );
 		//left
 		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
 		//right
@@ -98,7 +107,7 @@ function GameEngine(serverOrClient){
 		f.renderY = f.y;
 		f.isStatic = true;
 		f.setPermissible(permissible);
-		console.log("created platform at: " + f.x + ", " + f.y + " width: " + f.width + " height: " + f.height);
+		//console.log("created platform at: " + f.x + ", " + f.y + " width: " + f.width + " height: " + f.height);
 		return f;
 	}
 
@@ -218,7 +227,7 @@ function GameEngine(serverOrClient){
 		}
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        console.log("down + jump");
+	        //console.log("down + jump");
 	        thatPlayer.fallThrough();
 	    }
 
@@ -233,12 +242,6 @@ function GameEngine(serverOrClient){
 	        thatPlayer.moveRight();
 	        thatPlayer.jump();
 	    }
-
-	    else if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        console.log("down + jump");
-	        thatPlayer.fallThrough();
-	    }
-
 
 	    else if(keysPressed[37] == true) {
 	        //left
@@ -445,8 +448,10 @@ function GameEngine(serverOrClient){
 
 	}
 
-	this.start = function(){
+	this.start = function(st){
 		run = true;
+		start = st;
+		currentTime = startTime;
 		gameLoop();
 	}
 
@@ -461,9 +466,10 @@ function GameEngine(serverOrClient){
 			return;
 		}
 
-		currentFrameNumber++;
+
 		if(that.thisPlayerID != 0){
-			physics.step();
+			//physics.step();
+			step();
 		}
 		//debugRender();
 		setTimeout( function(){gameLoop()}, that.timePerFrame );
@@ -472,6 +478,26 @@ function GameEngine(serverOrClient){
 
 	this.step = function(){
 		currentFrameNumber++;
+		physics.step();
+	}
+
+	var step = function(){
+		currentFrameNumber++;
+
+		if(useConvergence){
+			//converge all other players first then run physics
+			//converge all other players
+			for(var i = 0; i < playerObjs.length; i++){
+				if(playerObjs[i] == null){
+					continue;
+				}
+				//converge other players
+				if(playerObjs[i].playerID != currentPlayer){
+					playerObjs[i].performConvergence();
+				}
+			}
+		}
+		//run physics
 		physics.step();
 	}
 
@@ -644,6 +670,7 @@ function GameEngine(serverOrClient){
 
 	}
 
+
 	this.processUpdate = function(msg){
 
 		//console.log("GameEngine : process update");
@@ -670,31 +697,41 @@ function GameEngine(serverOrClient){
 					if(playerObjs[pMsg.id] == null){
 						this.addPlayer(pMsg.id);
 					}
-
-					//set other player's position
-					var playerPositionX = playerObjs[pMsg.id].getPosition().x;
-					var playerPositionY = playerObjs[pMsg.id].getPosition().y;
-					var difference = (Math.abs(playerPositionX - pMsg.x) + Math.abs(playerPositionY - pMsg.y));
-					//Doing convergence if difference is > 5.0
-					if(difference > 5.0){
-						// console.log(difference);
-						var newX = playerPositionX;
-						var newY = playerPositionY;
-						for(var i=0; i < 20; i++){
-							var newX = newX + (pMsg.x - playerPositionX)/20.0;
-							var newY = newY + (pMsg.y - playerPositionY)/20.0;
-							playerObjs[pMsg.id].setPosition( newX, newY );
-						}
-						var diffX = playerObjs[pMsg.id].getPosition().x - pMsg.x;
-						var diffY = playerObjs[pMsg.id].getPosition().y - pMsg.y;
-						if(diffX > 0.000001 || diffY > 0.000001){
-							console.log(diffX);
-							console.log(diffY);
-						}
-					}else{
-						playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
-					}
 					
+					if(useConvergence){
+
+						/*
+						//set other player's position
+						var playerPositionX = playerObjs[pMsg.id].getPosition().x;
+						var playerPositionY = playerObjs[pMsg.id].getPosition().y;
+						var difference = (Math.abs(playerPositionX - pMsg.x) + Math.abs(playerPositionY - pMsg.y));
+						//console.log("difference: " + difference);
+						//Doing convergence if difference is > 5.0
+						if(difference > 5.0){
+							// console.log(difference);
+							var newX = playerPositionX;
+							var newY = playerPositionY;
+							for(var i=0; i < 20; i++){
+								var newX = newX + (pMsg.x - playerPositionX)/20.0;
+								var newY = newY + (pMsg.y - playerPositionY)/20.0;
+								playerObjs[pMsg.id].setPosition( newX, newY );
+							}
+							var diffX = playerObjs[pMsg.id].getPosition().x - pMsg.x;
+							var diffY = playerObjs[pMsg.id].getPosition().y - pMsg.y;
+							if(diffX > 0.000001 || diffY > 0.000001){
+								console.log(diffX);
+								console.log(diffY);
+							}
+						}else{
+							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+						}
+						*/
+						playerObjs[pMsg.id].defineConvergence(pMsg.x, pMsg.y, numFramesToConverge);
+
+					}
+					else{
+							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+						}
 					
 				}
 				//else if it this this player

@@ -64,9 +64,11 @@ module.exports = function Room(rmID){
 		socket.write(JSON.stringify(message));
 	};
 
+	
 	this.updatePlayer = function(playerID, message, timestamp){
 		this.gameEngine.simulatePlayer(playerID, message, timestamp);
 	}
+	
 
 	this.updatePlayerRewind = function(playerID, message, timestamp){
 
@@ -207,8 +209,8 @@ module.exports = function Room(rmID){
 		var updatePack = this.gameEngine.generateUpdate();
 		this.broadcast(updatePack);
 		//prepare update
-		setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
-
+		//setTimeout( function(){that.generateUpdateState()}, this.gameEngine.timePerFrame );
+		setTimeout( function(){that.generateUpdateState()}, 100 );
 	}
 	
 	
@@ -248,6 +250,8 @@ module.exports = function Room(rmID){
 		}
 		return max;
 	}
+
+	//this.loopEngine();
 
 
 }

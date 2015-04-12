@@ -26,7 +26,7 @@ function Score (model) {
 		height: height + 20,
 		cornerRadius: 20,
 		fill: 'black',
-		opacity: 0.3
+		opacity: 0.5
 	});
 
 	this.scoreText = new Kinetic.Text({
@@ -67,5 +67,5 @@ Score.prototype.getImage = function (imgName) {
 };
 
 Score.prototype.setLocal = function() {
-	this.frame.setFill('yellow');
+	this.frame.fill('orange');
 }

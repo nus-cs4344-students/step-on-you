@@ -48,6 +48,8 @@ function GameEngine(serverOrClient){
 	var inputHistory = [];
 	var stateHistory = [];
 
+	var useRewind = false;
+
 	this.setPlayerSprite= function(pid, spriteName){
 		playerSprites[pid] = spriteName;
 	}
@@ -161,8 +163,9 @@ function GameEngine(serverOrClient){
 				playerObjs[playerID].setPosition(pos.x, pos.y);
 			}
 
-
-			inputHistory.push({timestamp:timestamp, playerID:playerID, playerEvent:playerEvent});
+			if(useRewind){
+				inputHistory.push({timestamp:timestamp, playerID:playerID, playerEvent:playerEvent});
+			}
 		}
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
@@ -411,6 +414,10 @@ function GameEngine(serverOrClient){
 		currentFrameNumber++;
 		physics.step();
 
+		if(!useRewind){
+			return;
+		}
+
 		currentTime += this.timePerFrame;
 
 		if(overrideIndex == null){
@@ -497,7 +504,7 @@ function GameEngine(serverOrClient){
 		console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
 		console.log("scheduled reviving player");
 
-		this.revivePlayerIn(bBodyId, 3000);
+		this.revivePlayerIn(bBodyId, 2000);
 	}
 
 	var generateRespawnPos = function(){
@@ -511,10 +518,16 @@ function GameEngine(serverOrClient){
 		var pid = bodyToPlayerID[bodyId];
 
 		if(pid == null){
-			console.log("aborting revive, this player is already dead");
+			console.log("aborting revive, this player is already not in the room");
 			return;
 		}
 		var pos = generateRespawnPos();
+
+		if(pos.x > 730)
+			pos.x = 730;
+		if(pos.y > 530)
+			pos.y = 530;
+
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);
 		console.log("revived player  at " + pos.x + ", " + pos.y);

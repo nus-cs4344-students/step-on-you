@@ -227,7 +227,7 @@ function GameEngine(serverOrClient){
 		}
 
 		if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        console.log("down + jump");
+	        //console.log("down + jump");
 	        thatPlayer.fallThrough();
 	    }
 

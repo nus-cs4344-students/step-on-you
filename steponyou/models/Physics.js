@@ -144,7 +144,7 @@ function Physics(gameEngine) {
 
 			}
 			//check if its a jumping but blocked-at top motion
-			else if( Yinitial >= body2.renderY + body2.height + body2.getVecY() && Yfinal <= body2.renderY + body2.height + body2.getVecY()){
+			else if( !body2.getPermissible() && ( Yinitial >= body2.renderY + body2.height + body2.getVecY() && Yfinal <= body2.renderY + body2.height + body2.getVecY()) ){
 
 				//no need to handle kill as already handled by murderer
 				/*
@@ -187,7 +187,7 @@ function Physics(gameEngine) {
 				//if body2 is player
 				//should have been handled above
 				else{
-					console.log("put respawn here");
+					//console.log("put respawn here");
 				}
 			}
 			//no Y collision, just add
@@ -200,7 +200,7 @@ function Physics(gameEngine) {
 			//check for right movement
 
 			//right-left clash
-			if( Xinitial + body1.width <= body2.renderX + body2.getVecX() && Xfinal + body1.width >= body2.renderX + body2.getVecX()){
+			if( !body2.getPermissible() && (Xinitial + body1.width <= body2.renderX + body2.getVecX() && Xfinal + body1.width >= body2.renderX + body2.getVecX())){
 				//right clash
 				//correct positions
 				body1.setVecX(0);
@@ -235,7 +235,7 @@ function Physics(gameEngine) {
 			}
 			//check for left
 			//left-right clash
-			else if(Xinitial >= body2.renderX + body2.width+ body2.getVecX() && Xfinal < body2.renderX + body2.width+ body2.getVecX() ){
+			else if( !body2.getPermissible() && (Xinitial >= body2.renderX + body2.width+ body2.getVecX() && Xfinal < body2.renderX + body2.width+ body2.getVecX() )){
 				overlap = body2.renderX + body2.width + body2.getVecX() - body1.renderX - body1.getVecX();
 				overlap = Math.abs(overlap);
 				//console.log("overlap: " + overlap);

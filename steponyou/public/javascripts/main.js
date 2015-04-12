@@ -32,6 +32,7 @@ document.addEventListener('keyup', function(event) {
 
 var setupGameEngin = function (playerID) {
     gameEngine = new GameEngine("client");
+	gameEngine.changeFPS(FPS);
     visualizer.reset();
     gameEngine.init(null);
 

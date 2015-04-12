@@ -669,7 +669,28 @@ function GameEngine(serverOrClient){
 					}
 
 					//set other player's position
-					playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+					var playerPositionX = playerObjs[pMsg.id].getPosition().x;
+					var playerPositionY = playerObjs[pMsg.id].getPosition().y;
+					var difference = (Math.abs(playerPositionX - pMsg.x) + Math.abs(playerPositionY - pMsg.y));
+					//Doing convergence if difference is > 5.0
+					if(difference > 5.0){
+						// console.log(difference);
+						var newX = playerPositionX;
+						var newY = playerPositionY;
+						for(var i=0; i < 20; i++){
+							var newX = newX + (pMsg.x - playerPositionX)/20.0;
+							var newY = newY + (pMsg.y - playerPositionY)/20.0;
+							playerObjs[pMsg.id].setPosition( newX, newY );
+						}
+						var diffX = playerObjs[pMsg.id].getPosition().x - pMsg.x;
+						var diffY = playerObjs[pMsg.id].getPosition().y - pMsg.y;
+						if(diffX > 0.000001 || diffY > 0.000001){
+							console.log(diffX);
+							console.log(diffY);
+						}
+					}else{
+						playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+					}
 					
 					
 				}

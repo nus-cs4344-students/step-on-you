@@ -66,6 +66,34 @@ var updateVisualizer = function(){
     setTimeout( function(){updateVisualizer()}, timePerFrame );
 }
 
+var isMobile = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+};
+
+if(isMobile.any()){
+	FPS = 30;
+	console.log("Mobile device FPS " + FPS)
+}else{
+	console.log("not mobile device")
+}
+
 //init network
 var lobbyManager = new LobbyManager();
 lobbyManager.startConnection(setupGameEngin);
@@ -111,50 +139,11 @@ var tiltLeft = false;
 var tiltRight = false;
 var tapJump = false;
 
-var rotationCenter = 0;
-var accelerometer  = function(event){
-	var g = [];
-	g[0] = event.accelerationIncludingGravity.x;
-	g[1] = event.accelerationIncludingGravity.y;
-	g[2] = event.accelerationIncludingGravity.z;
-
-	var norm_Of_g = Math.sqrt(g[0] * g[0] + g[1] * g[1] + g[2] * g[2]);
-
-	// Normalize the accelerometer vector
-	g[0] = g[0] / norm_Of_g;
-	g[1] = g[1] / norm_Of_g;
-	g[2] = g[2] / norm_Of_g;
-	
-	var rotation = Math.atan2(g[1], g[0]);
-	if(rotationCenter < rotation){ //tilt right?
-		tiltLeft = false;
-		tiltRight = true;
-	}
-	else if(rotation < rotationCenter){ //tilt left??
-		tiltLeft = true;
-		tiltRight = false;
-	}
-	else{
-		tiltLeft = false;
-		tiltRight = false;
-	}
-	//document.getElementById("calcr").innerHTML = rotation;
-	convertMobileEvent();
-}
-
-var startAlpha;
 var mCenter = 0;
 var pThreshold = 20;
 var lThreshold = 10;
 var magnetometer  = function(event){
-	//document.getElementById("alph").innerHTML = Math.round(event.alpha);
-	//document.getElementById("bet").innerHTML = Math.round(event.beta);
-	//document.getElementById("gamm").innerHTML = Math.round(event.gamma);
-	if(startAlpha == null){ //init start compass
-		startAlpha = event.alpha;
-	}
 	if(dOrient == 1){ //portrait
-		//document.getElementById("mbranch").innerHTML = "portrait";
 		//gamma: [-90, 0) , 0 , (0, 90]
 		if(event.gamma < mCenter - pThreshold){ //tilt left
 			tiltLeft = true;
@@ -170,7 +159,6 @@ var magnetometer  = function(event){
 		}
 	}
 	else if(dOrient == 0){ // landscape left 
-		//document.getElementById("mbranch").innerHTML = "lleft";
 		//beta: -ve , 0 , +ve
 		if(event.beta < mCenter - lThreshold){ //tilt left
 			tiltLeft = true;
@@ -186,7 +174,6 @@ var magnetometer  = function(event){
 		}
 	}
 	else if(dOrient == 2){ // landscape right
-		//document.getElementById("mbranch").innerHTML = "lright";
 		//beta: +ve, 0 , -ve
 		if(event.beta > mCenter + lThreshold){ //tilt left
 			tiltLeft = true;
@@ -222,17 +209,12 @@ var convertMobileEvent = function(){
 	keyMap[37] = tiltLeft;
 	keyMap[38] = tapJump;
 	keyMap[39] = tiltRight;
-	
-	//document.getElementById("tleft").innerHTML = tiltLeft;
-	//document.getElementById("tright").innerHTML = tiltRight;
-	//document.getElementById("tjump").innerHTML = tapJump;
-	
+
     var playerEvent = { keyMap : keyMap,
                         pos :  thisPlayer.getPosition() };
 	lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 	setTimeout( function(){gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent); },
 				Math.max(lobbyManager.localLag, minimumLag) );
-	
 }
 
 var previousOrientation = window.orientation;
@@ -243,37 +225,21 @@ var checkOrientation = function(){
 		console.log(previousOrientation);
 		if(previousOrientation == 0){ //portrait
 			dOrient = 1;
-			rotationCenter = 0;
-			//document.getElementById("dori").innerHTML = "portrait";
 		}
 		else if(previousOrientation == -90){ //landscape rotate right
 			dOrient = 2;
-			rotationCenter = -90;
-			//document.getElementById("dori").innerHTML = "lright";
 		}
 		else if(previousOrientation == 90){ //landscape rotate left
 			dOrient = 0;
-			rotationCenter = 90;
-			//document.getElementById("dori").innerHTML = "lleft";
 		}
     }
 };
 
 //add mobile event listeners
-if(document.DeviceMotionEvent){
-	window.addEventListener("devicemotion", accelerometer, false);
-	//document.getElementById("dmotion").innerHTML = "yes";
-}else{
-	console.log("DeviceMotionEvent is not supported");
-	//document.getElementById("dmotion").innerHTML = "no";
-}
-
 if(window.DeviceOrientationEvent){
 	window.addEventListener("deviceorientation", magnetometer, false);
-	//document.getElementById("dmOrient").innerHTML = "yes";
 }else{
 	console.log("DeviceOrientationEvent is not supported");
-	//document.getElementById("dmOrient").innerHTML = "no";
 }
 
 window.addEventListener("touchstart", startJump, false);
@@ -293,3 +259,4 @@ else if(window.orientation == 90){ //lanscape left
 else if(window.orientation == -90){ //lanscape right
 	dOrient = 2;
 }
+

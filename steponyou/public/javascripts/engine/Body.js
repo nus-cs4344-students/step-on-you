@@ -16,6 +16,11 @@ function Body(w,h) {
 	//target position : for convergence (possibly)
 	var targetX = 0;
 	var targetY = 0;
+	var framesLeftToConverge = 0;
+	var advVecX = 0;
+	var advVecY = 0;
+	//variable to indicate if the current object is still conveging to target position
+	var converging = true;
 	
 	//velocity
 	var vecX = 0;

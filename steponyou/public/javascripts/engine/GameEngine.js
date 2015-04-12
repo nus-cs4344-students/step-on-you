@@ -36,6 +36,10 @@ function GameEngine(serverOrClient){
 	var startTime = 0;
 	var currentTime = 0;
 
+	var useConvergence = false;
+
+	var updateFromServerFreq = 200;
+
 	this.changeFPS = function(fp){
 		FPS = fp;
 	}
@@ -237,12 +241,6 @@ function GameEngine(serverOrClient){
 	        thatPlayer.moveRight();
 	        thatPlayer.jump();
 	    }
-
-	    else if(keysPressed[40] == true && (keysPressed[32] == true || keysPressed[38] == true)){
-	        console.log("down + jump");
-	        thatPlayer.fallThrough();
-	    }
-
 
 	    else if(keysPressed[37] == true) {
 	        //left
@@ -653,6 +651,7 @@ function GameEngine(serverOrClient){
 
 	}
 
+
 	this.processUpdate = function(msg){
 
 		//console.log("GameEngine : process update");
@@ -679,31 +678,37 @@ function GameEngine(serverOrClient){
 					if(playerObjs[pMsg.id] == null){
 						this.addPlayer(pMsg.id);
 					}
-
-					//set other player's position
-					var playerPositionX = playerObjs[pMsg.id].getPosition().x;
-					var playerPositionY = playerObjs[pMsg.id].getPosition().y;
-					var difference = (Math.abs(playerPositionX - pMsg.x) + Math.abs(playerPositionY - pMsg.y));
-					//Doing convergence if difference is > 5.0
-					if(difference > 5.0){
-						// console.log(difference);
-						var newX = playerPositionX;
-						var newY = playerPositionY;
-						for(var i=0; i < 20; i++){
-							var newX = newX + (pMsg.x - playerPositionX)/20.0;
-							var newY = newY + (pMsg.y - playerPositionY)/20.0;
-							playerObjs[pMsg.id].setPosition( newX, newY );
-						}
-						var diffX = playerObjs[pMsg.id].getPosition().x - pMsg.x;
-						var diffY = playerObjs[pMsg.id].getPosition().y - pMsg.y;
-						if(diffX > 0.000001 || diffY > 0.000001){
-							console.log(diffX);
-							console.log(diffY);
-						}
-					}else{
-						playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
-					}
 					
+					if(useConvergence){
+
+						//set other player's position
+						var playerPositionX = playerObjs[pMsg.id].getPosition().x;
+						var playerPositionY = playerObjs[pMsg.id].getPosition().y;
+						var difference = (Math.abs(playerPositionX - pMsg.x) + Math.abs(playerPositionY - pMsg.y));
+						//console.log("difference: " + difference);
+						//Doing convergence if difference is > 5.0
+						if(difference > 5.0){
+							// console.log(difference);
+							var newX = playerPositionX;
+							var newY = playerPositionY;
+							for(var i=0; i < 20; i++){
+								var newX = newX + (pMsg.x - playerPositionX)/20.0;
+								var newY = newY + (pMsg.y - playerPositionY)/20.0;
+								playerObjs[pMsg.id].setPosition( newX, newY );
+							}
+							var diffX = playerObjs[pMsg.id].getPosition().x - pMsg.x;
+							var diffY = playerObjs[pMsg.id].getPosition().y - pMsg.y;
+							if(diffX > 0.000001 || diffY > 0.000001){
+								console.log(diffX);
+								console.log(diffY);
+							}
+						}else{
+							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+						}
+					}
+					else{
+							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
+						}
 					
 				}
 				//else if it this this player

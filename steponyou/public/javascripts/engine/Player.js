@@ -56,6 +56,42 @@ function Player(pid) {
 		return { x: body.renderX, y: body.renderY};
 	}
 
+	this.defineConvergence = function(x, y , numFrames){
+
+		if(body.framesLeftToConverge > 0){
+			console.log("player: unable to register convergence as old task has not been completed");
+			return;
+		}
+
+		body.framesLeftToConverge = numFrames;
+		body.targetX = x;
+		body.targetY = y;
+		body.advVecX = x/ float(numFrames);
+		body.advVecY = y/ float(numFrames);
+	}
+
+	this.performConvergence = function(){
+
+		body.framesLeftToConverge--;
+		if(body.framesLeftToConverge < 0){
+			console.log("player: nothing to converge");
+			return;
+		}
+		//if it is the last frame, just hop to final position (prevents float errors)
+		if(body.framesLeftToConverge == 0){
+			body.renderX = body.targetX;
+			body.renderY = body.targetY;
+			body.x = body.renderX;
+			body.y = body.renderY;
+		}
+		else{
+			body.renderX = body.renderX + body.advVecX;
+			body.renderY = body.renderY + body.advVecY;
+			body.x = body.renderX;
+			body.y = body.renderY;
+		}
+	}
+
 	this.setApplyGravity = function(b){
 		this.applyGravity = b;
 		body.applyGravity = b;

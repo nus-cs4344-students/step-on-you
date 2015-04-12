@@ -33,6 +33,10 @@ function GameEngine(serverOrClient){
 	var map = [];
 	var run = false;
 
+	this.changeFPS = function(fp){
+		FPS = fp;
+	}
+	
 	this.setPlayerSprite= function(pid, spriteName){
 		playerSprites[pid] = spriteName;
 	}

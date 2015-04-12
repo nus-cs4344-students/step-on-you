@@ -7,7 +7,7 @@ assets.load(function() {
 });
 
 //init game engin
-var gameEngine;// = new GameEngine("client");
+var gameEngine = new GameEngine("client");
 var FPS = 60;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
@@ -237,7 +237,7 @@ var checkOrientation = function(){
 };
 
 //add mobile event listeners
-if(window.DeviceOrientationEvent){
+if(window.DeviceOrientationEvent && isMobile.any()){
 	window.addEventListener("deviceorientation", magnetometer, false);
 }else{
 	console.log("DeviceOrientationEvent is not supported");

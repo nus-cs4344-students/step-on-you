@@ -55,7 +55,7 @@ Visualizer.prototype.init = function() {
 Visualizer.prototype.reset = function() {
 	this.objectLayer.removeChildren();
 	this.coverLayer.removeChildren();
-	this.object = {};
+	this.objects = {};
 	this.scoreObj = {};
 	this.redCover.opacity(0);
 	this.init();

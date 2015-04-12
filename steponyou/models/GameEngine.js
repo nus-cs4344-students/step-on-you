@@ -57,10 +57,11 @@ function GameEngine(serverOrClient){
 
 		//floating platforms
 		map.push({x:200, y:420, width:100, height:20, permissible:true});
-		map.push({x:320, y:320, width:300, height:20, permissible:true});
+		map.push({x:320, y:320, width:200, height:20, permissible:true});
 		map.push({x:500, y:420, width:180, height:20, permissible:true});
-		map.push({x:700, y:220, width:100, height:20, permissible:true});
+		map.push({x:700, y:220, width:80, height:20, permissible:true});
 
+		map.push({x:20, y:180, width:150, height:20, permissible:true});
 
 	}
 
@@ -435,8 +436,8 @@ function GameEngine(serverOrClient){
 	}
 
 	var generateRespawnPos = function(){
-		var x = 50 + (Math.random() * 650);
-		var y = (480 + Math.random() *  20) ;
+		var x = 20 + (Math.random() * 680);
+		var y = (500 + Math.random() *  20) ;
 		return {x: x, y: y};
 	}
 

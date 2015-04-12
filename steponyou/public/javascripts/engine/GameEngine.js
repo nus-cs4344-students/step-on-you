@@ -270,7 +270,9 @@ function GameEngine(serverOrClient){
 	this.registerCurrentPlayer = function(playerID){
 		this.isPlaying = true;
 		player = playerObjs[playerID];
+		console.log("registered current player: " + playerID);
 		this.thisPlayerID = playerID;
+		currentPlayer = playerID;
 		
 	}
 
@@ -580,7 +582,7 @@ function GameEngine(serverOrClient){
 			charSprite = playerSprites[bodyToPlayerID[obj.objectID]];
 		}
 
-		var local = (bodyToPlayerID[obj.objectID] == this.thisPlayerID);
+		var local = (bodyToPlayerID[obj.objectID] == currentPlayer);
 
 		var pPack = {
 			updateType : "update",

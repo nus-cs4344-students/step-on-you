@@ -53,11 +53,11 @@ Visualizer.prototype.init = function() {
 };
 
 Visualizer.prototype.reset = function() {
-	this.objectLayer.clear();
-	this.coverLayer.clear();
+	this.objectLayer.removeChildren();
+	this.coverLayer.removeChildren();
 	this.object = {};
 	this.scoreObj = {};
-	// redCover.opacity(0);
+	this.redCover.opacity(0);
 	this.init();
 };
 
@@ -77,6 +77,7 @@ Visualizer.prototype.update = function (data) {
 	}
 	// console.log(this.objects);
 	this.objectLayer.draw();
+	this.coverLayer.draw();
 };
 
 Visualizer.prototype.updateMap = function(bricks) {
@@ -91,6 +92,7 @@ Visualizer.prototype.updateMap = function(bricks) {
 Visualizer.prototype.updateObject = function (data) {
 	var object = this.objects[data.id];
 	if (object == null || data.character != object.character) {
+
 		this.createObject(data);
 	} else {
 		object.updatePossition(data.x, data.y);

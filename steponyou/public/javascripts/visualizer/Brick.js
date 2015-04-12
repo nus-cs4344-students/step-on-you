@@ -7,7 +7,7 @@ function Brick (model) {
 		fill: 'black',
 		cornerRadius: 5,
         	stroke: 'black',
-        	opacity: 0.5
+        	opacity: .8
 	});
 	this.parent.constructor.call(this, model, visual);
 }

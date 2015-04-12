@@ -101,7 +101,7 @@ function Physics(gameEngine) {
 					if(gameEngine.role == "server"){
 						gameEngine.AkilledB( body1.objectID, body2.objectID);
 						body2.setDead();
-						console.log("woots");
+						//console.log("woots");
 						//return;
 					}
 					//if client

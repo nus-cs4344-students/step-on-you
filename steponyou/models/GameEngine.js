@@ -538,6 +538,11 @@ function GameEngine(serverOrClient){
 	}
 
 	this.AkilledB = function(aBodyId,bBodyId){
+
+		if(bodyToPlayerID[bBodyId] == null || bodyToPlayerID[aBodyId] == null){
+			return;
+		}
+		
 		//console.log(aBodyId + ", " + bBodyId );
 		addPlayerScore(aBodyId);;
 		playerObjs[bodyToPlayerID[bBodyId]].setPosition(1000,1000);
@@ -557,7 +562,7 @@ function GameEngine(serverOrClient){
 
 		var pid = bodyToPlayerID[bodyId];
 
-		if(pid == null){
+		if(pid == null || playerObjs[pid] == null){
 			//console.log("aborting revive, this player is already not in the room");
 			return;
 		}

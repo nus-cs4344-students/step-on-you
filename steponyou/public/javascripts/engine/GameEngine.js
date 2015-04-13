@@ -39,7 +39,7 @@ function GameEngine(serverOrClient){
 	var useConvergence = true;
 
 	var lastUpdateFromServer = 0;
-	var updateFromServerFreq = 200;
+	var updateFromServerFreq = 100;
 	var numFramesToConverge = 10;
 
 	this.changeFPS = function(fp){
@@ -737,7 +737,7 @@ function GameEngine(serverOrClient){
 							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 						}
 						*/
-						playerObjs[pMsg.id].defineConvergence(pMsg.x, pMsg.y, numFramesToConverge);
+						playerObjs[pMsg.id].defineConvergence(pMsg.x, pMsg.y, numFramesToConverge, now);
 
 					}
 					else{

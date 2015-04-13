@@ -596,11 +596,12 @@ function GameEngine(serverOrClient){
 				case 1:
 					charSprite = "angel";
 					break;
-				case 3:
+				case 2:
 					charSprite = "green";
 					break;
-				case 4:
+				case 3:
 					charSprite = "white";
+					break;
 				default: 
 					charSprite = "devil";
 					break;

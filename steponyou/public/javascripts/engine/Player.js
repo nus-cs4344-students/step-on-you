@@ -81,27 +81,34 @@ function Player(pid) {
 		}
 		*/
 		if(!this.cinit){
+			console.log("init");
 			body.renderX = x;
 			body.renderY = y;
 			this.currentTime = newTime;
 			this.lastTime = newTime;
 			this.setTime = newTime;
+			this.cinit = true;
+			body.targetX = x;
+			body.targetY = y;
+			body.framesLeftToConverge = numFrames;
 		}
 		else{
 			this.lastTime = this.setTime;
 			this.setTime = newTime;
 			body.targetX = x;
 			body.targetY = y;
-			//this.converging = true;
+			body.framesLeftToConverge = numFrames;
+			this.converging = true;
 		}
 
-		/*
-		body.framesLeftToConverge = numFrames;
 		
+		//body.framesLeftToConverge = numFrames;
+		/*
 		body.advVecX = (x - body.renderX) / numFrames;
 		body.advVecY = (y - body.renderY) / numFrames;
 		*/
-		this.converging = true;
+		//this.converging = true;
+
 		//console.log("defined convergence: " + body.advVecX + ", " + body.advVecY);
 	}
 
@@ -110,15 +117,16 @@ function Player(pid) {
 		if(this.converging == false){
 			//console.log("player: no converge task. returning");
 			return;
-		}
+		}		
 
 		body.framesLeftToConverge--;
 		
-
+/*
 		if(this.currentTime > this.newTime){
+			console.log("here");
 			return;
 		}
-
+*/
 
 		var now = (new Date()).getTime();
 		var tpf = now - this.currentTime;
@@ -137,9 +145,11 @@ function Player(pid) {
 		body.x = body.renderX;
 		body.y = body.renderY;
 		
-
 		this.currentTime = this.currentTime + tpf;
-
+		
+		if(body.framesLeftToConverge == 0){
+			this.converging = false;
+		}
 
 		/*
 		if(body.framesLeftToConverge < 0){

@@ -138,9 +138,47 @@ Visualizer.prototype.removeObject = function(id) {
 		this.redCover.opacity(0.5);
 		document.getElementById('audio_dead').play();
 	}
+
 	//remove visual
 	var oldVisual = this.objects[id].presentation;
-	oldVisual.remove();
+	var currentX = this.objects[id].x;
+	var currentY = this.objects[id].y;
+	//dead animation
+	var tween = new Kinetic.Tween({
+		node: oldVisual, 
+		duration: 0.2,
+		x: currentX + 25,
+		y: currentY - 100,
+		opacity: 0.66,
+		scaleX: 0,
+		onFinish: function() {
+			var tween2 = new Kinetic.Tween({
+				node: oldVisual, 
+				duration: 0.2,
+				x: currentX,
+				y: currentY - 200,
+				opacity: 0.33,
+				scaleX: 0.3,
+				onFinish: function() {
+					var tween3 = new Kinetic.Tween({
+						node: oldVisual, 
+						duration: 0.2,
+						x: currentX + 25,
+						y: currentY - 300,
+						opacity: 0,
+						scaleX: 0.01,
+						onFinish: function() {
+							oldVisual.remove();
+						}
+					});
+					tween3.play();
+				}
+			});
+			tween2.play();
+		}
+	});
+	tween.play();
+
 	//remove model
 	delete this.objects[id];
 

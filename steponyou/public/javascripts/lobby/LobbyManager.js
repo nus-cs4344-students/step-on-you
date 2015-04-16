@@ -22,7 +22,7 @@ function LobbyManager () {
 			pendingRoomId = roomId;
 			serviceHelper.joinRoom(roomId, this.playerId);
 		} else {
-			console.log("LOBBY: cannot join room")
+			console.log("LOBBY: cannot join room");
 		}
 	}
 
@@ -31,7 +31,7 @@ function LobbyManager () {
 			serviceHelper.leaveRoom(this.playerId);
 			pendingRoomId = -1;
 		} else {
-			console.log("LOBBY: cannot join room")
+			console.log("LOBBY: cannot join room");
 		}
 	}
 
@@ -84,12 +84,22 @@ function LobbyManager () {
 			callbackGameEngine(this.playerId);
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "LEAVE ROOM";
+
+			//update backgrd music
+			document.getElementById('audio_backgroundOutgame').pause();
+			document.getElementById('audio_backgroundIngame').play();
+			document.getElementById('audio_backgroundIngame').volume = 0.3;
 		} else if (pendingRoomId == -1 && status == 'pass') {
 			console.log("LOBBY: Leave Room successfully");
 			var roomName = "buttonRoom" + this.roomId;
 			document.getElementById(roomName).textContent = "JOIN ROOM";
 			this.roomId = -1;
 			visualizer.reset();
+
+			//update backgrd music
+			document.getElementById('audio_backgroundIngame').pause();
+			document.getElementById('audio_backgroundIngame').currentTime = 0;
+			document.getElementById('audio_backgroundOutgame').play();
 		}
 	}
 

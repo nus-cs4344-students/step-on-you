@@ -23,6 +23,14 @@ function Player(pid) {
 
 	this.converging = false;
 
+	this.oldTime = 0;
+	this.newTime = 0;
+	this.currentTime = 0;
+	this.cutOff = 500;
+	this.cinit = false;
+	this.lastTime = 0;
+	this.setTime = 0;
+
 	this.setDefaultVec = function(){
 		//console.log("set default");
 		body.setDefaultVec();
@@ -59,35 +67,91 @@ function Player(pid) {
 	}
 
 
-	this.defineConvergence = function(x, y , numFrames){
+	this.defineConvergence = function(x, y , numFrames, newTime){
 
 		//safety check : nothing to converge
 		if(body.renderX == x && body.renderY == y){
 			return;
 		}
 
+		/*
 		if(body.framesLeftToConverge > 0){
 			//console.log("player: unable to register convergence as old task has not been completed");
 			return;
 		}
+		*/
+		if(!this.cinit){
+			console.log("init");
+			body.renderX = x;
+			body.renderY = y;
+			this.currentTime = newTime;
+			this.lastTime = newTime;
+			this.setTime = newTime;
+			this.cinit = true;
+			body.targetX = x;
+			body.targetY = y;
+			body.framesLeftToConverge = numFrames;
+		}
+		else{
+			this.lastTime = this.setTime;
+			this.setTime = newTime;
+			body.targetX = x;
+			body.targetY = y;
+			body.framesLeftToConverge = numFrames;
+			this.converging = true;
+		}
 
-		body.framesLeftToConverge = numFrames;
-		body.targetX = x;
-		body.targetY = y;
+		
+		//body.framesLeftToConverge = numFrames;
+		/*
 		body.advVecX = (x - body.renderX) / numFrames;
 		body.advVecY = (y - body.renderY) / numFrames;
-		this.converging = true;
+		*/
+		//this.converging = true;
+
 		//console.log("defined convergence: " + body.advVecX + ", " + body.advVecY);
 	}
 
 	this.performConvergence = function(){
+
 		if(this.converging == false){
 			//console.log("player: no converge task. returning");
 			return;
-		}
+		}		
 
 		body.framesLeftToConverge--;
+		
+/*
+		if(this.currentTime > this.newTime){
+			console.log("here");
+			return;
+		}
+*/
 
+		var now = (new Date()).getTime();
+		var tpf = now - this.currentTime;
+
+		var timeGap = this.setTime - this.lastTime;
+
+		var posGapX = body.targetX - body.renderX;
+		var posGapY = body.targetY - body.renderY;
+
+		var advX = (posGapX / ( timeGap )) * tpf;
+		var advY = (posGapY / ( timeGap )) * tpf;
+
+		body.renderX += advX;
+		body.renderY += advY;
+		
+		body.x = body.renderX;
+		body.y = body.renderY;
+		
+		this.currentTime = this.currentTime + tpf;
+		
+		if(body.framesLeftToConverge == 0){
+			this.converging = false;
+		}
+
+		/*
 		if(body.framesLeftToConverge < 0){
 			console.log("player: converge frames exceeded. returning.");
 			body.renderX = body.targetX;
@@ -111,6 +175,7 @@ function Player(pid) {
 			body.x = body.renderX;
 			body.y = body.renderY;
 		}
+		*/
 	}
 
 	this.setApplyGravity = function(b){

@@ -39,7 +39,7 @@ function GameEngine(serverOrClient){
 	var useConvergence = true;
 
 	var lastUpdateFromServer = 0;
-	var updateFromServerFreq = 200;
+	var updateFromServerFreq = 100;
 	var numFramesToConverge = 10;
 
 	this.changeFPS = function(fp){
@@ -535,12 +535,20 @@ function GameEngine(serverOrClient){
 
 	var addPlayerScore = function(playerBodyId){
 
+		if(bodyToPlayerID[playerBodyId] == null){
+			return;
+		}
 		playerScores[bodyToPlayerID[playerBodyId]]++;
 
 	}
 
 	this.AkilledB = function(aBodyId,bBodyId){
 		console.log(aBodyId + ", " + bBodyId );
+
+		if(bodyToPlayerID[bBodyId] == null || bodyToPlayerID[aBodyId] == null){
+			return;
+		}
+
 		addPlayerScore(aBodyId);;
 		playerObjs[bodyToPlayerID[bBodyId]].setPosition(1000,1000);
 		console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
@@ -558,6 +566,11 @@ function GameEngine(serverOrClient){
 	var revivePlayer = function(bodyId){
 
 		var pid = bodyToPlayerID[bodyId];
+
+		if(pid == null || playerObjs[pid] == null){
+			return;
+		}
+
 		var pos = generateRespawnPos();
 		playerObjs[pid].getBody().revive(pos.x, pos.y);
 		playerObjs[pid].setPosition(pos.x, pos.y);
@@ -596,11 +609,12 @@ function GameEngine(serverOrClient){
 				case 1:
 					charSprite = "angel";
 					break;
-				case 3:
+				case 2:
 					charSprite = "green";
 					break;
-				case 4:
+				case 3:
 					charSprite = "white";
+					break;
 				default: 
 					charSprite = "devil";
 					break;
@@ -737,7 +751,7 @@ function GameEngine(serverOrClient){
 							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 						}
 						*/
-						playerObjs[pMsg.id].defineConvergence(pMsg.x, pMsg.y, numFramesToConverge);
+						playerObjs[pMsg.id].defineConvergence(pMsg.x, pMsg.y, numFramesToConverge, now);
 
 					}
 					else{

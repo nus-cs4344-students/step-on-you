@@ -13,7 +13,9 @@ function Visualizer () {
 	this.stage.add(this.coverLayer);
 	
 	this.objects = {}; //index is ID of the object
+	this.jumpFlag = {};
 	this.scoreObjects = {};
+
 	this.redCover;
 	this.insertImage(this.backgroundLayer, 'background', 0, 0);	
 };
@@ -92,11 +94,19 @@ Visualizer.prototype.updateMap = function(bricks) {
 Visualizer.prototype.updateObject = function (data) {
 	var object = this.objects[data.id];
 	if (object == null || data.character != object.character) {
-
 		this.createObject(data);
 	} else {
+		//update jumping status
+		if (this.jumpFlag[object.id] == false && data.y < object.y) {
+			this.jumpFlag[object.id] = true;
+			document.getElementById('audio_jump').play();
+		} else if (this.jumpFlag[object.id] == true && data.y >= object.y) {
+			this.jumpFlag[object.id] = false;
+		}
 		object.updatePossition(data.x, data.y);
 	}
+
+	//update score
 	var scoreObj = this.scoreObjects[data.character];
 	scoreObj.updateScore(data.score);
 };
@@ -106,6 +116,7 @@ Visualizer.prototype.createObject = function (object) {
 	var player = new visualPlayer(object);
 	this.objectLayer.add(player.presentation);	
 	this.objects[object.id] = player;
+	this.jumpFlag[object.id] = false;
 	//set reswap effect
 	if (this.objects[object.id].isLocal === true) {
 		this.redCover.opacity(0);
@@ -113,6 +124,9 @@ Visualizer.prototype.createObject = function (object) {
 		var scoreObj = this.scoreObjects[object.character];
 		scoreObj.setLocal();
 	}
+
+	//update audio
+	document.getElementById('audio_reswap').play();
 };
 
 Visualizer.prototype.removeObject = function(id) {
@@ -122,12 +136,54 @@ Visualizer.prototype.removeObject = function(id) {
 	//set dead effect
 	if (this.objects[id].isLocal == true) {
 		this.redCover.opacity(0.5);
+		document.getElementById('audio_dead').play();
 	}
+
 	//remove visual
 	var oldVisual = this.objects[id].presentation;
-	oldVisual.remove();
+	var currentX = this.objects[id].x;
+	var currentY = this.objects[id].y;
+	//dead animation
+	var tween = new Kinetic.Tween({
+		node: oldVisual, 
+		duration: 0.2,
+		x: currentX + 25,
+		y: currentY - 100,
+		opacity: 0.66,
+		scaleX: 0,
+		onFinish: function() {
+			var tween2 = new Kinetic.Tween({
+				node: oldVisual, 
+				duration: 0.2,
+				x: currentX,
+				y: currentY - 200,
+				opacity: 0.33,
+				scaleX: 0.3,
+				onFinish: function() {
+					var tween3 = new Kinetic.Tween({
+						node: oldVisual, 
+						duration: 0.2,
+						x: currentX + 25,
+						y: currentY - 300,
+						opacity: 0,
+						scaleX: 0.01,
+						onFinish: function() {
+							oldVisual.remove();
+						}
+					});
+					tween3.play();
+				}
+			});
+			tween2.play();
+		}
+	});
+	tween.play();
+
 	//remove model
 	delete this.objects[id];
+
+	//update audio
+	document.getElementById('audio_land').play();
 };
 
 Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {
@@ -169,18 +225,3 @@ Visualizer.prototype.test2 = function () {
 		t.update(json);
 	});
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

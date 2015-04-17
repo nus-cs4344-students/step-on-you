@@ -22,7 +22,7 @@ function GameEngine(serverOrClient){
 
 	var thisPlayerID = 0;
 
-	var FPS = 60;
+	var FPS = 30;
 	this.timePerFrame = 1000/FPS;
 
 	var currentFrameNumber = 0;
@@ -52,6 +52,12 @@ function GameEngine(serverOrClient){
 
 	this.setPlayerSprite= function(pid, spriteName){
 		playerSprites[pid] = spriteName;
+	}
+
+
+	this.changeFPS = function(fp){
+		FPS = fp;
+		this.timePerFrame = 1000/FPS;
 	}
 
 	var generateMap = function(mapWidth,mapHeight){

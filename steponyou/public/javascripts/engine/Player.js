@@ -7,14 +7,14 @@ function Player(pid) {
 	//movement speed
 	var speed = 2;
 	var maxSpeed = 20;
-	var acceleration = 50;
+	var acceleration = 40;
 	var jump = 200;
 	var Scale = 1;
 
 	body.width = 50;
 	body.height = 50;
 
-	var maxAccX = 2000;
+	var maxAccX = 100;
 	var maxAccY = 20;
 
 	var jumpAcc = 65;
@@ -30,7 +30,7 @@ function Player(pid) {
 	this.cinit = false;
 	this.lastTime = 0;
 	this.setTime = 0;
-	var convergeTime = 500;
+	var convergeTime = 100;
 	var targetTime = 0;
 
 	this.setDefaultVec = function(){
@@ -95,8 +95,12 @@ function Player(pid) {
 			body.framesLeftToConverge = numFrames;
 		}
 		else{
+			console.log("C: " + this.currentTime + ", N: " + newTime);
+			console.log(newTime - this.currentTime);
 			this.lastTime = this.setTime;
 			this.setTime = newTime;
+			body.prevTargetX = body.targetX;
+			body.prevTargetY = body.targetY;
 			body.targetX = x;
 			body.targetY = y;
 			body.framesLeftToConverge = numFrames;
@@ -117,6 +121,7 @@ function Player(pid) {
 
 	this.performConvergence = function(){
 
+		
 		if(this.converging == false){
 			//console.log("player: no converge task. returning");
 			return;
@@ -125,10 +130,12 @@ function Player(pid) {
 		body.framesLeftToConverge--;
 		
 
+		
 		if(this.currentTime > this.setTime){
 			console.log("here");
 			return;
 		}
+
 
 
 		var now = (new Date()).getTime();
@@ -142,8 +149,18 @@ function Player(pid) {
 		var advX = (posGapX / ( timeGap )) * tpf;
 		var advY = (posGapY / ( timeGap )) * tpf;
 
-		body.renderX += advX;
-		body.renderY += advY;
+
+
+		console.log("advX: " + advX + " , " + "advY: " + advY);
+
+		if(timeGap > 0){
+			body.renderX += advX;
+			body.renderY += advY;
+		}
+		else{
+			body.renderX = body.targetX;
+			body.renderY = body.targetY;
+		}
 		
 		body.x = body.renderX;
 		body.y = body.renderY;

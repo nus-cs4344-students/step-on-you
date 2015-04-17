@@ -16,6 +16,10 @@ function Body(w,h) {
 	//target position : for convergence (possibly)
 	var targetX = 0;
 	var targetY = 0;
+
+	var prevTargetX = 0;
+	var prevTargetY = 0;
+
 	var framesLeftToConverge = 0;
 	var advVecX = 0;
 	var advVecY = 0;

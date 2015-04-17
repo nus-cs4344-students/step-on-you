@@ -99,7 +99,7 @@ Visualizer.prototype.updateObject = function (data) {
 		//update jumping status
 		if (this.jumpFlag[object.id] == false && data.y < object.y) {
 			this.jumpFlag[object.id] = true;
-			document.getElementById('audio_jump').play();
+			//document.getElementById('audio_jump').play();
 		} else if (this.jumpFlag[object.id] == true && data.y >= object.y) {
 			this.jumpFlag[object.id] = false;
 		}

@@ -16,7 +16,7 @@ function GameEngine(serverOrClient){
 
 	this.thisPlayerID = 0;
 	this.isPlaying = false;
-	var FPS = 60;
+	var FPS = 30;
 	this.timePerFrame = 1000/FPS;
 
 	var currentFrameNumber = 0;
@@ -44,6 +44,7 @@ function GameEngine(serverOrClient){
 
 	this.changeFPS = function(fp){
 		FPS = fp;
+		this.timePerFrame = 1000/FPS;
 	}
 	
 

@@ -8,7 +8,7 @@ assets.load(function() {
 
 //init game engin
 var gameEngine = new GameEngine("client");
-var FPS = 60;
+var FPS = 30;
 var timePerFrame = 1000/FPS;
 var keyMap = [];
 var thisPlayer;
@@ -90,6 +90,7 @@ var isMobile = {
 
 if(isMobile.any()){
 	FPS = 30;
+	gameEngine.changeFPS(FPS);
 	console.log("Mobile device FPS " + FPS)
 }else{
 	console.log("not mobile device")

@@ -2,11 +2,11 @@ function Physics(gameEngine) {
 
 	var physicObjects = [];
 	var staticObjects = [];
-	var Gravity = 5;
+	var Gravity = 7;
 	var Damping = 0.5;
 	var Scaling = 1;
 	var MaxVecX = 20;
-	var MaxVecY = 50;
+	var MaxVecY = 100;
 
 
 	var phyBdCount = 0;
@@ -352,8 +352,8 @@ function Physics(gameEngine) {
 			return;
 		}
 
-		var newVecX = body.getVecX() + ( body.getAccX() ) * 1000/60/1000;
-		var newVecY = body.getVecY() + (body.getAccY() ) * 1000/60/1000;
+		var newVecX = body.getVecX() + ( body.getAccX() ) * 1000/30/1000;
+		var newVecY = body.getVecY() + (body.getAccY() ) * 1000/30/1000;
 		//console.log("newVecX: " + newVecX + ", newVecY: " + newVecY);
 		
 		//limit max velocity

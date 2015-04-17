@@ -9,14 +9,14 @@ function Player(pid) {
 	//movement speed
 	var speed = 2;
 	var maxSpeed = 20;
-	var acceleration = 20;
+	var acceleration = 40;
 	var jump = 200;
 	var Scale = 1;
 
 	body.width = 50;
 	body.height = 50;
 
-	var maxAccX = 2000;
+	var maxAccX = 100;
 	var maxAccY = 20;
 
 	var jumpAcc = 65;

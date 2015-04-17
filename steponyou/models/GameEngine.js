@@ -551,7 +551,7 @@ function GameEngine(serverOrClient){
 		
 		//console.log(aBodyId + ", " + bBodyId );
 		addPlayerScore(aBodyId);;
-		playerObjs[bodyToPlayerID[bBodyId]].setPosition(1000,1000);
+		playerObjs[bodyToPlayerID[bBodyId]].setPosition(500,1000);
 		//console.log(bodyToPlayerID[aBodyId] + " killed " + bodyToPlayerID[bBodyId]);
 		//console.log("scheduled reviving player");
 

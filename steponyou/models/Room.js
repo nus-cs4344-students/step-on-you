@@ -55,6 +55,7 @@ module.exports = function Room(rmID){
 	this.broadcast = function(message){
 		for (id in this.sockets) {
 			message["lag"] = this.playerLag[id];
+			message["time"] = (new Date()).getTime();
 			this.sockets[id].write(JSON.stringify(message));
 		}
 	};

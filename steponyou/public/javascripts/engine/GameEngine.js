@@ -693,6 +693,7 @@ function GameEngine(serverOrClient){
 		//console.log(msg);
 		var playersData = msg.objects;
 		var now = (new Date()).getTime();
+		now = msg.time;
 		if(lastUpdateFromServer == 0){
 			lastUpdateFromServer = now;
 		}
@@ -752,6 +753,9 @@ function GameEngine(serverOrClient){
 							playerObjs[pMsg.id].setPosition( pMsg.x, pMsg.y );
 						}
 						*/
+
+
+						//console.log("other player: " + pMsg.x + ", " + pMsg.y);
 						playerObjs[pMsg.id].defineConvergence(pMsg.x, pMsg.y, numFramesToConverge, now);
 
 					}
@@ -765,7 +769,7 @@ function GameEngine(serverOrClient){
 
 					//console.log("server thinks player is at: " + pMsg.x + ", " + pMsg.y);
 					//console.log("player is actually at: " + playerObjs[pMsg.id].getBody().renderX + ", " + playerObjs[pMsg.id].getBody().renderY);
-
+					//console.log("this player: " + pMsg.x + ", " + pMsg.y);
 					//check for switch from alive to dead
 					if(playerObjs[pMsg.id].getBody().isAlive() == true && pMsg.isAlive == false){
 						console.log("you are dead, " + pMsg.x + ", " + pMsg.y);

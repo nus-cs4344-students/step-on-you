@@ -83,7 +83,7 @@ function Player(pid) {
 		}
 		*/
 		if(!this.cinit){
-			console.log("init");
+			//console.log("init");
 			body.renderX = x;
 			body.renderY = y;
 			this.currentTime = newTime;
@@ -95,8 +95,8 @@ function Player(pid) {
 			body.framesLeftToConverge = numFrames;
 		}
 		else{
-			console.log("C: " + this.currentTime + ", N: " + newTime);
-			console.log(newTime - this.currentTime);
+			//console.log("C: " + this.currentTime + ", N: " + newTime);
+			//console.log(newTime - this.currentTime);
 			this.lastTime = this.setTime;
 			this.setTime = newTime;
 			body.prevTargetX = body.targetX;
@@ -130,30 +130,46 @@ function Player(pid) {
 		body.framesLeftToConverge--;
 		
 
-		
+		/*	
 		if(this.currentTime > this.setTime){
 			console.log("here");
+			return;
+		}
+		*/
+
+		if(body.renderX == body.targetX && body.renderY == body.targetY){
 			return;
 		}
 
 
 
+
 		var now = (new Date()).getTime();
 		var tpf = now - this.currentTime;
+		//var tpf = 1000/30;
 
 		var timeGap = this.setTime - this.lastTime;
 
-		var posGapX = body.targetX - body.renderX;
-		var posGapY = body.targetY - body.renderY;
+		/*
+		if(timeGap <= 0){
+			return;
+		}
+		*/
+
+		var posGapX = body.targetX - body.prevTargetX;
+		var posGapY = body.targetY - body.prevTargetY;
 
 		var advX = (posGapX / ( timeGap )) * tpf;
 		var advY = (posGapY / ( timeGap )) * tpf;
 
+		var cposGapX = body.targetX - body.prevRenderX;
+		var cposGapY = body.targetY - body.prevRenderY;
 
+		var ed = Math.sqrt(cposGapY*cposGapY + cposGapX*cposGapX);
 
-		console.log("advX: " + advX + " , " + "advY: " + advY);
-
-		if(timeGap > 0){
+		//console.log("advX: " + advX + " , " + "advY: " + advY);
+		console.log("tpf: " + tpf + "timegap: " + timeGap);
+		if(tpf > 50 || ed > 20){
 			body.renderX += advX;
 			body.renderY += advY;
 		}
@@ -167,7 +183,8 @@ function Player(pid) {
 		
 		this.currentTime = this.currentTime + tpf;
 		
-		if(body.framesLeftToConverge == 0){
+		if(body.renderX == body.targetX &&
+			body.renderY == body.targetY){
 			this.converging = false;
 		}
 

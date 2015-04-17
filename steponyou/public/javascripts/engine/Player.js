@@ -30,6 +30,8 @@ function Player(pid) {
 	this.cinit = false;
 	this.lastTime = 0;
 	this.setTime = 0;
+	var convergeTime = 500;
+	var targetTime = 0;
 
 	this.setDefaultVec = function(){
 		//console.log("set default");
@@ -99,6 +101,7 @@ function Player(pid) {
 			body.targetY = y;
 			body.framesLeftToConverge = numFrames;
 			this.converging = true;
+			targetTime = newTime + convergeTime;
 		}
 
 		
@@ -121,12 +124,12 @@ function Player(pid) {
 
 		body.framesLeftToConverge--;
 		
-/*
-		if(this.currentTime > this.newTime){
+
+		if(this.currentTime > this.setTime){
 			console.log("here");
 			return;
 		}
-*/
+
 
 		var now = (new Date()).getTime();
 		var tpf = now - this.currentTime;

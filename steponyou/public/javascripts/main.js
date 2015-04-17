@@ -15,7 +15,7 @@ var thisPlayer;
 document.gameEngine = gameEngine;
 keyMap[37] = false;
 keyMap[39] = false;
-var maximumLocalLag = 0;
+var maximumLocalLag = 50;
 
 
 document.addEventListener('keydown', function(event) {
@@ -117,7 +117,7 @@ var handleKey = function(e){
 
 	//console.log("Current local lag: " + lobbyManager.localLag);
 	setTimeout( function(){gameEngine.simulatePlayer(lobbyManager.playerId, playerEvent); },
-				Math.min(lobbyManager.localLag, maximumLocalLag) );
+				Math.max(lobbyManager.localLag, maximumLocalLag) );
     
 }
 
@@ -132,7 +132,7 @@ var updateServer = function(){
 	    lobbyManager.sendEvent(lobbyManager.playerId, playerEvent);
 	}
 
-    //setTimeout(function(){updateServer();} , 330 );
+    //setTimeout(function(){updateServer();} , 200 );
 }
 
 //mobile controls

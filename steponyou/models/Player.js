@@ -9,7 +9,7 @@ function Player(pid) {
 	//movement speed
 	var speed = 2;
 	var maxSpeed = 20;
-	var acceleration = 50;
+	var acceleration = 20;
 	var jump = 200;
 	var Scale = 1;
 

@@ -22,6 +22,7 @@ function LobbyManager () {
 			pendingRoomId = roomId;
 			serviceHelper.joinRoom(roomId, this.playerId);
 		} else {
+			alert("Canot join room");
 			console.log("LOBBY: cannot join room")
 		}
 	}

@@ -61,13 +61,13 @@ function GameEngine(serverOrClient){
 		var offset = 20;
 		//define borders
 		//ground
-		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
+		map.push( { x:-100, y:mapHeight-offset, width:mapWidth+100, height:offset, permissible:false } );
 		//ceiling
-		map.push( { x:0, y:0, width:mapWidth, height:10, permissible:false  } );
+		map.push( { x:-100, y:0, width:mapWidth+100, height:10, permissible:false  } );
 		//left
-		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
+		map.push({x:0, y:-100, width:offset, height:mapHeight+100, permissible:false});
 		//right
-		map.push({x:mapWidth-offset, y:0, width:offset, height:mapHeight, permissible:false});
+		map.push({x:mapWidth-offset, y:-100, width:offset, height:mapHeight+100, permissible:false});
 
 		//floating platforms
 		map.push({x:200, y:420, width:100, height:20, permissible:true});
@@ -472,11 +472,14 @@ function GameEngine(serverOrClient){
 		if(that.thisPlayerID != 0){
 			//physics.step();
 			step();
+
+			
 			var pPos = playerObjs[that.thisPlayerID].getPosition();
-			if( pPos.x < 20 || pPos > 730 || pPos.y < 20 || pPos.y > 530 ){
+			if( pPos.x < 0 || pPos > 750 || pPos.y < 0 || pPos.y > 600 ){
 				var newPos = generateRespawnPos();
 				playerObjs[that.thisPlayerID].setPosition(newPos.x, newPos.y);
 			}
+			
 		}
 		//debugRender();
 		setTimeout( function(){gameLoop()}, that.timePerFrame );

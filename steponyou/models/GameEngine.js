@@ -64,13 +64,13 @@ function GameEngine(serverOrClient){
 		var offset = 20;
 		//define borders
 		//ground
-		map.push( { x:0, y:mapHeight-offset, width:mapWidth, height:offset, permissible:false } );
+		map.push( { x:-100, y:mapHeight-offset, width:mapWidth+100, height:offset, permissible:false } );
 		//ceiling
-		map.push( { x:0, y:0, width:mapWidth, height:10, permissible:false  } );
+		map.push( { x:-100, y:0, width:mapWidth+100, height:10, permissible:false  } );
 		//left
-		map.push({x:0, y:0, width:offset, height:mapHeight, permissible:false});
+		map.push({x:0, y:-100, width:offset, height:mapHeight+100, permissible:false});
 		//right
-		map.push({x:mapWidth-offset, y:0, width:offset, height:mapHeight, permissible:false});
+		map.push({x:mapWidth-offset, y:-100, width:offset, height:mapHeight+100, permissible:false});
 
 		//floating platforms
 		map.push({x:200, y:420, width:100, height:20, permissible:true});

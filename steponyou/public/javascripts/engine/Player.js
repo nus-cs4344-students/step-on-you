@@ -30,6 +30,7 @@ function Player(pid) {
 	this.cinit = false;
 	this.lastTime = 0;
 	this.setTime = 0;
+	this.timeleft = 0;
 	var convergeTime = 100;
 	var targetTime = 0;
 
@@ -93,19 +94,69 @@ function Player(pid) {
 			body.targetX = x;
 			body.targetY = y;
 			body.framesLeftToConverge = numFrames;
+			this.timeleft = 0;
 		}
 		else{
 			//console.log("C: " + this.currentTime + ", N: " + newTime);
 			//console.log(newTime - this.currentTime);
-			this.lastTime = this.setTime;
-			this.setTime = newTime;
-			body.prevTargetX = body.targetX;
-			body.prevTargetY = body.targetY;
-			body.targetX = x;
-			body.targetY = y;
-			body.framesLeftToConverge = numFrames;
-			this.converging = true;
-			targetTime = newTime + convergeTime;
+
+			//if previous convergence was not complete)
+			if(body.renderX != body.targetX || body.renderY != body.targetY){
+
+				var posGapX = body.targetX - body.prevTargetX;
+				var posGapY = body.targetY - body.prevTargetY;
+
+				var timeGap = this.setTime - this.lastTime;
+
+				var vecX = (posGapX / ( timeGap ));
+				var vecY = (posGapY / ( timeGap ));
+
+				var haveX = false;
+				var haveY = false;
+
+				var timeX = 0;
+				var timeY = 0;
+
+				//find out how much of time left is for previous convergence (if any)
+				//using extreme caution to match numbers.
+
+				if (body.renderX - body.targetX != 0){
+					timeX = ( body.targetX - body.renderX ) / vecX;
+				}
+				if(body.renderY - body.targetY != 0){
+					timeY = ( body.targetY - body.renderY ) / vecY;	
+				}
+
+				timeX = Math.abs(timeX);
+				timeY = Math.abs(timeY);
+
+				var timeDone = Math.max(timeX ,timeY);
+
+				this.lastTime = this.setTime + timeDone ;
+
+				this.setTime = newTime;
+
+				body.prevTargetX = body.renderX;
+				body.prevTargetY = body.renderY;
+				body.targetX = x;
+				body.targetY = y;
+				body.framesLeftToConverge = numFrames;
+				this.converging = true;
+				targetTime = newTime + convergeTime;
+
+			}
+			else{
+
+				this.lastTime = this.setTime;
+				this.setTime = newTime;
+				body.prevTargetX = body.targetX;
+				body.prevTargetY = body.targetY;
+				body.targetX = x;
+				body.targetY = y;
+				body.framesLeftToConverge = numFrames;
+				this.converging = true;
+				targetTime = newTime + convergeTime;
+			}
 		}
 
 		
@@ -149,6 +200,8 @@ function Player(pid) {
 		//var tpf = 1000/30;
 
 		var timeGap = this.setTime - this.lastTime;
+
+		//time gap should remainder of time from previous convergence
 
 		/*
 		if(timeGap <= 0){

@@ -1,5 +1,5 @@
 var SERVER_NAME = "localhost";
-var SERVER_PORT = 3000;
+var SERVER_PORT = 5019;
 
 function ServiceHelper(lobbyManager){
 

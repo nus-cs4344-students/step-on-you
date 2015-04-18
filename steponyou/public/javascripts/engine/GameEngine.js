@@ -472,6 +472,11 @@ function GameEngine(serverOrClient){
 		if(that.thisPlayerID != 0){
 			//physics.step();
 			step();
+			var pPos = playerObjs[that.thisPlayerID].getPosition();
+			if( pPos.x < 20 || pPos > 730 || pPos.y < 20 || pPos.y > 530 ){
+				var newPos = generateRespawnPos();
+				playerObjs[that.thisPlayerID].setPosition(newPos.x, newPos.y);
+			}
 		}
 		//debugRender();
 		setTimeout( function(){gameLoop()}, that.timePerFrame );

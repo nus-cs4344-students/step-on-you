@@ -34,6 +34,12 @@ function Player(pid) {
 	var convergeTime = 100;
 	var targetTime = 0;
 
+	var vecX = 0;
+	var vecY = 0;
+	var timeGap = 0;
+	var posGapX = 0;
+	var posGapY = 0;
+
 	this.setDefaultVec = function(){
 		//console.log("set default");
 		body.setDefaultVec();
@@ -103,14 +109,6 @@ function Player(pid) {
 			//if previous convergence was not complete)
 			if(body.renderX != body.targetX || body.renderY != body.targetY){
 
-				var posGapX = body.targetX - body.prevTargetX;
-				var posGapY = body.targetY - body.prevTargetY;
-
-				var timeGap = this.setTime - this.lastTime;
-
-				var vecX = (posGapX / ( timeGap ));
-				var vecY = (posGapY / ( timeGap ));
-
 				var haveX = false;
 				var haveY = false;
 
@@ -144,6 +142,14 @@ function Player(pid) {
 				this.converging = true;
 				targetTime = newTime + convergeTime;
 
+				timeGap = this.setTime - this.lastTime;
+
+				posGapX = body.targetX - body.prevTargetX;
+				posGapY = body.targetY - body.prevTargetY;
+
+				vecX = (posGapX / ( timeGap ));
+				vecY = (posGapY / ( timeGap ));
+
 			}
 			else{
 
@@ -156,6 +162,16 @@ function Player(pid) {
 				body.framesLeftToConverge = numFrames;
 				this.converging = true;
 				targetTime = newTime + convergeTime;
+
+
+				timeGap = this.setTime - this.lastTime;
+
+				posGapX = body.targetX - body.prevTargetX;
+				posGapY = body.targetY - body.prevTargetY;
+
+				vecX = (posGapX / ( timeGap ));
+				vecY = (posGapY / ( timeGap ));
+
 			}
 		}
 
@@ -181,13 +197,6 @@ function Player(pid) {
 		body.framesLeftToConverge--;
 		
 
-		/*	
-		if(this.currentTime > this.setTime){
-			console.log("here");
-			return;
-		}
-		*/
-
 		if(body.renderX == body.targetX && body.renderY == body.targetY){
 			return;
 		}
@@ -197,17 +206,8 @@ function Player(pid) {
 
 		var now = (new Date()).getTime();
 		var tpf = now - this.currentTime;
-		//var tpf = 1000/30;
-
+		
 		var timeGap = this.setTime - this.lastTime;
-
-		//time gap should remainder of time from previous convergence
-
-		/*
-		if(timeGap <= 0){
-			return;
-		}
-		*/
 
 		var posGapX = body.targetX - body.prevTargetX;
 		var posGapY = body.targetY - body.prevTargetY;
@@ -215,14 +215,14 @@ function Player(pid) {
 		var advX = (posGapX / ( timeGap )) * tpf;
 		var advY = (posGapY / ( timeGap )) * tpf;
 
-		var cposGapX = body.targetX - body.prevRenderX;
-		var cposGapY = body.targetY - body.prevRenderY;
+		var cposGapX = body.targetX - body.renderX;
+		var cposGapY = body.targetY - body.renderY;
 
 		var ed = Math.sqrt(cposGapY*cposGapY + cposGapX*cposGapX);
 
 		//console.log("advX: " + advX + " , " + "advY: " + advY);
-		console.log("tpf: " + tpf + "timegap: " + timeGap);
-		if(tpf > 50 || ed > 20){
+		//console.log("tpf: " + tpf + "timegap: " + timeGap);
+		if(tpf > 50 ){
 			body.renderX += advX;
 			body.renderY += advY;
 		}

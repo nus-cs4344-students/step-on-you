@@ -103,7 +103,15 @@ Visualizer.prototype.updateObject = function (data) {
 		} else if (this.jumpFlag[object.id] == true && data.y >= object.y) {
 			this.jumpFlag[object.id] = false;
 		}
-		object.updatePossition(data.x, data.y);
+
+		
+		//if move out of edge, play dead animation
+		if (data.x < 0 || data.y < 0 || data.x > Configurations.canvasWidth || data.y > Configurations.canvasHeight) {
+			this.removeObject(data.id);
+		} else {
+			//update object poistion
+			object.updatePossition(data.x, data.y);
+		}
 	}
 
 	//update score
@@ -139,6 +147,16 @@ Visualizer.prototype.removeObject = function(id) {
 		document.getElementById('audio_dead').play();
 	}
 
+	this.playDeadAnimation(id);
+
+	//remove model
+	delete this.objects[id];
+
+	//update audio
+	document.getElementById('audio_land').play();
+};
+
+Visualizer.prototype.playDeadAnimation = function(id) {
 	//remove visual
 	var oldVisual = this.objects[id].presentation;
 	var currentX = this.objects[id].x;
@@ -178,13 +196,7 @@ Visualizer.prototype.removeObject = function(id) {
 		}
 	});
 	tween.play();
-
-	//remove model
-	delete this.objects[id];
-
-	//update audio
-	document.getElementById('audio_land').play();
-};
+}
 
 Visualizer.prototype.insertImage = function (layer, imgName, X, Y) {
 	var src;
